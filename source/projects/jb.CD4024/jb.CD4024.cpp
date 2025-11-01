@@ -128,15 +128,12 @@ public:
         MIN_FUNCTION {
             switch (inlet) {
             case 0:
-                //cout << "Inlet 0" << endl;
                 this->step();
                 break;
             case 1:
-                //cout << "Inlet 1" << endl;
                 this->reset_counter();
                 break;
             default:
-                cout << "Inlet Default" << endl;
                 assert(false);
             }
             return {};
@@ -148,19 +145,16 @@ public:
         MIN_FUNCTION {
             switch (inlet) {
             case 0:
-                //cout << "Inlet 0" << endl;
                 if (args[0]) {
                     this->step();
                 }
                 break;
             case 1:
-                //cout << "Inlet 1" << endl;
                 if (args[0]) {
                     this->reset_counter();
                 }
                 break;
             default:
-                cout << "Inlet Default" << endl;
                 assert(false);
             }
             return {};

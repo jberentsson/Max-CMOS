@@ -89,8 +89,6 @@ public:
     argument<symbol> output_type_arg{ this, "output_type", "Initial value for the greeting attribute.",
         MIN_ARGUMENT_FUNCTION {            
             output_type = arg;
-            cout << "Argument: ";
-            cout << arg << endl;
         }
     };
 
@@ -105,19 +103,14 @@ public:
     // respond to the bang message to do something
     message<> bang{ this, "bang", "Steps the counter.",
         MIN_FUNCTION {
-            cout << "Attribute: ";
-            //cout << output_type << endl;
             switch (inlet) {
             case 0:
-                //cout << "Inlet 0" << endl;
                 this->step();
                 break;
             case 1:
-                //cout << "Inlet 1" << endl;
                 this->reset_counter();
                 break;
             default:
-                cout << "Inlet Default" << endl;
                 assert(false);
             }
             return {};
@@ -129,19 +122,16 @@ public:
         MIN_FUNCTION {
             switch (inlet) {
             case 0:
-                //cout << "Inlet 0" << endl;
                 if (args[0]) {
                     this->step();
                 }
                 break;
             case 1:
-                //cout << "Inlet 1" << endl;
                 if (args[0]) {
                     this->reset_counter();
                 }
                 break;
             default:
-                cout << "Inlet Default" << endl;
                 assert(false);
             }
             return {};
