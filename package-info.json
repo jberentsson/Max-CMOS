@@ -3,7 +3,7 @@
 	"description" : "Max objects based on CMOS integrated circuits.",
 	"homepatcher" : "C++ Object Development Kit.maxpat",
 	"max_version_min" : "8.0", "max_version_max" : "none",
-	"name" : "jb.cmos",
+	"name" : "Max-CMOS",
 	"os" : {
 		"macintosh" : {
 			"platform" : [ "x64", "aarch64" ],
