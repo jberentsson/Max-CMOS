@@ -11,7 +11,6 @@
 
 using namespace c74::min;
 
-
 class CD4024 : public object<CD4024> {
 public:
     MIN_DESCRIPTION	{"CMOS CD4024"};
@@ -21,6 +20,7 @@ public:
 
     inlet<>  input_0 { this, "(bang) input pulse" };
     inlet<>  input_1 { this, "(reset) reset pulse" };
+    
     outlet<> output_0{ this, "(anything) output bit 0" };
     outlet<> output_1{ this, "(anything) output bit 1" };
     outlet<> output_2{ this, "(anything) output bit 2" };
@@ -29,10 +29,19 @@ public:
     outlet<> output_5{ this, "(anything) output bit 5" };
     outlet<> output_6{ this, "(anything) output bit 6" };
 
+    outlet<> *outputs[7] = {
+        &output_0,
+        &output_1,
+        &output_2,
+        &output_3,
+        &output_4,
+        &output_5,
+        &output_6
+    }; 
+
     int counter = -1;
     int* counter_ptr = &counter;
     bool bang_enabled = FALSE;
-    //outlet<>* outputs[7] = { &output_0, &output_1, &output_2, &output_3, &output_4, &output_5, &output_6 };
 
     int find_bit(int output) {
         // isolate the correct bit.
@@ -46,130 +55,56 @@ public:
         if (bang_enabled) {
             send_bangs();
         } else {
-            output_0.send(this->find_bit(0));
-            output_1.send(this->find_bit(1));
-            output_2.send(this->find_bit(2));
-            output_3.send(this->find_bit(3));
-            output_4.send(this->find_bit(4));
-            output_5.send(this->find_bit(5));
-            output_6.send(this->find_bit(6));
+            for (int i = 0; i < 7; i++){
+                outputs[i]->send(this->find_bit(i));
+            }
         }
     }
 
     void send_bangs() {
-        // Send bang to output if it's active.
-        if (this->find_bit(0)) {
-            output_0.send("bang");
-        }
-
-        if (this->find_bit(1)) {
-            output_1.send("bang");
-        }
-
-        if (this->find_bit(2)) {
-            output_2.send("bang");
-        }
-
-        if (this->find_bit(3)) {
-            output_3.send("bang");
-        }
-
-        if (this->find_bit(4)) {
-            output_4.send("bang");
-        }
-
-        if (this->find_bit(5)) {
-            output_5.send("bang");
-        }
-
-        if (this->find_bit(6)) {
-            output_6.send("bang");
+        for (int i = 0; i < 7; i++){
+            if (this->find_bit(i)) {
+                outputs[i]->send("bang");
+            }
         }
     }
 
     void step() {
-        // Add to the counter.
         counter++;
-
-        // Handle the outputs.
         this->handle_output();
     }
 
     void reset_counter() {
-        // Reset the counter.
-        counter = -1;
+        counter = 0;
     }
 
-    // post to max window == but only when the class is loaded the first time
-    message<> maxclass_setup{ this, "maxclass_setup",
-        MIN_FUNCTION {
-            return {};
-        }
-    };
-
-    // define an optional argument for setting the message
-    argument<symbol> bang_arg{ this, "bang_on", "Initial value for the greeting attribute.",
+    argument<symbol> bang_arg{ this, "bang_on", "Initial value for the bang attribute.",
         MIN_ARGUMENT_FUNCTION {
             bang_enabled = TRUE;
         }
     };
 
-    // the actual attribute for the message
     attribute<symbol> bang_on{ this, "bang_on", "symbol",
         description {
             "The output mode."
             "bool : boolean"
             "int  : integers"
         }
-    };    
+    };
 
-    // respond to the bang message to do something
     message<threadsafe::yes> bang{ this, "bang", "Steps the counter.",
         MIN_FUNCTION {
-            switch (inlet) {
-            case 0:
-                this->step();
-                break;
-            case 1:
-                this->reset_counter();
-                break;
-            default:
-                assert(false);
-            }
+            this->step();
             return {};
         }
     };
 
-    // respond to the int message to do something
-    message<threadsafe::yes> m_ints{ this, "int", "Steps the counter.",
-        MIN_FUNCTION {
-            switch (inlet) {
-            case 0:
-                if (args[0]) {
-                    this->step();
-                }
-                break;
-            case 1:
-                if (args[0]) {
-                    this->reset_counter();
-                }
-                break;
-            default:
-                assert(false);
-            }
-            return {};
-        }
-    };
-
-    // respond to the reset message to do something
-    message<> reset{ this, "reset", "Reset the counter.",
+    message<threadsafe::yes> reset{ this, "reset", "Reset the counter.",
         MIN_FUNCTION {
             this->reset_counter();
-
             return {};
         }
     };
 };
-
 
 MIN_EXTERNAL(CD4024);

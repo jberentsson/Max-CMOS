@@ -11,7 +11,6 @@
 
 using namespace c74::min;
 
-
 class CD4017 : public object<CD4017> {
 public:
     MIN_DESCRIPTION	{"CMOS CD4016"};
@@ -21,6 +20,7 @@ public:
 
     inlet<>  input_0 { this, "(bang) input pulse" };
     inlet<>  input_1 { this, "(reset) reset pulse" };
+    
     outlet<> output_0{ this, "(anything) output bit 0" };
     outlet<> output_1{ this, "(anything) output bit 1" };
     outlet<> output_2{ this, "(anything) output bit 2" };
@@ -32,40 +32,32 @@ public:
     outlet<> output_8{ this, "(anything) output bit 8" };
     outlet<> output_9{ this, "(anything) output bit 9" };
 
+    outlet<> *outputs[10] = {
+        &output_0,
+        &output_1,
+        &output_2,
+        &output_3,
+        &output_4,
+        &output_5,
+        &output_6,
+        &output_7,
+        &output_8,
+        &output_9
+    }; 
+
     int counter = -1;
     int* counter_ptr = &counter;
 
-    int is_active(int output) {
-        // Is current output active?
-
-        // Yes
-        if (output == counter) {
-            return 1;
-        }
-
-        // No
-        return 0;
-    }
-
     void send_output() {
         // Send data to the outputs.
-        output_0.send(this->is_active(0));
-        output_1.send(this->is_active(1));
-        output_2.send(this->is_active(2));
-        output_3.send(this->is_active(3));
-        output_4.send(this->is_active(4));
-        output_5.send(this->is_active(5));
-        output_6.send(this->is_active(6));
-        output_7.send(this->is_active(7));
-        output_8.send(this->is_active(8));
-        output_9.send(this->is_active(9));
+        for (int i = 0; i < 10; i++){
+            outputs[i]->send(i == counter);
+        }
     }
 
     void step() {
-        // Add to the counter.
         counter++;
 
-        // Reset to the first step.
         if (counter >= 10) {
             this->reset_counter();
         }
@@ -74,25 +66,15 @@ public:
     }
 
     void reset_counter() {
-        // Reset the counter.
-        counter = 0;
+        counter = -1;
     }
 
-    // post to max window == but only when the class is loaded the first time
-    message<> maxclass_setup{ this, "maxclass_setup",
-        MIN_FUNCTION {
-            return {};
-        }
-    };
-
-    // define an optional argument for setting the message
     argument<symbol> output_type_arg{ this, "output_type", "Initial value for the greeting attribute.",
         MIN_ARGUMENT_FUNCTION {            
             output_type = arg;
         }
     };
 
-    // the actual attribute for the message
     attribute<symbol> output_type{ this, "output_type", "integer",
         description {
             "Greeting to be posted. "
@@ -100,53 +82,19 @@ public:
         }
     };
 
-    // respond to the bang message to do something
     message<> bang{ this, "bang", "Steps the counter.",
         MIN_FUNCTION {
-            switch (inlet) {
-            case 0:
-                this->step();
-                break;
-            case 1:
-                this->reset_counter();
-                break;
-            default:
-                assert(false);
-            }
+            this->step();
             return {};
         }
     };
 
-    // respond to the int message to do something
-    message<threadsafe::yes> m_ints{ this, "int", "Steps the counter.",
-        MIN_FUNCTION {
-            switch (inlet) {
-            case 0:
-                if (args[0]) {
-                    this->step();
-                }
-                break;
-            case 1:
-                if (args[0]) {
-                    this->reset_counter();
-                }
-                break;
-            default:
-                assert(false);
-            }
-            return {};
-        }
-    };
-
-    // respond to the reset message to do something
     message<> reset{ this, "reset", "Reset the counter.",
         MIN_FUNCTION {
             this->reset_counter();
-
             return {};
         }
     };
 };
-
 
 MIN_EXTERNAL(CD4017);
