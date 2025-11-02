@@ -20,7 +20,7 @@ public:
 
     inlet<>  input_0 { this, "(bang) input pulse" };
     inlet<>  input_1 { this, "(reset) reset pulse" };
-    
+
     outlet<> output_0{ this, "(anything) output bit 0" };
     outlet<> output_1{ this, "(anything) output bit 1" };
     outlet<> output_2{ this, "(anything) output bit 2" };
@@ -46,7 +46,6 @@ public:
     }; 
 
     int counter = -1;
-    int* counter_ptr = &counter;
 
     void send_output() {
         // Send data to the outputs.

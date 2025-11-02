@@ -20,14 +20,14 @@ public:
 
     inlet<>  input_0 { this, "(bang) input pulse" };
     inlet<>  input_1 { this, "(reset) reset pulse" };
-    
-    outlet<> output_0{ this, "(anything) output bit 0" };
-    outlet<> output_1{ this, "(anything) output bit 1" };
-    outlet<> output_2{ this, "(anything) output bit 2" };
-    outlet<> output_3{ this, "(anything) output bit 3" };
-    outlet<> output_4{ this, "(anything) output bit 4" };
-    outlet<> output_5{ this, "(anything) output bit 5" };
-    outlet<> output_6{ this, "(anything) output bit 6" };
+
+    outlet<> output_0 { this, "(anything) output bit 0" };
+    outlet<> output_1 { this, "(anything) output bit 1" };
+    outlet<> output_2 { this, "(anything) output bit 2" };
+    outlet<> output_3 { this, "(anything) output bit 3" };
+    outlet<> output_4 { this, "(anything) output bit 4" };
+    outlet<> output_5 { this, "(anything) output bit 5" };
+    outlet<> output_6 { this, "(anything) output bit 6" };
 
     outlet<> *outputs[7] = {
         &output_0,
@@ -40,7 +40,6 @@ public:
     }; 
 
     int counter = -1;
-    int* counter_ptr = &counter;
     bool bang_enabled = FALSE;
 
     int find_bit(int output) {
