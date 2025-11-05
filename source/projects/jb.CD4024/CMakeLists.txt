@@ -20,6 +20,16 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${C74_INCLUDES} .)
 include(${C74_MIN_API_DIR}/script/min-posttarget.cmake)
 
 # =============================================================================
+# SEPARATE BUILD TARGETS
+# =============================================================================
+
+# Custom target for building only the Max external
+add_custom_target(build_external_${PROJECT_NAME}
+    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target ${PROJECT_NAME}
+    COMMENT "Building Max external: ${PROJECT_NAME}"
+)
+
+# =============================================================================
 # UNIT TESTS (Fixed version)
 # =============================================================================
 
@@ -51,7 +61,37 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${TEST_SOURCE}" AND CATCH2_INCLUDE_DIR)
     # 5. Add to CTest
     add_test(NAME ${PROJECT_NAME}_tests COMMAND test_${PROJECT_NAME})
     
+    # 6. Create separate test build targets
+    add_custom_target(build_tests_${PROJECT_NAME}
+        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target test_${PROJECT_NAME}
+        COMMENT "Building tests for: ${PROJECT_NAME}"
+    )
+    
+    add_custom_target(run_tests_${PROJECT_NAME}
+        COMMAND ${CMAKE_CTEST_COMMAND} -C $<CONFIG> --output-on-failure -R "${PROJECT_NAME}_tests"
+        DEPENDS test_${PROJECT_NAME}
+        COMMENT "Running tests for: ${PROJECT_NAME}"
+    )
+    
+    # Combined target for building both external and tests
+    add_custom_target(build_all_${PROJECT_NAME}
+        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target ${PROJECT_NAME} test_${PROJECT_NAME}
+        COMMENT "Building both external and tests for: ${PROJECT_NAME}"
+    )
+    
     message(STATUS "Created test target: test_${PROJECT_NAME}")
 else()
     message(STATUS "No unit tests configured - test source not found or Catch2 not available")
+    
+    # If no tests, build_all just builds the external
+    add_custom_target(build_all_${PROJECT_NAME}
+        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target ${PROJECT_NAME}
+        COMMENT "Building external: ${PROJECT_NAME}"
+    )
 endif()
+
+# =============================================================================
+# CONVENIENCE TARGETS (for building everything in project)
+# =============================================================================
+include(".././../../cmake/GlobalTargets.cmake")
+add_global_targets(${PROJECT_NAME})

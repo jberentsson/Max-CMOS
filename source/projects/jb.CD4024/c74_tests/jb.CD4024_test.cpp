@@ -8,17 +8,12 @@
 //#define CATCH_CONFIG_NO_POSIX_SIGNALS
 //#define CATCH_CONFIG_FAST_COMPILE
 
-//#include "c74_max.h"
+#include "c74_max.h"
 #include "c74_min.h"
 #include "c74_min_unittest.h"
 #include <catch.hpp>
 
 #include "../jb.CD4024.cpp"    // need the source of our object so that we can access it
-#include "../shared_libraries/test_wrapper.h"
-//using namepace c74::min;
-
-// Unit tests are written using the Catch framework as described at
-// https://github.com/philsquared/Catch/blob/master/docs/tutorial.md
 
 using namespace c74::max;
 
