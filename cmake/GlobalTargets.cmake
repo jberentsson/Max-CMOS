@@ -1,48 +1,101 @@
-# Global targets function
-function(add_global_targets PROJECT_NAME)
-    # Global target for building all externals
-    if(NOT TARGET build_all_externals)
-        add_custom_target(build_all_externals
-            COMMENT "Building all Max externals"
+# Function to create combined test targets
+function(create_combined_test_targets PROJECT_NAME)
+    message(STATUS "Creating combined test targets for: ${PROJECT_NAME}")
+    
+    # Build all doctest tests only
+    if(NOT TARGET build_only_doctest_${PROJECT_NAME})
+        add_custom_target(build_only_doctest_${PROJECT_NAME}
+            COMMENT "Building only doctest tests for ${PROJECT_NAME}"
         )
     endif()
     
-    # Global target for building all tests  
-    if(NOT TARGET build_all_tests)
-        add_custom_target(build_all_tests
-            COMMENT "Building all tests"
+    # Run all doctest tests only  
+    if(NOT TARGET run_only_doctest_${PROJECT_NAME})
+        add_custom_target(run_only_doctest_${PROJECT_NAME}
+            COMMENT "Running only doctest tests for ${PROJECT_NAME}"
         )
     endif()
     
-    # Global target for running all tests
-    if(NOT TARGET run_all_tests)
-        add_custom_target(run_all_tests
-            COMMAND ${CMAKE_CTEST_COMMAND} -C $<CONFIG> --output-on-failure
-            COMMENT "Running all tests"
+    # Dynamically add all doctest targets to separate doctest targets
+    get_cmake_property(ALL_TARGETS GLOBAL PROPERTY BUILDSYSTEM_TARGETS)
+    set(DOCTEST_TARGETS_FOUND FALSE)
+    
+    foreach(target ${ALL_TARGETS})
+        if(target MATCHES "^test_doctest_")
+            # Extract the test name from the target
+            string(REGEX REPLACE "^test_doctest_" "" test_name ${target})
+            
+            message(STATUS "Found doctest target: ${target} -> ${test_name}")
+            
+            # Add to build targets
+            add_dependencies(build_only_doctest_${PROJECT_NAME} ${target})
+            
+            # Add to run targets - create a custom command to run the doctest
+            add_custom_command(TARGET run_only_doctest_${PROJECT_NAME} 
+                POST_BUILD
+                COMMAND $<TARGET_FILE:${target}>
+                COMMENT "Running ${target}"
+            )
+            
+            set(DOCTEST_TARGETS_FOUND TRUE)
+            message(STATUS "  - Added ${target} to doctest targets")
+        endif()
+    endforeach()
+    
+    if(DOCTEST_TARGETS_FOUND)
+        message(STATUS "✅ Doctest targets successfully added to separate targets")
+    else()
+        message(STATUS "No doctest targets found")
+    endif()
+    
+    # Build all tests (both Catch2 and doctest)
+    if(NOT TARGET build_tests_${PROJECT_NAME})
+        add_custom_target(build_tests_${PROJECT_NAME}
+            COMMENT "Building all tests for ${PROJECT_NAME}"
         )
     endif()
     
-    # Add this project to the global targets
-    if(TARGET build_external_${PROJECT_NAME})
-        add_dependencies(build_all_externals build_external_${PROJECT_NAME})
-    endif()
-    
-    if(TARGET build_tests_${PROJECT_NAME})
-        add_dependencies(build_all_tests build_tests_${PROJECT_NAME})
-    endif()
-    
-    # Combined targets
-    if(NOT TARGET build_all)
-        add_custom_target(build_all
-            DEPENDS build_all_externals build_all_tests
-            COMMENT "Building all externals and tests"
+    # Run all tests (both Catch2 and doctest)
+    if(NOT TARGET run_tests_${PROJECT_NAME})
+        add_custom_target(run_tests_${PROJECT_NAME}
+            COMMENT "Running all tests for ${PROJECT_NAME}"
         )
     endif()
     
-    if(NOT TARGET build_and_run_all_tests)
-        add_custom_target(build_and_run_all_tests
-            DEPENDS build_all_tests run_all_tests
-            COMMENT "Building and running all tests"
+    # Add ALL test executables to build target
+    if(TARGET test_catch_${PROJECT_NAME})
+        add_dependencies(build_tests_${PROJECT_NAME} test_catch_${PROJECT_NAME})
+        message(STATUS "  - Added test_catch_${PROJECT_NAME} to build_tests_${PROJECT_NAME}")
+    endif()
+    
+    # Add all doctest targets to build target
+    foreach(target ${ALL_TARGETS})
+        if(target MATCHES "^test_doctest_")
+            add_dependencies(build_tests_${PROJECT_NAME} ${target})
+            message(STATUS "  - Added ${target} to build_tests_${PROJECT_NAME}")
+        endif()
+    endforeach()
+    
+    # Add explicit run commands using POST_BUILD
+    if(TARGET test_catch_${PROJECT_NAME})
+        add_custom_command(TARGET run_tests_${PROJECT_NAME} 
+            POST_BUILD
+            COMMAND $<TARGET_FILE:test_catch_${PROJECT_NAME}>
+            COMMENT "Running Catch2 tests for ${PROJECT_NAME}"
         )
     endif()
+    
+    # Add doctest run commands
+    foreach(target ${ALL_TARGETS})
+        if(target MATCHES "^test_doctest_")
+            add_custom_command(TARGET run_tests_${PROJECT_NAME} 
+                POST_BUILD
+                COMMAND $<TARGET_FILE:${target}>
+                COMMENT "Running ${target}"
+            )
+        endif()
+    endforeach()
+    
+    # Make run_tests depend on build_tests to ensure tests are built before running
+    add_dependencies(run_tests_${PROJECT_NAME} build_tests_${PROJECT_NAME})
 endfunction()
