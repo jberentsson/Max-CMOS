@@ -1,9 +1,8 @@
-#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include "doctest.h"
 #include "../Note.cpp"
+#include "catch.hpp"
 
 TEST_CASE("Note Basic Functionality") {
-    SUBCASE("Construction and basic methods") {
+    SECTION("Construction and basic methods") {
         int n = 60;
         int l = 48;
         int h = 96;
@@ -12,7 +11,7 @@ TEST_CASE("Note Basic Functionality") {
         REQUIRE(true);
     }
     
-    SUBCASE("Random note generation range") {
+    SECTION("Random note generation range") {
         int n = 60;
         int l = 48;
         int h = 96;
@@ -23,7 +22,7 @@ TEST_CASE("Note Basic Functionality") {
         REQUIRE(randomNote <= 96);
     }
     
-    SUBCASE("Multiple random generations") {
+    SECTION("Multiple random generations") {
         int n = 60;
         int l = 48;
         int h = 96;
@@ -38,7 +37,7 @@ TEST_CASE("Note Basic Functionality") {
 }
 
 TEST_CASE("Note Capacity Methods") {
-    SUBCASE("Max capacity") {
+    SECTION("Max capacity") {
         int n = 60;
         int l = 48;
         int h = 96;
@@ -48,7 +47,7 @@ TEST_CASE("Note Capacity Methods") {
         REQUIRE(maxCap >= 0);
     }
     
-    SUBCASE("Min capacity") {
+    SECTION("Min capacity") {
         int n = 60;
         int l = 48;
         int h = 96;

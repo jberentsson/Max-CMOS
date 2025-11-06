@@ -61,3 +61,8 @@ __pycache__/
 # Other
 tmp/
 temp/
+
+# Libraries
+source/catch2/
+source/min-api/
+

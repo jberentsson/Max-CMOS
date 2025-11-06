@@ -1,17 +1,110 @@
-/// @file       jb.NoteRandomOctave_test.cpp
-///	@ingroup 	jb
-///	@copyright	Copyright 2018 The Min-DevKit Authors. All rights reserved.
-///	@license	Use of this source code is governed by the MIT License found in the License.md file.
-
-
-#define CATCH_CONFIG_MAIN
 #include "catch.hpp"
-
-#include "c74_max.h"
-
-
-#include <vector>
+#include "../Keyboard.cpp"
 #include <iostream>
+
+class KeyboardTest : public Keyboard {
+public:
+    int low() {
+        return this->rangeLow;
+    }
+
+    int high() {
+        return this->rangeHigh;
+    }
+};
+
+TEST_CASE("Keyboard Basic Tests") {
+    KeyboardTest keyboard;
+    
+    GIVEN("Default range") {
+        CHECK(keyboard.low() == 0);
+        CHECK(keyboard.high() == 127);
+    }
+}
+
+TEST_CASE("Keyboard behavior") {
+    KeyboardTest keyboard;
+    
+    GIVEN("Default range values") {
+        CHECK(keyboard.low() == 0);
+        CHECK(keyboard.high() == 127);
+    }
+    
+    GIVEN("Valid range setting") {
+        CHECK(keyboard.setRandomRange(3, 4) == 0);
+        CHECK(keyboard.low() == 3);
+        CHECK(keyboard.high() == 4);
+    }
+    
+    GIVEN("Invalid range - low > high") {
+        keyboard.setRandomRange(3, 4);
+        
+        CHECK(keyboard.setRandomRange(5, 1) == -1);
+        CHECK(keyboard.low() == 3);
+        CHECK(keyboard.high() == 4);
+    }
+    
+    GIVEN("Invalid range - low out of bounds") {
+        keyboard.setRandomRange(3, 4);
+        
+        CHECK(keyboard.setRandomRange(-1, 127) == -2);
+        CHECK(keyboard.low() == 3);
+        CHECK(keyboard.high() == 4);
+    }
+    
+    GIVEN("Invalid range - high out of bounds") {
+        keyboard.setRandomRange(3, 4);
+        
+        CHECK(keyboard.setRandomRange(0, 128) == -3);
+        CHECK(keyboard.low() == 3);
+        CHECK(keyboard.high() == 4);
+    }
+}
+
+TEST_CASE("Keyboard note generation") {
+    KeyboardTest keyboard;
+    
+    GIVEN("Note generation within range") {
+        keyboard.setRandomRange(48, 96);
+        
+        std::vector<ActiveNote*> notes = keyboard.note(48, 127);
+        REQUIRE(notes.size() > 0);
+        CHECK(notes[0]->pitch() >= 48);
+        CHECK(notes[0]->pitch() <= 96);
+    }
+    
+    GIVEN("Multiple note generations") {
+        keyboard.setRandomRange(48, 96);
+        
+        for (int i = 0; i < 5; i++) {
+            std::vector<ActiveNote*> notes = keyboard.note(48, 127);
+            REQUIRE(notes.size() > 0);
+            int pitch = notes[0]->pitch();
+            CHECK(pitch >= 48);
+            CHECK(pitch <= 96);
+        }
+    }
+}
+
+TEST_CASE("Keyboard edge cases") {
+    KeyboardTest keyboard;
+    
+    GIVEN("Single note range") {
+        CHECK(keyboard.setRandomRange(60, 60) == 0);
+        std::vector<ActiveNote*> notes = keyboard.note(60, 100);
+        REQUIRE(notes.size() > 0);
+        CHECK(notes[0]->pitch() == 60);
+    }
+    
+    GIVEN("Full MIDI range") {
+        CHECK(keyboard.setRandomRange(0, 127) == 0);
+        std::vector<ActiveNote*> notes = keyboard.note(60, 100);
+        REQUIRE(notes.size() > 0);
+        CHECK(notes[0]->pitch() >= 0);
+        CHECK(notes[0]->pitch() <= 127);
+    }
+}
+
 
 TEST_CASE("MIDI note validation") {
     SECTION("note values are valid") {
