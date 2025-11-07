@@ -1,3 +1,4 @@
+# CMAKE -----------------------------------------------
 # CMake build directories (all generated)
 build/
 x86/
@@ -58,11 +59,13 @@ __pycache__/
 !README.md
 !LICENSE
 
+# MISC -----------------------------------------------
+
 # Other
 tmp/
 temp/
+Testing
 
 # Libraries
 source/catch2/
 source/min-api/
-
