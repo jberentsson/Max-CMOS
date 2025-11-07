@@ -1,13 +1,10 @@
 [submodule "source/min-api"]
 	path = source/min-api
-        url = https://github.com/Cycling74/min-api.git
-
+	url = https://github.com/Cycling74/min-api.git
 [submodule "source/max-api"]
 	path = source/max-api
 	url = https://github.com/Cycling74/max-api.git
-
 [submodule "source/Catch2"]
 	path = source/catch
 	url = https://github.com/catchorg/Catch2.git
 	branch = v2.13.10
-
