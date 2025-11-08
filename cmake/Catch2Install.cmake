@@ -7,7 +7,7 @@ if(MSVC)
 endif()
 
 # Add Catch2 as a subdirectory to build it as a library
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/externals/Catch2")
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/source/Catch2")
 
 # Use Catch2's provided CMake targets
 macro(add_catch_test TEST_TARGET TEST_SOURCE)

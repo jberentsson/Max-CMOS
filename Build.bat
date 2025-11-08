@@ -13,12 +13,14 @@ set PROJECTS_PATH = "%BUILD_PATH%/source/projects"
     @REM rem file doesn't exist
 @REM )
 
+mkdir build
+
 if "%1"=="--clean" (
     rmdir /S /Q "build/source/projects"
 )
 
 cd build
 
-cmake -G "Visual Studio 17 2022" ..
+cmake -G "Visual Studio 17 2022" -A x64 -DCMAKE_BUILD_TYPE=Release ..
 
 cmake --build . --config Release

@@ -5,6 +5,5 @@
 	path = source/max-api
 	url = https://github.com/Cycling74/max-api.git
 [submodule "source/Catch2"]
-	path = source/catch
+	path = source/Catch2
 	url = https://github.com/catchorg/Catch2.git
-	branch = v2.13.10
