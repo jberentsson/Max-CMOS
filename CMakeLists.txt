@@ -17,6 +17,7 @@ enable_testing()
 set(PROJECT_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 set(CATCH_PATH ${PROJECT_ROOT}/source/catch2/include)
 
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/SetMaxLibs.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Catch2Install.cmake)
 #include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Catch2Add.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Main.cmake)
