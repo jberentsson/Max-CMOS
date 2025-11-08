@@ -1,4 +1,5 @@
-#include "catch.hpp"
+#include <catch2/catch_all.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include "../Keyboard.cpp"
 #include <iostream>
 
@@ -13,55 +14,79 @@ public:
     }
 };
 
-TEST_CASE("Keyboard Basic Tests") {
+SCENARIO("Keyboard Basic Tests") {
     KeyboardTest keyboard;
     
     GIVEN("Default range") {
-        CHECK(keyboard.low() == 0);
-        CHECK(keyboard.high() == 127);
+        WHEN("a bang is received") {
+            THEN("the object exists") {
+                CHECK(keyboard.low() == 0);
+                CHECK(keyboard.high() == 127);
+            }
+        }
     }
 }
 
-TEST_CASE("Keyboard behavior") {
+SCENARIO("Keyboard behavior") {
     KeyboardTest keyboard;
     
     GIVEN("Default range values") {
-        CHECK(keyboard.low() == 0);
-        CHECK(keyboard.high() == 127);
+        WHEN("a bang is received") {
+            THEN("the object exists") {
+                CHECK(keyboard.low() == 0);
+                CHECK(keyboard.high() == 127);
+            }
+        }
     }
     
     GIVEN("Valid range setting") {
-        CHECK(keyboard.setRandomRange(3, 4) == 0);
-        CHECK(keyboard.low() == 3);
-        CHECK(keyboard.high() == 4);
+        WHEN("a bang is received") {
+            THEN("the object exists") {
+                CHECK(keyboard.setRandomRange(3, 4) == 0);
+                CHECK(keyboard.low() == 3);
+                CHECK(keyboard.high() == 4);
+            }
+        }
     }
     
     GIVEN("Invalid range - low > high") {
-        keyboard.setRandomRange(3, 4);
-        
-        CHECK(keyboard.setRandomRange(5, 1) == -1);
-        CHECK(keyboard.low() == 3);
-        CHECK(keyboard.high() == 4);
+        WHEN("a bang is received") {
+            THEN("the object exists") {
+                keyboard.setRandomRange(3, 4);
+                
+                CHECK(keyboard.setRandomRange(5, 1) == -1);
+                CHECK(keyboard.low() == 3);
+                CHECK(keyboard.high() == 4);
+            }
+        }
     }
     
     GIVEN("Invalid range - low out of bounds") {
-        keyboard.setRandomRange(3, 4);
-        
-        CHECK(keyboard.setRandomRange(-1, 127) == -2);
-        CHECK(keyboard.low() == 3);
-        CHECK(keyboard.high() == 4);
+        WHEN("a bang is received") {
+            THEN("the object exists") {
+                keyboard.setRandomRange(3, 4);
+                
+                CHECK(keyboard.setRandomRange(-1, 127) == -2);
+                CHECK(keyboard.low() == 3);
+                CHECK(keyboard.high() == 4);
+            }
+        }
     }
     
     GIVEN("Invalid range - high out of bounds") {
-        keyboard.setRandomRange(3, 4);
-        
-        CHECK(keyboard.setRandomRange(0, 128) == -3);
-        CHECK(keyboard.low() == 3);
-        CHECK(keyboard.high() == 4);
+        WHEN("a bang is received") {
+            THEN("the object exists") {
+                keyboard.setRandomRange(3, 4);
+                
+                CHECK(keyboard.setRandomRange(0, 128) == -3);
+                CHECK(keyboard.low() == 3);
+                CHECK(keyboard.high() == 4);
+            }
+        }
     }
 }
 
-TEST_CASE("Keyboard note generation") {
+SCENARIO("Keyboard note generation") {
     KeyboardTest keyboard;
     
     GIVEN("Note generation within range") {
@@ -86,7 +111,7 @@ TEST_CASE("Keyboard note generation") {
     }
 }
 
-TEST_CASE("Keyboard edge cases") {
+SCENARIO("Keyboard edge cases") {
     KeyboardTest keyboard;
     
     GIVEN("Single note range") {
@@ -106,30 +131,30 @@ TEST_CASE("Keyboard edge cases") {
 }
 
 
-TEST_CASE("MIDI note validation") {
-    SECTION("note values are valid") {
+SCENARIO("MIDI note validation") {
+    GIVEN("note values are valid") {
         REQUIRE(60 >= 0);
         REQUIRE(60 <= 127);
         REQUIRE(100 >= 0);
         REQUIRE(100 <= 127);
     }
     
-    SECTION("range boundaries are valid") {
+    GIVEN("range boundaries are valid") {
         REQUIRE(48 < 72);
         REQUIRE(48 >= 0);
         REQUIRE(72 <= 127);
     }
 }
 
-TEST_CASE("Vector operations") {
-    SECTION("note list format") {
+SCENARIO("Vector operations") {
+    GIVEN("note list format") {
         std::vector<int> args = {60, 100};
         REQUIRE(args.size() == 2);
         REQUIRE(args[0] == 60);
         REQUIRE(args[1] == 100);
     }
     
-    SECTION("range list format") {
+    GIVEN("range list format") {
         std::vector<int> args = {48, 72};
         REQUIRE(args.size() == 2);
         REQUIRE(args[0] == 48);
@@ -149,10 +174,10 @@ public:
     std::vector<int> getActiveNotes() { return {}; }
 };
 
-TEST_CASE("Keyboard logic") {
+SCENARIO("Keyboard logic") {
     TestKeyboard keyboard;
     
-    SECTION("validates notes correctly") {
+    GIVEN("validates notes correctly") {
         REQUIRE(keyboard.validateNote(60) == true);
         REQUIRE(keyboard.validateNote(0) == true);
         REQUIRE(keyboard.validateNote(127) == true);
@@ -160,13 +185,13 @@ TEST_CASE("Keyboard logic") {
         REQUIRE(keyboard.validateNote(128) == false);
     }
     
-    SECTION("validates ranges correctly") {
+    GIVEN("validates ranges correctly") {
         REQUIRE(keyboard.validateRange(48, 72) == true);
         REQUIRE(keyboard.validateRange(0, 127) == true);
         REQUIRE(keyboard.validateRange(72, 48) == false);
     }
     
-    SECTION("applies octave shifts correctly") {
+    GIVEN("applies octave shifts correctly") {
         REQUIRE(keyboard.applyOctaveShift(60, 1) == 72);
         REQUIRE(keyboard.applyOctaveShift(60, -1) == 48);
         REQUIRE(keyboard.applyOctaveShift(60, 0) == 60);

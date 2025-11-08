@@ -15,11 +15,11 @@ std::vector<ActiveNote*> Keyboard::note(int note, int velocity) {
         }
         return this->notes[note]->removeAll();
     }
-    return {};  // Return empty vector if note out of range
+    return {};
 }
 
 int Keyboard::clearNotes(int n){
-    if (n >= 0 && n <this-> notes.size()) {  // Check bounds
+    if (n >= 0 && n <this-> notes.size()) {
         return this->notes[n]->clearNotes();            
     }
     return -1;  // Error code      

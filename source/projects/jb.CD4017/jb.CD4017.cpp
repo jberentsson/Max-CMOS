@@ -3,9 +3,7 @@
 ///	@copyright	Copyright 2022 - Jóhann Berentsson. All rights reserved.
 ///	@license	Use of this source code is governed by the MIT License found in the License.md file.
 
-#include "c74_min.h"
-#include <catch.hpp>
-
+#include <c74_min.h>
 #include "jb.CD4017.hpp"
 
 void CD4017::send_output() {

@@ -65,6 +65,7 @@ __pycache__/
 tmp/
 temp/
 Testing
+externals/
 
 # Libraries
 source/catch2/

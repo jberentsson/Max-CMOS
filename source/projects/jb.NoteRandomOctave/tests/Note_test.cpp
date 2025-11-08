@@ -1,8 +1,9 @@
+#include <catch2/catch_all.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include "../Note.cpp"
-#include "catch.hpp"
 
-TEST_CASE("Note Basic Functionality") {
-    SECTION("Construction and basic methods") {
+SCENARIO("Note Basic Functionality") {
+    GIVEN("Construction and basic methods") {
         int n = 60;
         int l = 48;
         int h = 96;
@@ -11,7 +12,7 @@ TEST_CASE("Note Basic Functionality") {
         REQUIRE(true);
     }
     
-    SECTION("Random note generation range") {
+    GIVEN("Random note generation range") {
         int n = 60;
         int l = 48;
         int h = 96;
@@ -22,7 +23,7 @@ TEST_CASE("Note Basic Functionality") {
         REQUIRE(randomNote <= 96);
     }
     
-    SECTION("Multiple random generations") {
+    GIVEN("Multiple random generations") {
         int n = 60;
         int l = 48;
         int h = 96;
@@ -36,8 +37,8 @@ TEST_CASE("Note Basic Functionality") {
     }
 }
 
-TEST_CASE("Note Capacity Methods") {
-    SECTION("Max capacity") {
+SCENARIO("Note Capacity Methods") {
+    GIVEN("Max capacity") {
         int n = 60;
         int l = 48;
         int h = 96;
@@ -47,7 +48,7 @@ TEST_CASE("Note Capacity Methods") {
         REQUIRE(maxCap >= 0);
     }
     
-    SECTION("Min capacity") {
+    GIVEN("Min capacity") {
         int n = 60;
         int l = 48;
         int h = 96;

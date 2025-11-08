@@ -3,47 +3,45 @@
 ///	@copyright	Copyright 2022 The Min-DevKit Authors. All rights reserved.
 ///	@license	Use of this source code is governed by the MIT License found in the License.md file.
 
-#include "c74_min.h"
-#include "c74_min_unittest.h"
-#include <catch.hpp>
-
+#include <catch2/catch_all.hpp>
 #include "../jb.CD4017.cpp"
 
-using namespace c74::min;
-
-TEST_CASE("CD4017 basic functionality") {
+SCENARIO("CD4017 object creation") {
     ext_main(nullptr);
+    auto* my_object = new CD4017;
 
     GIVEN("An instance of our object") {
-        test_wrapper<CD4017> an_instance;
-        CD4017& my_object = an_instance;
-
-        WHEN("a 'bang' is received") {
-            my_object.bang();
-            
-            THEN("the object processes without crashing") {
+        WHEN("A newly created object") {
+            THEN("A newly created object") {
                 REQUIRE(&my_object != nullptr);
-                SUCCEED();
             }
         }
     }
 }
 
-TEST_CASE("CD4017 multiple bangs") {
+SCENARIO("CD4017 bang processing") {
     ext_main(nullptr);
+    auto* my_object = new CD4017;
 
-    GIVEN("A CD4017 instance") {
-        test_wrapper<CD4017> an_instance;
-        CD4017& my_object = an_instance;
-
-        WHEN("multiple bangs are sent") {
-            for (int i = 0; i < 10; i++) {
-                my_object.bang();
+    GIVEN("An instance of our object") {
+        WHEN("A newly created object") {
+            THEN("A newly created object") {
+                REQUIRE_NOTHROW(my_object->bang());
             }
-            
-            THEN("all bangs are processed without issues") {
-                REQUIRE(&my_object != nullptr);
-                SUCCEED();
+        }
+    }
+}
+
+SCENARIO("CD4017 multiple bangs") {
+    ext_main(nullptr);
+    auto* my_object = new CD4017;
+
+    GIVEN("An instance of our object") {
+        WHEN("A newly created object") {
+            THEN("A newly created object") {
+                for (int i = 0; i < 10; i++) {
+                    REQUIRE_NOTHROW(my_object->bang());
+                }
             }
         }
     }
