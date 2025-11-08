@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 3.19)
 
-
+# Now include min-pretarget.cmake
 set(C74_MIN_API_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../min-api)
 include(${C74_MIN_API_DIR}/script/min-pretarget.cmake)
 
-# Update the variable.
-set_max_libs()
+# Now include min-pretarget.cmake which might use MAXAPI_LIB
+include(${C74_MIN_API_DIR}/script/min-pretarget.cmake)
 
 #############################################################
 # MAX EXTERNAL
@@ -27,6 +27,9 @@ add_library(
     ${SOURCE_FILES}
 )
 
+# Make sure to link the MaxAPI library
+target_link_libraries(${PROJECT_NAME} PRIVATE ${MAXAPI_LIB})
+
 include(${C74_MIN_API_DIR}/script/min-posttarget.cmake)
 
 #############################################################
@@ -36,12 +39,10 @@ include(${C74_MIN_API_DIR}/script/min-posttarget.cmake)
 # Test executable only compiles the test file
 add_executable(${PROJECT_NAME}_test tests/${PROJECT_NAME}_test.cpp)
 
-# Try to get the link libraries from the main target and use them for the test
-get_target_property(MAX_LIBS ${PROJECT_NAME} LINK_LIBRARIES)
-
+# Link test executable with the same MaxAPI library
 target_link_libraries(${PROJECT_NAME}_test PRIVATE 
     Catch2::Catch2WithMain
-    ${MAX_LIBS}
+    ${MAXAPI_LIB}
 )
 
 # Include test configuration

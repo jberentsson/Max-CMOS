@@ -1,7 +1,5 @@
 message("RUNNING THE MAIN SCRIPT")
 
-set_max_libs()
-
 if (APPLE)
     if (${CMAKE_GENERATOR} MATCHES "Xcode")
             if (${XCODE_VERSION} VERSION_LESS 10)
@@ -21,7 +19,6 @@ if (APPLE)
         message("CMAKE_OSX_ARCHITECTURES set to ${CMAKE_OSX_ARCHITECTURES}")
     endif()
 endif()
-
 
 # Misc setup and subroutines
 include(${CMAKE_CURRENT_SOURCE_DIR}/source/min-api/script/min-package.cmake)

@@ -10,12 +10,8 @@ if(NOT DEFINED ENV{${MAX_SDK_PATH}})
     set(MAX_SDK_PATH $ENV{MAX_SDK_PATH})
 endif()
 
-
-message("THE MAX SDK PATH: ${MAX_SDK_PATH}")
-include(${MAX_SDK_PATH}/script/max-sdk-config.cmake)
-
 # Now MAX_LIBS should be available
-message(STATUS "Max libraries: ${MAX_LIBS}")
+message(STATUS "Max libraries: ${MaxAPI_LIB}")
 
 # Extract package name from directory path.
 string(REGEX REPLACE ".*/([^/]+)" "\\1" THIS_PACKAGE_NAME "${CMAKE_CURRENT_SOURCE_DIR}")
@@ -26,7 +22,6 @@ enable_testing()
 
 # Include external libraries.
 #include_directories(${CMAKE_CURRENT_SOURCE_DIR}/extern)
-
 
 set(PROJECT_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 set(CATCH_PATH ${PROJECT_ROOT}/source/catch2/include)
