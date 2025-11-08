@@ -8,7 +8,9 @@ function(set_max_libs)
     # Your reliable library discovery logic here
     set(REPO_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../..")
     set(MAX_SDK_BASE_PATH "${REPO_ROOT}/max-sdk-base")
-    
+   
+    message("Max SDK base path: ${MAX_SDK_BASE_PATH}")
+
     if(EXISTS "${MAX_SDK_BASE_PATH}")
         set(MAX_API_LIB "${MAX_SDK_BASE_PATH}/c74support/max-includes/x64/MaxAPI.lib")
         set(MAX_AUDIO_LIB "${MAX_SDK_BASE_PATH}/c74support/msp-includes/x64/MaxAudio.lib") 

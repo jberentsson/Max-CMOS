@@ -1,3 +1,7 @@
+message("RUNNING THE MAIN SCRIPT")
+
+set_max_libs()
+
 if (APPLE)
     if (${CMAKE_GENERATOR} MATCHES "Xcode")
             if (${XCODE_VERSION} VERSION_LESS 10)
