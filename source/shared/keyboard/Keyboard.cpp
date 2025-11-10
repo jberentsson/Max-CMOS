@@ -1,5 +1,5 @@
-#include "Keyboard.hpp"
 #include <iostream>
+#include "Keyboard.hpp"
 
 ActiveNote::ActiveNote(int originalPitch, int processedPitch, int velocity) 
     : m_originalPitch(originalPitch), m_processedPitch(processedPitch), m_velocity(velocity) {

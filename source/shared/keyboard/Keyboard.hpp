@@ -4,28 +4,23 @@
 #include <cstdlib>
 #include <ctime>
 #include <algorithm>
+#include "Note.hpp"
 
-class ActiveNote {
-private:
-    int m_originalPitch;
-    int m_processedPitch;
-    int m_velocity;
-
-public:
-    ActiveNote(int originalPitch, int processedPitch, int velocity);
-    int originalPitch() const;
-    int pitch() const;
-    int velocity() const;
-};
+#define MIN_CAPACITY 2
+#define MAX_CAPACITY 5
+#define RANGE_LOW    0
+#define RANGE_HIGH   127
+#define MIN_OCTAVE   0
+#define MAX_OCTAVE   10
 
 class Keyboard {
 private:
     static const int OCTAVE = 12;
     std::vector<std::unique_ptr<ActiveNote>> activeNotes;
-    int rangeLow = 0;
-    int rangeHigh = 127;
-    int minOctave = 0;
-    int maxOctave = 10;
+    int rangeLow = RANGE_LOW;
+    int rangeHigh = RANGE_HIGH;
+    int minOctave = MIN_OCTAVE;
+    int maxOctave = MAX_OCTAVE;
 
     int getPitchClass(int pitch) const;
     int clampPitchToRange(int pitch);
@@ -47,11 +42,11 @@ public:
     
     // Getters
     int Keyboard::maxCapacity() const {
-        return 5;
+        return MAX_CAPACITY;
     }
         
     int minCapacity() const {
-        return 2; // Or whatever your minimum capacity should be
+        return MIN_CAPACITY; // Or whatever your minimum capacity should be
     }
 
     // Access to active notes (read-only)
