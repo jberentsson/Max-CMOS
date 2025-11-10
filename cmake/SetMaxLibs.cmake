@@ -27,3 +27,43 @@ function(set_max_libs)
         endif()
     endif()
 endfunction()
+
+function(copy_max_libs)
+    if(WIN32)
+        # The DLLs we need to copy
+        set(MAX_API_DLL "${MAX_SDK_BASE_PATH}/c74support/max-includes/x64/MaxAPI.dll")
+        set(MAX_AUDIO_DLL "${MAX_SDK_BASE_PATH}/c74support/msp-includes/x64/MaxAudio.dll")
+
+        message("MAX_API_DLL: ${MAX_SDK_BASE_PATH}")
+        message("MAX_AUDIO: ${MAX_SDK_BASE_PATH}")
+
+        set(LIBRARY_DESTINATION  "${PROJECT_ROOT}/build/source/projects/${PROJECT_NAME}/Release/${PROJECT_NAME}_test.exp")
+
+        message("LIBRARY DESTINATION: ${LIBRARY_DESTINATION}")
+
+        # Copy MaxAPI.dll
+        add_custom_command(TARGET ${LIBRARY_DESTINATION}
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${MAX_API_DLL}"
+            $LIBRARY_DESTINATION
+            COMMENT "Copying MaxAPI.dll to test executable directory"
+        )
+
+        # Copy MaxAudio.dll
+        add_custom_command(TARGET "${LIBRARY_DESTINATION}"
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${MAX_AUDIO_DLL}"
+            $LIBRARY_DESTINATION
+            COMMENT "Copying MaxAudio.dll to test executable directory"
+        )
+
+        # Similarly, if there's a jitlib.dll, copy it too.
+        # set(JIT_DLL "${MAX_SDK_BASE_PATH}/c74support/jit-includes/x64/jitlib.dll")
+        # add_custom_command(TARGET jb.${PROJECT_NAME}_test POST_BUILD
+        #     COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        #     "${JIT_DLL}"
+        #     "$<TARGET_FILE_DIR:jb.${PROJECT_NAME}_test>"
+        #     COMMENT "Copying jitlib.dll to test executable directory"
+        # )
+    endif()
+endfunction()

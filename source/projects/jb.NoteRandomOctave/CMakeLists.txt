@@ -1,48 +1,47 @@
-cmake_minimum_required(VERSION 4.0)
-
+cmake_minimum_required(VERSION "3.19")
 
 set(C74_MIN_API_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../min-api)
 include(${C74_MIN_API_DIR}/script/min-pretarget.cmake)
 
-# Update the variable.
-set_max_libs()
+set(PROJECT_NAME jb.NoteRandomOctave)
 
-#############################################################
-# MAX EXTERNAL
-#############################################################
+# Build info variables
+set(PROJECT_VERSION "1.0.0")
+string(TIMESTAMP BUILD_DATE "%Y-%m-%d")
+string(TIMESTAMP BUILD_TIME "%H:%M:%S") 
+string(TIMESTAMP BUILD_DATETIME "%Y-%m-%d %H:%M:%S")
 
+
+# FIX THE PATHS - use correct shared directory location
 include_directories( 
     ${C74_INCLUDES}
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../shared/keyboard
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../shared
 )
 
-# SOURCE FILES FOR MAX EXTERNAL ONLY
-set( SOURCE_FILES
-    ${PROJECT_NAME}.hpp
+# FIX THE SOURCE FILE PATHS
+set(SOURCE_FILES
     ${PROJECT_NAME}.cpp
+    ${PROJECT_NAME}.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../shared/keyboard/Keyboard.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../shared/keyboard/Keyboard.hpp
 )
 
-add_library(
-    ${PROJECT_NAME} 
-    MODULE
-    ${SOURCE_FILES}
+# CREATE THE MAIN TARGET
+add_library(${PROJECT_NAME} MODULE 
+            ${SOURCE_FILES}
+)
+
+# Set compile definitions for the main target
+target_compile_definitions(${PROJECT_NAME} 
+    PRIVATE 
+        PROJECT_VERSION=\"${PROJECT_VERSION}\"
+        BUILD_DATE=\"${BUILD_DATE}\"
+        BUILD_TIME=\"${BUILD_TIME}\"
+        BUILD_DATETIME=\"${BUILD_DATETIME}\"
+        GIT_COMMIT_HASH=\"${GIT_COMMIT_HASH}\"
 )
 
 include(${C74_MIN_API_DIR}/script/min-posttarget.cmake)
 
-#############################################################
-# UNIT TEST (separate executable - NO shared sources)
-#############################################################
-
-# Test executable only compiles the test file
-add_executable(${PROJECT_NAME}_test tests/${PROJECT_NAME}_test.cpp)
-
-# Try to get the link libraries from the main target and use them for the test
-get_target_property(MAX_LIBS ${PROJECT_NAME} LINK_LIBRARIES)
-
-target_link_libraries(${PROJECT_NAME}_test PRIVATE 
-    Catch2::Catch2WithMain
-    ${MAX_LIBS}
-)
-
-# Include test configuration
 include(${C74_MIN_API_DIR}/test/min-object-unittest.cmake)

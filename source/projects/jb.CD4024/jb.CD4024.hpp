@@ -14,7 +14,6 @@
 #include <ext_mess.h>
 
 using namespace c74::min;
-using namespace c74::max;
 
 class CD4024 : public c74::min::object<CD4024> {
     public:

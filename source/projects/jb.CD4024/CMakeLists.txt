@@ -1,27 +1,30 @@
-cmake_minimum_required(VERSION 4.0)
+cmake_minimum_required(VERSION "3.19")
 
 set(C74_MIN_API_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../min-api)
 include(${C74_MIN_API_DIR}/script/min-pretarget.cmake)
-
-# Update the variable.
-set_max_libs()
 
 #############################################################
 # MAX EXTERNAL
 #############################################################
 
+# Extract package name from directory path.
+string(REGEX REPLACE ".*/([^/]+)" "\\1" THIS_PACKAGE_NAME "${CMAKE_CURRENT_SOURCE_DIR}")
+project(${THIS_PACKAGE_NAME})
+
 include_directories( 
     ${C74_INCLUDES}
+    #${SHARED_LIB_PATH}
 )
 
 # SOURCE FILES FOR MAX EXTERNAL ONLY
 set( SOURCE_FILES
     ${PROJECT_NAME}.hpp
     ${PROJECT_NAME}.cpp
+    #${SHARED_SOURCES}
 )
 
 add_library(
-    ${PROJECT_NAME} 
+    ${PROJECT_NAME}
     MODULE
     ${SOURCE_FILES}
 )
@@ -29,19 +32,7 @@ add_library(
 include(${C74_MIN_API_DIR}/script/min-posttarget.cmake)
 
 #############################################################
-# UNIT TEST (separate executable - NO shared sources)
+# UNIT TEST
 #############################################################
 
-# Test executable only compiles the test file
-add_executable(${PROJECT_NAME}_test tests/${PROJECT_NAME}_test.cpp)
-
-# Try to get the link libraries from the main target and use them for the test
-get_target_property(MAX_LIBS ${PROJECT_NAME} LINK_LIBRARIES)
-
-target_link_libraries(${PROJECT_NAME}_test PRIVATE 
-    Catch2::Catch2WithMain
-    ${MAX_LIBS}
-)
-
-# Include test configuration
 include(${C74_MIN_API_DIR}/test/min-object-unittest.cmake)
