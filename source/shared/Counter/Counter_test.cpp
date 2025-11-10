@@ -8,24 +8,44 @@ SCENARIO("Test Initialize") {
 	REQUIRE(true);
 }
 
-SCENARIO("Test Step") {
+SCENARIO("Test Back Step") {
 	Counter c = Counter(10);
 
 	for (int i = 0; i < 10; i++) {
-		c.step();
+		c.back();
 	}
 	
-	REQUIRE(true);
 	REQUIRE(c.current() == 0);
 }
 
-SCENARIO("Test Backwards Step") {
+SCENARIO("Test Forward Step") {
 	Counter c = Counter(10);
+	
 	c.direction();
+
 	for (int i = 0; i < 10; i++) {
-		c.step();
+		c.forward();
 	}
 	
-	REQUIRE(true);
 	REQUIRE(c.current() == 0);
+}
+
+SCENARIO("Test Reset") {
+	Counter c = Counter(10);
+
+	REQUIRE(c.current() == 0);
+
+	REQUIRE(c.forward() == 1);
+	REQUIRE(c.forward() == 2);
+
+	REQUIRE(c.current() == 2);
+
+	REQUIRE(c.forward() == 3);
+	REQUIRE(c.reset() == 0);
+
+	REQUIRE(c.current() == 0);
+	REQUIRE(c.forward() == 1);
+	REQUIRE(c.current() == 1);
+
+	REQUIRE(c.reset() == 0);
 }
