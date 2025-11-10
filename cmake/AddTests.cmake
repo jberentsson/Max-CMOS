@@ -15,4 +15,4 @@ set_tests_properties(${PROJECT_NAME}
         LABELS "unit;shared"
 )
 
-message(STATUS "Keyboard test target created and registered with CTest")
+message(STATUS "${PROJECT_NAME} test target created and registered with CTest")

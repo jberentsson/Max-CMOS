@@ -1,20 +1,13 @@
-class CD4017_LIB {
-    unsigned int counter = 0;
-    unsigned int steps = 10;
-    
-    CD4017_LIB (){
+#pragma once
 
-    }
+#include "Counter.hpp"
 
-    ~CD4017_LIB (){
-        
-    }
+class CD4017 : private Counter {
+	private:
+		bool isEnabled = false;
 
-    int reset(){
-        return 0;
-    }
-
-    int step(){
-        return this->counter++;
-    }
+	public:
+		CD4017(int n);
+		int enable();
+		int step();
 };

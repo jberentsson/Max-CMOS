@@ -15,9 +15,10 @@ include(${PROJECT_ROOT}/cmake/Catch.cmake)
 #############################################################
 
 set(TEST_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Counter/Counter.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Counter/Counter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}.cpp
-    #${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}_test.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}_test.cpp
 )
 
@@ -27,7 +28,13 @@ add_executable(${PROJECT_NAME} ${TEST_SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CATCH2_INCLUDE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Counter
 )
+
+# CREATE THE MAIN TARGET
+#add_library(${PROJECT_NAME} MODULE 
+#    ${PROJECT_ROOT}/source/shared/Counter
+#)
 
 # Set output directories for ALL configurations
 set_target_properties(${PROJECT_NAME} PROPERTIES
