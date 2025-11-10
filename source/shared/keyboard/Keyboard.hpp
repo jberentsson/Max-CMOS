@@ -41,7 +41,7 @@ public:
     void setRandomRange(int low, int high);
     
     // Getters
-    int Keyboard::maxCapacity() const {
+    int maxCapacity() const {
         return MAX_CAPACITY;
     }
         

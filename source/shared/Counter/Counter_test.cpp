@@ -1,3 +1,3 @@
 #define CATCH_CONFIG_MAIN 
 #include "catch.hpp"
-#include "CD4017.hpp"
+#include "Counter.hpp"

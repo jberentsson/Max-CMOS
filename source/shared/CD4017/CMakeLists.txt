@@ -11,18 +11,17 @@ set(C74_MIN_API_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../min-api)
 include(${PROJECT_ROOT}/cmake/Catch.cmake)
 
 #############################################################
-# KEYBOARD TEST TARGET - FIXED PATHS
+# TEST TARGET
 #############################################################
 
 set(TEST_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}.cpp
+    #${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}_test.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}_test.cpp
 )
 
-add_executable(${PROJECT_NAME}
-    ${TEST_SOURCES}
-)
+add_executable(${PROJECT_NAME} ${TEST_SOURCES})
 
 # Include directories
 target_include_directories(${PROJECT_NAME} PRIVATE
