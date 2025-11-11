@@ -13,7 +13,6 @@ project(${THIS_PACKAGE_NAME})
 
 include_directories( 
     ${C74_INCLUDES}
-    #${SHARED_LIB_PATH}
 )
 
 # SOURCE FILES FOR MAX EXTERNAL ONLY

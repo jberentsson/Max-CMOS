@@ -1,7 +1,7 @@
 #include "CD4017.hpp"
 
 CD4017::CD4017(int n) {
-    this->steps = n;
+    this->max_value = n;
 }
 
 int CD4017::step() {

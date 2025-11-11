@@ -1,5 +1,5 @@
-#define CATCH_CONFIG_MAIN 
-#include "catch.hpp"
+#include <catch2/catch_test_macros.hpp>
+#include "Exceptions.hpp"
 #include "Counter.hpp"
 
 SCENARIO("Test Initialize") {
@@ -15,7 +15,7 @@ SCENARIO("Test Back Step") {
 		c.back();
 	}
 	
-	REQUIRE(c.current() == 0);
+	REQUIRE(c.value() == 0);
 }
 
 SCENARIO("Test Forward Step") {
@@ -27,25 +27,25 @@ SCENARIO("Test Forward Step") {
 		c.forward();
 	}
 	
-	REQUIRE(c.current() == 0);
+	REQUIRE(c.value() == 0);
 }
 
 SCENARIO("Test Reset") {
 	Counter c = Counter(10);
 
-	REQUIRE(c.current() == 0);
+	REQUIRE(c.value() == 0);
 
 	REQUIRE(c.forward() == 1);
 	REQUIRE(c.forward() == 2);
 
-	REQUIRE(c.current() == 2);
+	REQUIRE(c.value() == 2);
 
 	REQUIRE(c.forward() == 3);
 	REQUIRE(c.reset() == 0);
 
-	REQUIRE(c.current() == 0);
+	REQUIRE(c.value() == 0);
 	REQUIRE(c.forward() == 1);
-	REQUIRE(c.current() == 1);
+	REQUIRE(c.value() == 1);
 
 	REQUIRE(c.reset() == 0);
 }

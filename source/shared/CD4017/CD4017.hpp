@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Counter.hpp"
+#include "../Counter/Counter.hpp"
 
 class CD4017 : public Counter {
 	private:

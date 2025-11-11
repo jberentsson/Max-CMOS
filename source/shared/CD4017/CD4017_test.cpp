@@ -1,5 +1,4 @@
-#define CATCH_CONFIG_MAIN 
-#include "catch.hpp"
+#include "catch2/catch_test_macros.hpp"
 #include "CD4017.hpp"
 
 SCENARIO("Test Initialize") {
@@ -11,19 +10,19 @@ SCENARIO("Test Initialize") {
 SCENARIO("Test Reset") {
 	CD4017 c = CD4017(10);
 
-	REQUIRE(c.current() == 0);
+	REQUIRE(c.value() == 0);
 
 	REQUIRE(c.step() == 1);
 	REQUIRE(c.step() == 2);
 
-	REQUIRE(c.current() == 2);
+	REQUIRE(c.value() == 2);
 
 	REQUIRE(c.step() == 3);
 	REQUIRE(c.reset() == 0);
 
-	REQUIRE(c.current() == 0);
+	REQUIRE(c.value() == 0);
 	REQUIRE(c.step() == 1);
-	REQUIRE(c.current() == 1);
+	REQUIRE(c.value() == 1);
 
 	REQUIRE(c.reset() == 0);
 }

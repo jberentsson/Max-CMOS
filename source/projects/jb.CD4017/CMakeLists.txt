@@ -5,8 +5,6 @@ include(${PROJECT_ROOT}/cmake/ProjectName.cmake)
 set(C74_MIN_API_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../min-api)
 include(${C74_MIN_API_DIR}/script/min-pretarget.cmake)
 
-include(${PROJECT_ROOT}/cmake/Catch.cmake)
-
 #############################################################
 # MAX EXTERNAL
 #############################################################
