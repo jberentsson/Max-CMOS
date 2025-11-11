@@ -86,7 +86,7 @@ endif()
 #############################################################
 
 # Generate a project for every folder in the "source/shared" folder
-SUBDIRLIST(SHARED_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/source/shared/*)
+SUBDIRLIST(SHARED_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/source/shared)
 foreach (project_dir ${SHARED_DIRS})
     if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/source/shared/${project_dir}/CMakeLists.txt")
         message("Generating: ${project_dir}")
