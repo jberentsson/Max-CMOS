@@ -11,20 +11,8 @@ project(${THIS_PACKAGE_NAME})
 # Enable testing framework.
 enable_testing()
 
-# Include external libraries.
-#include_directories(${CMAKE_CURRENT_SOURCE_DIR}/extern)
-
 set(PROJECT_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 set(CATCH_PATH ${PROJECT_ROOT}/source/catch2/include)
-
-# ---------------------------------------
-# Shared libraries
-# ---------------------------------------
-
-file(GLOB_RECURSE SHARED_SOURCES 
-    ${PROJECT_ROOT}/source/shared/*/*.cpp
-    ${PROJECT_ROOT}/source/shared/*/*.hpp
-)
 
 # Ignore Test Files
 list(FILTER SHARED_SOURCES EXCLUDE REGEX ".*_test\\.cpp$")
@@ -56,8 +44,6 @@ endif()
 # Misc setup and subroutines
 include(${CMAKE_CURRENT_SOURCE_DIR}/source/min-api/script/min-package.cmake)
 
-#include(${PROJECT_ROOT}/cmake/Catch2Add.cmake)
-
 # Add the Lib, if it exists
 if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/source/min-lib/CMakeLists.txt")
     add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/source/min-lib)
@@ -75,22 +61,39 @@ if(WIN32)
 endif()
 
 #############################################################
+# CATCH2 SETUP
+#############################################################
+find_package(Catch2 3 QUIET)
+if(NOT Catch2_FOUND)
+    message(STATUS "Catch2 not found, fetching from GitHub...")
+    
+    include(FetchContent)
+    FetchContent_Declare(
+        Catch2
+        GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+        GIT_TAG        v3.4.0
+    )
+    
+    # Configure Catch2 as header-only to avoid linking issues
+    set(CATCH_INSTALL_DOCS OFF CACHE BOOL "")
+    set(CATCH_INSTALL_EXTRAS OFF CACHE BOOL "")
+    set(BUILD_TESTING OFF CACHE BOOL "")
+    
+    FetchContent_MakeAvailable(Catch2)
+endif()
+
+#############################################################
 # CATCH2 TESTS FOR SHARED LIBRARIES WITHOUT MAX/MIN
 #############################################################
 
-set(PROJECT_LIBRARIES_SHARED Exceptions Catch2::Catch2WithMain)
-get_filename_component(SHARED_DIR "${PROJECT_ROOT}/source/shared" ABSOLUTE)
-add_subdirectory("${SHARED_DIR}")
-
 # Generate a project for every folder in the "source/shared" folder
-SUBDIRLIST(SHARED_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/source/shared)
+SUBDIRLIST(SHARED_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/source/shared/*)
 foreach (project_dir ${SHARED_DIRS})
     if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/source/shared/${project_dir}/CMakeLists.txt")
         message("Generating: ${project_dir}")
         add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/source/shared/${project_dir})
     endif ()
 endforeach ()
-
 
 # Comment the line below if you want automatic cmake regeneration enabled.
 set(CMAKE_SUPPRESS_REGENERATION true)

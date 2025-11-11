@@ -54,7 +54,7 @@ __pycache__/
 *~
 
 # Only keep source code and essential build scripts
-!source/
+#!source/
 !scripts/
 !README.md
 !LICENSE

@@ -1,27 +1,3 @@
-
-
-#############################################################
-# CATCH2 SETUP
-#############################################################
-find_package(Catch2 3 QUIET)
-if(NOT Catch2_FOUND)
-    message(STATUS "Catch2 not found, fetching from GitHub...")
-    
-    include(FetchContent)
-    FetchContent_Declare(
-        Catch2
-        GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-        GIT_TAG        v3.4.0
-    )
-    
-    # Configure Catch2 as header-only to avoid linking issues
-    set(CATCH_INSTALL_DOCS OFF CACHE BOOL "")
-    set(CATCH_INSTALL_EXTRAS OFF CACHE BOOL "")
-    set(BUILD_TESTING OFF CACHE BOOL "")
-    
-    FetchContent_MakeAvailable(Catch2)
-endif()
-
 #############################################################
 # AUTOMATIC TEST REGISTRATION WITH CTEST
 #############################################################

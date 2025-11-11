@@ -2,7 +2,6 @@
 #include "../Exceptions/Exceptions.hpp"
 #include "Counter.hpp"
 
-
 int Counter::reset() {
     // Reset the counter.
     this->counter = this->first_step;
