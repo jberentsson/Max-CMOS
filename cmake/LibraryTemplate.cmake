@@ -1,7 +1,7 @@
 macro(library_template PROJECT_LIBRARIES)
     cmake_minimum_required(VERSION "3.19")
 
-    include(${PROJECT_ROOT}/cmake/ProjectName.cmake)
+    project_name()
 
     set(C74_MIN_API_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../min-api)
 

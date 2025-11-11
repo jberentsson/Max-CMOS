@@ -10,7 +10,17 @@ set(PROJECT_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 string(REGEX REPLACE ".*/([^/]+)" "\\1" THIS_PACKAGE_NAME "${CMAKE_CURRENT_SOURCE_DIR}")
 project(${THIS_PACKAGE_NAME})
 
+#############################################################
+# Functions
+#############################################################
 
+macro(project_name)
+    # Creates the name of the package from the directory name.
+    string(REGEX REPLACE ".*/([^/]+)" "\\1" THIS_PACKAGE_NAME "${CMAKE_CURRENT_SOURCE_DIR}")
+    project(${THIS_PACKAGE_NAME})
+endmacro()
+
+include(${PROJECT_ROOT}/cmake/ProjectTemplate.cmake)
 include(${PROJECT_ROOT}/cmake/LibraryTemplate.cmake)
 
 # Enable testing framework.
@@ -51,16 +61,6 @@ if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/source/min-lib/CMakeLists.txt")
     add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/source/min-lib)
 endif ()
 
-if(WIN32)
-    # Generate a project for every folder in the "source/projects" folder
-    SUBDIRLIST(PROJECT_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/source/projects)
-    foreach (project_dir ${PROJECT_DIRS})
-        if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/source/projects/${project_dir}/CMakeLists.txt")
-            message("Generating: ${project_dir}")
-            add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/source/projects/${project_dir})
-        endif ()
-    endforeach ()
-endif()
 
 #############################################################
 # CATCH2 SETUP
@@ -105,3 +105,18 @@ endforeach ()
 
 # Comment the line below if you want automatic cmake regeneration enabled.
 set(CMAKE_SUPPRESS_REGENERATION true)
+
+#############################################################
+# Max
+#############################################################
+
+if(WIN32)
+    # Generate a project for every folder in the "source/projects" folder
+    SUBDIRLIST(PROJECT_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/source/projects)
+    foreach (project_dir ${PROJECT_DIRS})
+        if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/source/projects/${project_dir}/CMakeLists.txt")
+            message("Generating: ${project_dir}")
+            add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/source/projects/${project_dir})
+        endif ()
+    endforeach ()
+endif()
