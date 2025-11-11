@@ -1,26 +1,26 @@
 #pragma once
 
-#define DEFAULT_STEP_LENGTH 10;
+#define MAX_VALUE 10;
 
 class Counter {
     protected:
 		bool is_enabled = false;
+        bool dir = true;
         unsigned int first_step = 0;
         unsigned int counter = 0;
-        unsigned int steps = DEFAULT_STEP_LENGTH;
-        unsigned int dir = 0;
+        unsigned int max_value = MAX_VALUE;
         unsigned int preset_value = 0;
-        int step(){ return 0; }
 
     public:
         Counter(){};
-        Counter(int n){ this->steps = n; };
+        Counter(int n){ this->max_value = n; };
 
-        virtual int direction(){ return this->dir; }
-        virtual int current() { return this->counter; }
+        virtual bool direction();
+        virtual int value() { return this->counter; }
         virtual int set(int val);
         virtual int forward();
         virtual int preset();
         virtual int reset();
         virtual int back();
+        virtual int step();
 };
