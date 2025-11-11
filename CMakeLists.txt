@@ -4,15 +4,20 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+set(PROJECT_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
+
 # Extract package name from directory path.
 string(REGEX REPLACE ".*/([^/]+)" "\\1" THIS_PACKAGE_NAME "${CMAKE_CURRENT_SOURCE_DIR}")
 project(${THIS_PACKAGE_NAME})
 
+
+include(${PROJECT_ROOT}/cmake/LibraryTemplate.cmake)
+
 # Enable testing framework.
 enable_testing()
 
-set(PROJECT_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
-set(CATCH_PATH ${PROJECT_ROOT}/source/catch2/include)
+
+message("THE CURRENT PROJECT ROOT IS: ${PROJECT_ROOT}")
 
 # Ignore Test Files
 list(FILTER SHARED_SOURCES EXCLUDE REGEX ".*_test\\.cpp$")
@@ -36,8 +41,6 @@ if (APPLE)
         endif()
         message("CMAKE_OSX_ARCHITECTURES set to ${CMAKE_OSX_ARCHITECTURES}")
     endif()
-else()
-    message("We are not on an Apple machine.")
 endif()
 
 # Misc setup and subroutines
@@ -86,11 +89,17 @@ endif()
 #############################################################
 
 # Generate a project for every folder in the "source/shared" folder
-SUBDIRLIST(SHARED_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/source/shared)
+
+#if(win32)
+SUBDIRLIST(SHARED_DIRS ${PROJECT_ROOT}/source/shared)
+#else()
+#    SUBDIRLIST(SHARED_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/source/shared/*)
+#endif()
+
 foreach (project_dir ${SHARED_DIRS})
-    if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/source/shared/${project_dir}/CMakeLists.txt")
+    if (EXISTS "${PROJECT_ROOT}/source/shared/${project_dir}/CMakeLists.txt")
         message("Generating: ${project_dir}")
-        add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/source/shared/${project_dir})
+        add_subdirectory(${PROJECT_ROOT}/source/shared/${project_dir})
     endif ()
 endforeach ()
 

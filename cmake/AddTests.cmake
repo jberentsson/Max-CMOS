@@ -2,18 +2,22 @@
 # AUTOMATIC TEST REGISTRATION WITH CTEST
 #############################################################
 
+message("OUR CURRENT DIRECTORY IS: ${CMAKE_CURRENT_SOURCE_DIR}")
+
 enable_testing()
 
 if(DEFINED PROJECT_LIBRARIES)
-    message("-- Linking Project Libraries: ${PROJECT_LIBRARIES}")
-    target_link_libraries(${PROJECT_NAME}_test ${PROJECT_LIBRARIES})
+    foreach(PL ${PROJECT_LIBRARIES})
+        message("-- Linking Project Libraries: ${PROJECT_LIBRARIES}")
+        target_link_libraries(${PROJECT_NAME}_test ${PL})
+    endforeach()
 else()
     message("THERE ARE NO PROJECT LIBRARIES DEFINED!")
 endif()
 
 # Commented out, we probably don't need this.
 if(DEFINED PROJECT_LIBRARIES_SHARED)
-    message("-- Linking Shared Project Libraries: ${PROJECT_SHARED_LIBRARIES}")
+    message("-- Linking Shared Project Libraries: ${PROJECT_LIBRARIES_SHARED}")
     target_link_libraries(${PROJECT_NAME}_test ${PROJECT_LIBRARIES_SHARED})
 else()
     message("THERE ARE NO SHARED PROJECT LIBRARIES DEFINED!")

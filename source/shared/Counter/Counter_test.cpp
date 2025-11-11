@@ -1,5 +1,4 @@
-#include <catch2/catch_test_macros.hpp>
-#include "Exceptions.hpp"
+#include "catch2/catch_test_macros.hpp"
 #include "Counter.hpp"
 
 SCENARIO("Test Initialize") {
