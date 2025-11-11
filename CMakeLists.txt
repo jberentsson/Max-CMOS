@@ -18,7 +18,6 @@ set(CATCH_PATH ${PROJECT_ROOT}/source/catch2/include)
 list(FILTER SHARED_SOURCES EXCLUDE REGEX ".*_test\\.cpp$")
 set(PROJECT_LIBRARIES_SHARED Catch2::Catch2WithMain)
 
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Catch2Install.cmake)
 if (APPLE)
     if (${CMAKE_GENERATOR} MATCHES "Xcode")
             if (${XCODE_VERSION} VERSION_LESS 10)
