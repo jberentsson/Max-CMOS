@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION "3.19")
 set(PROJECT_LIBRARIES
+    
     Keyboard
 )
 
@@ -17,7 +18,6 @@ string(TIMESTAMP BUILD_DATETIME "%Y-%m-%d %H:%M:%S")
 # FIX THE PATHS - use correct shared directory location
 include_directories( 
     ${C74_INCLUDES}
-    #${CMAKE_CURRENT_SOURCE_DIR}/../../shared/keyboard
     ${PROJECT_ROOT}/source/shared
 )
 
@@ -25,22 +25,14 @@ include_directories(
 set(SOURCE_FILES
     ${PROJECT_NAME}.cpp
     ${PROJECT_NAME}.hpp
-    ${PROJECT_ROOT}/source/shared/Keyboard/Keyboard.cpp
-    ${PROJECT_ROOT}/source/shared/Keyboard/Keyboard.hpp
-    #${CMAKE_CURRENT_SOURCE_DIR}/../../shared/keyboard/Keyboard.cpp
-    #${CMAKE_CURRENT_SOURCE_DIR}/../../shared/keyboard/Keyboard.hpp
 )
 
-# CREATE THE MAIN TARGET
 add_library(${PROJECT_NAME} MODULE 
-            ${SOURCE_FILES}
+    ${SOURCE_FILES}
+    ${include_directories}
 )
 
-if(DEFINED PROJECT_LIBRARIES AND PROJECT_LIBRARIES)
-    foreach(PT ${PROJECT_LIBRARIES})
-        target_link_libraries(${PROJECT_NAME} ${PL})
-    endforeach()
-endif()
+target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_LIBRARIES})
 
 # Set compile definitions for the main target
 target_compile_definitions(${PROJECT_NAME} 
@@ -52,13 +44,12 @@ target_compile_definitions(${PROJECT_NAME}
         GIT_COMMIT_HASH=\"${GIT_COMMIT_HASH}\"
 )
 
-include(${C74_MIN_API_DIR}/script/min-posttarget.cmake)
 
+
+include(${C74_MIN_API_DIR}/script/min-posttarget.cmake)
 include(${C74_MIN_API_DIR}/test/min-object-unittest.cmake)
 
-# TODO: Fix this linking error.
-if(DEFINED PROJECT_LIBRARIES AND PROJECT_LIBRARIES)
-    foreach(PT ${PROJECT_LIBRARIES}_test)
-        target_link_libraries(${PROJECT_NAME} ${PL})
-    endforeach()
-endif()
+target_link_libraries(${PROJECT_NAME}_test PRIVATE Keyboard)
+target_include_directories(${PROJECT_NAME}_test PRIVATE 
+    ${PROJECT_ROOT}/source/shared/Keyboard
+)

@@ -1,22 +1,6 @@
 #include <iostream>
 #include "Keyboard.hpp"
 
-ActiveNote::ActiveNote(int originalPitch, int processedPitch, int velocity) 
-    : m_originalPitch(originalPitch), m_processedPitch(processedPitch), m_velocity(velocity) {
-}
-
-int ActiveNote::originalPitch() const {
-    return m_originalPitch;
-}
-
-int ActiveNote::pitch() const {
-    return m_processedPitch;
-}
-
-int ActiveNote::velocity() const {
-    return m_velocity;
-}
-
 int Keyboard::getPitchClass(int pitch) const {
     return pitch % OCTAVE;
 }

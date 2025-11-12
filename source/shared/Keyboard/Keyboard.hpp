@@ -4,7 +4,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <algorithm>
-#include "Note.hpp"
+#include "ActiveNote/ActiveNote.hpp"
 
 #define MIN_CAPACITY 2
 #define MAX_CAPACITY 5
@@ -12,6 +12,30 @@
 #define RANGE_HIGH   127
 #define MIN_OCTAVE   0
 #define MAX_OCTAVE   10
+
+class ActiveNote {
+    private:
+        int m_originalPitch;
+        int m_processedPitch;
+        int m_velocity;
+
+    public:
+        ActiveNote(int originalPitch, int processedPitch, int velocity) 
+            : m_originalPitch(originalPitch), m_processedPitch(processedPitch), m_velocity(velocity) {
+        }
+
+        int originalPitch() const {
+            return m_originalPitch;
+        }
+
+        int pitch() const {
+            return m_processedPitch;
+        }
+
+        int velocity() const {
+            return m_velocity;
+        }
+};
 
 class Keyboard {
 private:

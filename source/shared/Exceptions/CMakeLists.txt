@@ -1,5 +1,3 @@
-# In source/shared/Exceptions/CMakeLists.txt
-
 # project("Exceptions")
 
 # add_library(${PROJECT_NAME}

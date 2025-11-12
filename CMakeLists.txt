@@ -1,14 +1,42 @@
+#############################################################
+# Setup
+#############################################################
+
 cmake_minimum_required(VERSION 3.19)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+# Force STATIC runtime library for ALL targets
+if(MSVC)
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded")
+    
+    # Force static runtime for ALL configurations
+    set(CMAKE_CXX_FLAGS_DEBUG "/MTd ${CMAKE_CXX_FLAGS_DEBUG}" CACHE STRING "Debug flags" FORCE)
+    set(CMAKE_CXX_FLAGS_RELEASE "/MT ${CMAKE_CXX_FLAGS_RELEASE}" CACHE STRING "Release flags" FORCE)
+    set(CMAKE_C_FLAGS_DEBUG "/MTd ${CMAKE_C_FLAGS_DEBUG}" CACHE STRING "C Debug flags" FORCE)
+    set(CMAKE_C_FLAGS_RELEASE "/MT ${CMAKE_C_FLAGS_RELEASE}" CACHE STRING "C Release flags" FORCE)
+endif()
+
 set(PROJECT_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Extract package name from directory path.
 string(REGEX REPLACE ".*/([^/]+)" "\\1" THIS_PACKAGE_NAME "${CMAKE_CURRENT_SOURCE_DIR}")
-project(${THIS_PACKAGE_NAME})
+project(${THIS_PACKAGE_NAME} VERSION 1.0.0 LANGUAGES C CXX)
+
+if(MSVC)
+    # Modern way to set runtime library
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDLL")
+    
+    # Force it for all targets
+    add_compile_options(
+        "$<$<CONFIG:Debug>:/MDd>"
+        "$<$<CONFIG:Release>:/MD>"
+        "$<$<CONFIG:RelWithDebInfo>:/MD>"
+        "$<$<CONFIG:MinSizeRel>:/MD>"
+    )
+endif()
 
 #############################################################
 # Functions
@@ -17,7 +45,7 @@ project(${THIS_PACKAGE_NAME})
 macro(project_name)
     # Creates the name of the package from the directory name.
     string(REGEX REPLACE ".*/([^/]+)" "\\1" THIS_PACKAGE_NAME "${CMAKE_CURRENT_SOURCE_DIR}")
-    project(${THIS_PACKAGE_NAME})
+    project(${THIS_PACKAGE_NAME} VERSION 1.0.0 LANGUAGES C CXX)
 endmacro()
 
 include(${PROJECT_ROOT}/cmake/ProjectTemplate.cmake)
@@ -25,9 +53,6 @@ include(${PROJECT_ROOT}/cmake/LibraryTemplate.cmake)
 
 # Enable testing framework.
 enable_testing()
-
-
-message("THE CURRENT PROJECT ROOT IS: ${PROJECT_ROOT}")
 
 # Ignore Test Files
 list(FILTER SHARED_SOURCES EXCLUDE REGEX ".*_test\\.cpp$")
@@ -90,11 +115,7 @@ endif()
 
 # Generate a project for every folder in the "source/shared" folder
 
-#if(win32)
 SUBDIRLIST(SHARED_DIRS ${PROJECT_ROOT}/source/shared)
-#else()
-#    SUBDIRLIST(SHARED_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/source/shared/*)
-#endif()
 
 foreach (project_dir ${SHARED_DIRS})
     if (EXISTS "${PROJECT_ROOT}/source/shared/${project_dir}/CMakeLists.txt")
@@ -119,4 +140,14 @@ if(WIN32)
             add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/source/projects/${project_dir})
         endif ()
     endforeach ()
+endif()
+
+
+
+if(MSVC)
+    # Remove duplicate runtime flags
+    foreach(var CXX_FLAGS_DEBUG CXX_FLAGS_RELEASE C_FLAGS_DEBUG C_FLAGS_RELEASE)
+        string(REGEX REPLACE "/MTd /MTd+" "/MTd" CMAKE_${var} "${CMAKE_${var}}")
+        string(REGEX REPLACE "/MT /MT+" "/MT" CMAKE_${var} "${CMAKE_${var}}")
+    endforeach()
 endif()

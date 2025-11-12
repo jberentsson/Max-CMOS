@@ -4,7 +4,7 @@ echo ========================================
 echo    Max-CMOS Build
 echo ========================================
 
-set BUILD_PATH=build\win32
+set BUILD_PATH=build\
 set PROJECTS_PATH=%BUILD_PATH%\source\projects
 
 if exist %BUILD_PATH% (
@@ -22,7 +22,7 @@ if "%1"=="--clean" (
 cd %BUILD_PATH%
 
 echo Configuring project with CMake...
-cmake -G "Visual Studio 17 2022" ..\.. -A x64 -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+cmake -G "Visual Studio 17 2022" .. -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 
 if %errorlevel% neq 0 (
     echo CMake configuration failed!
@@ -30,7 +30,7 @@ if %errorlevel% neq 0 (
 )
 
 echo Building project...
-cmake --build . --target ALL_BUILD -j8
+cmake --build . --config Release --clean-first
 
 if %errorlevel% neq 0 (
     echo Build failed!
