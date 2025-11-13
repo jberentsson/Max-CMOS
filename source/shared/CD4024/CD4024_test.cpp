@@ -9,11 +9,11 @@ SCENARIO("Test Initialize") {
 
 SCENARIO("Back And Forth") {
 	CD4024 c = CD4024(10);
-
+	REQUIRE(c.direction() == 1);
 	REQUIRE(c.value() == 0);
-	REQUIRE(c.direction() == false);
+	REQUIRE(c.toggle_direction() == 0);
 	REQUIRE(c.step() == 9);
-	REQUIRE(c.direction() == true);
+	REQUIRE(c.toggle_direction() == 1);
 	REQUIRE(c.step() == 0);
 	REQUIRE(c.value() == 0);
 }

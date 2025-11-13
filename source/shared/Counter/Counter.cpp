@@ -3,12 +3,13 @@
 #include "Counter.hpp"
 
 int Counter::reset() {
+    // Reset counter to zero.
     this->counter = this->first_step;
     return this->counter;
 }
 
 int Counter::forward() {
-    // Improved forward with proper wrapping
+    // Step forward.
     this->counter++;
     if (this->counter >= this->max_value) {
         this->counter = this->first_step;
@@ -17,7 +18,7 @@ int Counter::forward() {
 }
 
 int Counter::back() {
-    // Improved backward with proper wrapping  
+    // Step backwards.
     if (this->counter == this->first_step) {
         this->counter = this->max_value - 1;
     } else {
@@ -26,17 +27,20 @@ int Counter::back() {
     return this->counter;
 }
 
-bool Counter::direction(){
-    return this->dir;
-}
-
-// Add function to toggle direction if needed
-bool Counter::toggle_direction(){
+int Counter::toggle_direction(){
+    // Toggle the counter direction.
     this->dir = !this->dir;
     return this->dir;
 }
 
+int Counter::set_direction(int d){
+    // Set the counter direction.
+    this->dir = d;
+    return this->dir;
+}
+
 int Counter::set(int val) {
+    // Set the counter value.
     if (0 <= val && val < this->max_value){
         this->counter = val;
     }
@@ -44,17 +48,20 @@ int Counter::set(int val) {
 }
 
 int Counter::preset(){
+    // Set the counter to the preset value.
     this->counter = this->preset_value;
     return this->counter;
 }
 
+int Counter::set_preset(int p){
+    this->preset_value = p;
+    return this->preset_value;
+}
+
 int Counter::step(){
+    // Trigger next step.
     if (this->dir){
         return this->forward();
     }
     return this->back();
-}
-
-int Counter::value() { 
-    return this->counter; 
 }

@@ -22,20 +22,19 @@ SCENARIO("object produces correct output") {
             
             THEN("our greeting is produced at the outlet") {
                 auto& output_0 = *c74::max::object_getoutput(my_object, 0);
-                //REQUIRE((output_0.size() == 1));
+                REQUIRE(output_0.size() == 0);
                 auto& output_1 = *c74::max::object_getoutput(my_object, 1);
-                //REQUIRE((output_1.size() == 1));
+                REQUIRE((output_1.size() == 0));
                 auto& output_2 = *c74::max::object_getoutput(my_object, 2);
-                //REQUIRE((output_2.size() == 1));
+                REQUIRE((output_2.size() == 0));
                 auto& output_3 = *c74::max::object_getoutput(my_object, 3);
-                //REQUIRE((output_3.size() == 1));
+                REQUIRE((output_3.size() == 0));
                 auto& output_4 = *c74::max::object_getoutput(my_object, 4);
-                //REQUIRE((output_4.size() == 1));
+                REQUIRE((output_4.size() == 0));
                 auto& output_5 = *c74::max::object_getoutput(my_object, 5);
-                //REQUIRE((output_5.size() == 1));
+                REQUIRE((output_5.size() == 0));
                 auto& output_6 = *c74::max::object_getoutput(my_object, 6);
-                //REQUIRE((output_6.size() == 1));
-                //REQUIRE((symbol(output_6[0][0]) != symbol('bang')));
+                REQUIRE((output_6.size() == 0));
             }
         }
 
@@ -47,26 +46,25 @@ SCENARIO("object produces correct output") {
 
             THEN("our greeting is produced at the outlet") {
                 auto& output_0 = *c74::max::object_getoutput(my_object, 0);
-                //REQUIRE((output_0.size() == 1));
+                REQUIRE((output_0.size() == 0));
                 auto& output_1 = *c74::max::object_getoutput(my_object, 1);
-                //REQUIRE((output_1.size() == 1));
+                REQUIRE((output_1.size() == 0));
                 auto& output_2 = *c74::max::object_getoutput(my_object, 2);
-                //REQUIRE((output_2.size() == 1));
+                REQUIRE((output_2.size() == 0));
                 auto& output_3 = *c74::max::object_getoutput(my_object, 3);
-                //REQUIRE((output_3.size() == 1));
+                REQUIRE((output_3.size() == 0));
                 auto& output_4 = *c74::max::object_getoutput(my_object, 4);
-                //REQUIRE((output_4.size() == 1));
+                REQUIRE((output_4.size() == 0));
                 auto& output_5 = *c74::max::object_getoutput(my_object, 5);
-                //REQUIRE((output_5.size() == 1));
+                REQUIRE((output_5.size() == 0));
                 auto& output_6 = *c74::max::object_getoutput(my_object, 6);
-                //REQUIRE((output_6.size() == 1));
-                //REQUIRE((symbol(output_6[0][0]) != symbol('bang')));
+                REQUIRE((output_6.size() == 0));
             }
         }
 
         WHEN("a 'bang' is received") {
             THEN("our greeting is produced at the outlet") {
-                REQUIRE((my_object.find_bit(0) == 1));
+                REQUIRE((my_object.find_bit(0) == 0));
             }
         }
     }

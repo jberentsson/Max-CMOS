@@ -4,8 +4,8 @@
 
 class Counter {
     protected:
-        bool is_enabled = false;
-        bool dir = true;
+        unsigned int is_enabled = 1;
+        unsigned int dir = 1;
         unsigned int first_step = 0;
         unsigned int counter = 0;
         unsigned int max_value = MAX_VALUE;
@@ -13,18 +13,20 @@ class Counter {
 
     public:
         Counter(){};
-        Counter(int n){ this->max_value = n; };
+        Counter(int n){ this->max_value = n; }
 
-        virtual bool direction();  // Toggles and returns new direction
-        virtual bool get_direction() { return this->dir; }  // Just returns current direction
-        virtual int value(); 
+        virtual int direction(){ return this->dir; }
+        virtual int get_direction() { return this->dir; }
+        virtual int value(){ return this->counter; }
         virtual int set(int val);
         virtual int forward();
         virtual int preset();
+        virtual int set_preset(int p);
         virtual int reset();
         virtual int back();
         virtual int step();
-        virtual bool toggle_direction();
+        virtual int set_direction(int d);
+        virtual int toggle_direction();
         
         virtual ~Counter() = default;
 };
