@@ -1,6 +1,6 @@
 /// @file       jb.CD4017_test.cpp
 ///	@ingroup 	jb.cmos
-///	@copyright	Copyright 2022 The Min-DevKit Authors. All rights reserved.
+///	@copyright	Copyright 2025 - Jóhann Berentsson. All rights reserved.
 ///	@license	Use of this source code is governed by the MIT License found in the License.md file.
 
 #include "c74_min_unittest.h"

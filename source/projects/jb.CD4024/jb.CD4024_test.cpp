@@ -1,6 +1,6 @@
 /// @file       jb.CD4024_test.cpp
 ///	@ingroup 	jb.cmos
-///	@copyright	Copyright 2018 The Min-DevKit Authors. All rights reserved.
+///	@copyright	Copyright 2025 - Jóhann Berentsson. All rights reserved.
 ///	@license	Use of this source code is governed by the MIT License found in the License.md file.
 
 #include "c74_min_unittest.h"
@@ -23,6 +23,9 @@ SCENARIO("object produces correct output") {
             THEN("our greeting is produced at the outlet") {
                 auto& output_0 = *c74::max::object_getoutput(my_object, 0);
                 REQUIRE(output_0.size() == 0);
+                //REQUIRE((output_0[0].size() == 1));
+                //REQUIRE((output_0[0][0] == int(0)));
+
                 auto& output_1 = *c74::max::object_getoutput(my_object, 1);
                 REQUIRE((output_1.size() == 0));
                 auto& output_2 = *c74::max::object_getoutput(my_object, 2);
