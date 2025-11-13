@@ -3,11 +3,12 @@ This package was created using the Min-DevKit for Max, an API and supporting too
 
 ## Build
 ```bash
-# Setup
-mkdir build
-cd build
-cmake .. -G "Visual Studio 17 2022" -A x64 -DCMAKE_BUILD_TYPE=Release
+# Setup CMake.
+cmake -B build
 
-# Build the project with.
-cmake --build . --config Release
+# Build the project.
+cmake --build build --config Release
+
+# Or if you want fresh build.
+cmake --build build --config Release --clean-first
 ```
