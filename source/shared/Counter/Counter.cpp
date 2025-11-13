@@ -11,9 +11,11 @@ int Counter::reset() {
 int Counter::forward() {
     // Step forward.
     this->counter++;
+
     if (this->counter >= this->max_value) {
         this->counter = this->first_step;
     }
+
     return this->counter;
 }
 
@@ -24,6 +26,7 @@ int Counter::back() {
     } else {
         this->counter--;
     }
+
     return this->counter;
 }
 
@@ -44,6 +47,7 @@ int Counter::set(int val) {
     if (0 <= val && val < this->max_value){
         this->counter = val;
     }
+
     return this->counter;
 }
 
@@ -54,6 +58,7 @@ int Counter::preset(){
 }
 
 int Counter::set_preset(int p){
+    // Set a new preset value.
     this->preset_value = p;
     return this->preset_value;
 }
@@ -63,6 +68,7 @@ int Counter::step(){
     if (this->dir){
         return this->forward();
     }
+    
     return this->back();
 }
 
