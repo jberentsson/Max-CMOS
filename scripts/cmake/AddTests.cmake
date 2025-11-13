@@ -2,8 +2,6 @@
 # AUTOMATIC TEST REGISTRATION WITH CTEST
 #############################################################
 
-message("OUR CURRENT DIRECTORY IS: ${CMAKE_CURRENT_SOURCE_DIR}")
-
 enable_testing()
 
 if(DEFINED PROJECT_LIBRARIES)
@@ -15,7 +13,6 @@ else()
     message("THERE ARE NO PROJECT LIBRARIES DEFINED!")
 endif()
 
-# Commented out, we probably don't need this.
 if(DEFINED PROJECT_LIBRARIES_SHARED)
     message("-- Linking Shared Project Libraries: ${PROJECT_LIBRARIES_SHARED}")
     target_link_libraries(${PROJECT_NAME}_test ${PROJECT_LIBRARIES_SHARED})
@@ -37,6 +34,5 @@ set_tests_properties(${PROJECT_NAME}_test
         TIMEOUT 30 
         LABELS "unit;shared"
 )
-
 
 message(STATUS "${PROJECT_NAME} test target created and registered with CTest")

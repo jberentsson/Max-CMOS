@@ -5,8 +5,6 @@ macro(library_template PROJECT_LIBRARIES)
         message(FATAL_ERROR "PROJECT_NAME must be defined before calling library_template")
     endif()
 
-    set(C74_MIN_API_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../min-api)
-
     #############################################################
     # LIBRARY TARGET
     #############################################################
@@ -94,8 +92,8 @@ macro(library_template PROJECT_LIBRARIES)
     # AUTOMATIC TEST REGISTRATION WITH CTEST
     #############################################################
 
-    if(EXISTS ${PROJECT_ROOT}/cmake/AddTests.cmake)
-        include(${PROJECT_ROOT}/cmake/AddTests.cmake)
+    if(EXISTS ${PROJECT_ROOT}/scripts//cmake/AddTests.cmake)
+        include(${PROJECT_ROOT}/scripts//cmake/AddTests.cmake)
     endif()
 
 endmacro()

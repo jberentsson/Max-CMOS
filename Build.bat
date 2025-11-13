@@ -14,8 +14,6 @@ if exist %BUILD_PATH% (
     mkdir %BUILD_PATH%
 )
 
-
-
 cd %BUILD_PATH%
 
 echo Configuring project with CMake...
@@ -34,8 +32,6 @@ if "%1"=="--clean-first" (
 ) else (
     cmake --build . --config Release
 )
-
-
 
 if %errorlevel% neq 0 (
     echo Build failed!

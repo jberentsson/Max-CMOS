@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION "3.19")
 
 project_name()
 
-set(C74_MIN_API_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../min-api)
 include(${C74_MIN_API_DIR}/script/min-pretarget.cmake)
 
 #############################################################
@@ -34,7 +33,7 @@ include(${C74_MIN_API_DIR}/script/min-posttarget.cmake)
 include(${C74_MIN_API_DIR}/test/min-object-unittest.cmake)
 
 #############################################################
-# Import Shared Code
+# Import Shared Code And Link It To Our Binaries
 #############################################################
 
 set(PROJECT_LIBRARIES CD4024 Counter)
@@ -54,10 +53,3 @@ target_include_directories(${PROJECT_NAME}_test PRIVATE
     ${PROJECT_ROOT}/source/shared/CD4024
     ${PROJECT_ROOT}/source/shared/Counter
 )
-
-# Set build as static.
-if(MSVC)
-    set_target_properties(${PROJECT_NAME}_test PROPERTIES
-        MSVC_RUNTIME_LIBRARY "MultiThreaded"
-    )
-endif()

@@ -1,23 +1,7 @@
 cmake_minimum_required(VERSION 3.19)
 
-# FORCE STATIC RUNTIME
-if(MSVC)
-    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded")
-    
-    add_compile_options(
-        "$<$<CONFIG:Debug>:/MTd>"
-        "$<$<CONFIG:Release>:/MT>"
-        "$<$<CONFIG:RelWithDebInfo>:/MT>"
-        "$<$<CONFIG:MinSizeRel>:/MT>"
-    )
-    
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
-    set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /MTd")
-    set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /MT")
-endif()
-
 set(PROJECT_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
+set(C74_MIN_API_DIR ${CMAKE_CURRENT_SOURCE_DIR}/source/min-api)
 
 # Extract package name from directory path.
 string(REGEX REPLACE ".*/([^/]+)" "\\1" THIS_PACKAGE_NAME "${CMAKE_CURRENT_SOURCE_DIR}")
@@ -41,8 +25,8 @@ macro(project_name)
     project(${THIS_PACKAGE_NAME} VERSION 1.0.0 LANGUAGES C CXX)
 endmacro()
 
-include(${PROJECT_ROOT}/cmake/ProjectTemplate.cmake)
-include(${PROJECT_ROOT}/cmake/LibraryTemplate.cmake)
+include(${PROJECT_ROOT}/scripts/cmake/ProjectTemplate.cmake)
+include(${PROJECT_ROOT}/scripts//cmake/LibraryTemplate.cmake)
 
 # Enable testing framework.
 enable_testing()
@@ -79,18 +63,11 @@ if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/source/min-lib/CMakeLists.txt")
 endif ()
 
 #############################################################
-# Catch2 - STATIC LIBRARY WITH STATIC RUNTIME
+# Catch2 - PURE STATIC LIBRARY
 #############################################################
-
-# Save current runtime library settings
-set(OLD_CMAKE_MSVC_RUNTIME_LIBRARY ${CMAKE_MSVC_RUNTIME_LIBRARY})
 
 # FORCE STATIC RUNTIME FOR CATCH2
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded")
-
-#############################################################
-# Catch2 - PURE STATIC LIBRARY
-#############################################################
 
 include(FetchContent)
 
@@ -107,32 +84,10 @@ set(CATCH_BUILD_TESTING OFF CACHE BOOL "" FORCE)
 set(CATCH_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 set(CATCH_INSTALL_DOCS OFF CACHE BOOL "" FORCE)
 
-if(MSVC)
-    set(CMAKE_POLICY_DEFAULT_CMP0091 NEW)
-endif()
-
 FetchContent_MakeAvailable(Catch2)
 
-# Restore original runtime settings
-set(CMAKE_MSVC_RUNTIME_LIBRARY ${OLD_CMAKE_MSVC_RUNTIME_LIBRARY})
-
 # CREATE TARGETS
-if(TARGET Catch2)
-    # TODO: Simplify this.
-    if(NOT TARGET Catch2::Catch2)
-        add_library(Catch2::Catch2 ALIAS Catch2)
-    endif()
-    if(NOT TARGET Catch2::Catch2WithMain)
-        add_library(Catch2::Catch2WithMain ALIAS Catch2)
-    endif()
-    
-    # Force static runtime on the Catch2 target specifically
-    if(MSVC)
-        set_target_properties(Catch2 PROPERTIES
-            MSVC_RUNTIME_LIBRARY "MultiThreaded"
-        )
-    endif()
-    
+if(TARGET Catch2)   
     message(STATUS "Catch2 configured as static library with static runtime")
 else()
     message(FATAL_ERROR "Catch2 target not found!")
@@ -143,7 +98,6 @@ endif()
 #############################################################
 
 SUBDIRLIST(SHARED_DIRS ${PROJECT_ROOT}/source/shared)
-#set(SHARED_DIRS Exceptions Counter CD4017 CD4024 Keyboard)
 
 # Generate a project for every folder in the "source/shared" folder.
 foreach (project_dir ${SHARED_DIRS})
