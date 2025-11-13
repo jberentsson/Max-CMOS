@@ -7,6 +7,17 @@ set(C74_MIN_API_DIR ${CMAKE_CURRENT_SOURCE_DIR}/source/min-api)
 string(REGEX REPLACE ".*/([^/]+)" "\\1" THIS_PACKAGE_NAME "${CMAKE_CURRENT_SOURCE_DIR}")
 project(${THIS_PACKAGE_NAME} VERSION 1.0.0 LANGUAGES C CXX)
 
+if(MSVC)
+    # Use static runtime for both Debug and Release
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+    
+    # Or alternatively, set flags directly
+    add_compile_options(
+        "$<$<CONFIG:Debug>:/MTd>"
+        "$<$<CONFIG:Release>:/MT>"
+    )
+endif()
+
 #############################################################
 # Functions
 #############################################################
