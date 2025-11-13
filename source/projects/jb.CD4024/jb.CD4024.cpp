@@ -7,12 +7,12 @@
 
 using namespace c74::min;
 
-int CD4024::find_bit(int output) {
+int CD4024_MAX::find_bit(int output) {
     // isolate the correct bit.
-    return ((this->counter) >> output) & 0x1;
+    return ((this->counter.value()) >> output) & 0x1;
 }
 
-void CD4024::handle_output() {
+void CD4024_MAX::handle_output() {
     // Send data to the outputs
     // TODO: Send only data on change
 
@@ -25,7 +25,7 @@ void CD4024::handle_output() {
     }
 }
 
-void CD4024::send_bangs() {
+void CD4024_MAX::send_bangs() {
     for (int i = 0; i < 7; i++){
         if (this->find_bit(i)) {
             this->outputs[i]->send("bang");
@@ -33,13 +33,4 @@ void CD4024::send_bangs() {
     }
 }
 
-void CD4024::step() {
-    this->counter++;
-    this->handle_output();
-}
-
-void CD4024::reset_counter() {
-    this->counter = 0;
-}
-
-MIN_EXTERNAL(CD4024);
+MIN_EXTERNAL(CD4024_MAX);

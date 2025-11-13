@@ -1,22 +1,20 @@
-#############################################################
-# Setup
-#############################################################
-
 cmake_minimum_required(VERSION 3.19)
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
-
-# Force STATIC runtime library for ALL targets
+# FORCE STATIC RUNTIME
 if(MSVC)
     set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded")
     
-    # Force static runtime for ALL configurations
-    set(CMAKE_CXX_FLAGS_DEBUG "/MTd ${CMAKE_CXX_FLAGS_DEBUG}" CACHE STRING "Debug flags" FORCE)
-    set(CMAKE_CXX_FLAGS_RELEASE "/MT ${CMAKE_CXX_FLAGS_RELEASE}" CACHE STRING "Release flags" FORCE)
-    set(CMAKE_C_FLAGS_DEBUG "/MTd ${CMAKE_C_FLAGS_DEBUG}" CACHE STRING "C Debug flags" FORCE)
-    set(CMAKE_C_FLAGS_RELEASE "/MT ${CMAKE_C_FLAGS_RELEASE}" CACHE STRING "C Release flags" FORCE)
+    add_compile_options(
+        "$<$<CONFIG:Debug>:/MTd>"
+        "$<$<CONFIG:Release>:/MT>"
+        "$<$<CONFIG:RelWithDebInfo>:/MT>"
+        "$<$<CONFIG:MinSizeRel>:/MT>"
+    )
+    
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+    set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /MTd")
+    set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /MT")
 endif()
 
 set(PROJECT_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
@@ -25,22 +23,17 @@ set(PROJECT_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 string(REGEX REPLACE ".*/([^/]+)" "\\1" THIS_PACKAGE_NAME "${CMAKE_CURRENT_SOURCE_DIR}")
 project(${THIS_PACKAGE_NAME} VERSION 1.0.0 LANGUAGES C CXX)
 
-if(MSVC)
-    # Modern way to set runtime library
-    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDLL")
-    
-    # Force it for all targets
-    add_compile_options(
-        "$<$<CONFIG:Debug>:/MDd>"
-        "$<$<CONFIG:Release>:/MD>"
-        "$<$<CONFIG:RelWithDebInfo>:/MD>"
-        "$<$<CONFIG:MinSizeRel>:/MD>"
-    )
-endif()
-
 #############################################################
 # Functions
 #############################################################
+macro(build_info)
+    # Build info variables
+    set(PROJECT_VERSION "1.0.0")
+    string(TIMESTAMP BUILD_DATE "%Y-%m-%d")
+    string(TIMESTAMP BUILD_TIME "%H:%M:%S") 
+    string(TIMESTAMP BUILD_DATETIME "%Y-%m-%d %H:%M:%S")
+endmacro()
+
 
 macro(project_name)
     # Creates the name of the package from the directory name.
@@ -56,7 +49,6 @@ enable_testing()
 
 # Ignore Test Files
 list(FILTER SHARED_SOURCES EXCLUDE REGEX ".*_test\\.cpp$")
-set(PROJECT_LIBRARIES_SHARED Catch2::Catch2WithMain)
 
 if (APPLE)
     if (${CMAKE_GENERATOR} MATCHES "Xcode")
@@ -86,37 +78,74 @@ if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/source/min-lib/CMakeLists.txt")
     add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/source/min-lib)
 endif ()
 
+#############################################################
+# Catch2 - STATIC LIBRARY WITH STATIC RUNTIME
+#############################################################
+
+# Save current runtime library settings
+set(OLD_CMAKE_MSVC_RUNTIME_LIBRARY ${CMAKE_MSVC_RUNTIME_LIBRARY})
+
+# FORCE STATIC RUNTIME FOR CATCH2
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded")
 
 #############################################################
-# CATCH2 SETUP
+# Catch2 - PURE STATIC LIBRARY
 #############################################################
-find_package(Catch2 3 QUIET)
-if(NOT Catch2_FOUND)
-    message(STATUS "Catch2 not found, fetching from GitHub...")
+
+include(FetchContent)
+
+FetchContent_Declare(
+    Catch2
+    GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+    GIT_TAG        v2.13.8
+)
+
+# FORCE STATIC LIBRARY
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+set(CATCH_BUILD_STATIC_LIBRARY ON CACHE BOOL "" FORCE)
+set(CATCH_BUILD_TESTING OFF CACHE BOOL "" FORCE)
+set(CATCH_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(CATCH_INSTALL_DOCS OFF CACHE BOOL "" FORCE)
+
+if(MSVC)
+    set(CMAKE_POLICY_DEFAULT_CMP0091 NEW)
+endif()
+
+FetchContent_MakeAvailable(Catch2)
+
+# Restore original runtime settings
+set(CMAKE_MSVC_RUNTIME_LIBRARY ${OLD_CMAKE_MSVC_RUNTIME_LIBRARY})
+
+# CREATE TARGETS
+if(TARGET Catch2)
+    # TODO: Simplify this.
+    if(NOT TARGET Catch2::Catch2)
+        add_library(Catch2::Catch2 ALIAS Catch2)
+    endif()
+    if(NOT TARGET Catch2::Catch2WithMain)
+        add_library(Catch2::Catch2WithMain ALIAS Catch2)
+    endif()
     
-    include(FetchContent)
-    FetchContent_Declare(
-        Catch2
-        GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-        GIT_TAG        v3.4.0
-    )
+    # Force static runtime on the Catch2 target specifically
+    if(MSVC)
+        set_target_properties(Catch2 PROPERTIES
+            MSVC_RUNTIME_LIBRARY "MultiThreaded"
+        )
+    endif()
     
-    # Configure Catch2 as header-only to avoid linking issues
-    set(CATCH_INSTALL_DOCS OFF CACHE BOOL "")
-    set(CATCH_INSTALL_EXTRAS OFF CACHE BOOL "")
-    set(BUILD_TESTING OFF CACHE BOOL "")
-    
-    FetchContent_MakeAvailable(Catch2)
+    message(STATUS "Catch2 configured as static library with static runtime")
+else()
+    message(FATAL_ERROR "Catch2 target not found!")
 endif()
 
 #############################################################
 # CATCH2 TESTS FOR SHARED LIBRARIES WITHOUT MAX/MIN
 #############################################################
 
-# Generate a project for every folder in the "source/shared" folder
-
 SUBDIRLIST(SHARED_DIRS ${PROJECT_ROOT}/source/shared)
+#set(SHARED_DIRS Exceptions Counter CD4017 CD4024 Keyboard)
 
+# Generate a project for every folder in the "source/shared" folder.
 foreach (project_dir ${SHARED_DIRS})
     if (EXISTS "${PROJECT_ROOT}/source/shared/${project_dir}/CMakeLists.txt")
         message("Generating: ${project_dir}")
@@ -124,7 +153,6 @@ foreach (project_dir ${SHARED_DIRS})
     endif ()
 endforeach ()
 
-# Comment the line below if you want automatic cmake regeneration enabled.
 set(CMAKE_SUPPRESS_REGENERATION true)
 
 #############################################################
@@ -140,14 +168,4 @@ if(WIN32)
             add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/source/projects/${project_dir})
         endif ()
     endforeach ()
-endif()
-
-
-
-if(MSVC)
-    # Remove duplicate runtime flags
-    foreach(var CXX_FLAGS_DEBUG CXX_FLAGS_RELEASE C_FLAGS_DEBUG C_FLAGS_RELEASE)
-        string(REGEX REPLACE "/MTd /MTd+" "/MTd" CMAKE_${var} "${CMAKE_${var}}")
-        string(REGEX REPLACE "/MT /MT+" "/MT" CMAKE_${var} "${CMAKE_${var}}")
-    endforeach()
 endif()

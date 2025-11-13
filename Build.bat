@@ -14,10 +14,7 @@ if exist %BUILD_PATH% (
     mkdir %BUILD_PATH%
 )
 
-if "%1"=="--clean" (
-    echo Cleaning build directory...
-    rmdir /S /Q "%PROJECTS_PATH%"
-)
+
 
 cd %BUILD_PATH%
 
@@ -30,7 +27,15 @@ if %errorlevel% neq 0 (
 )
 
 echo Building project...
-cmake --build . --config Release --clean-first
+
+if "%1"=="--clean-first" (
+    echo Cleaning build directory...
+    cmake --build . --config Release --clean-first
+) else (
+    cmake --build . --config Release
+)
+
+
 
 if %errorlevel% neq 0 (
     echo Build failed!

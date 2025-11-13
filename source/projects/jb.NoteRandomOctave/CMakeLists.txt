@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION "3.19")
+
 set(PROJECT_LIBRARIES
     
     Keyboard
@@ -8,12 +9,6 @@ set(C74_MIN_API_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../min-api)
 include(${C74_MIN_API_DIR}/script/min-pretarget.cmake)
 
 set(PROJECT_NAME jb.NoteRandomOctave)
-
-# Build info variables
-set(PROJECT_VERSION "1.0.0")
-string(TIMESTAMP BUILD_DATE "%Y-%m-%d")
-string(TIMESTAMP BUILD_TIME "%H:%M:%S") 
-string(TIMESTAMP BUILD_DATETIME "%Y-%m-%d %H:%M:%S")
 
 # FIX THE PATHS - use correct shared directory location
 include_directories( 

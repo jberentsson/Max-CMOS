@@ -38,4 +38,5 @@ set_tests_properties(${PROJECT_NAME}_test
         LABELS "unit;shared"
 )
 
+
 message(STATUS "${PROJECT_NAME} test target created and registered with CTest")

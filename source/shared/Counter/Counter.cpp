@@ -3,49 +3,47 @@
 #include "Counter.hpp"
 
 int Counter::reset() {
-    // Reset the counter.
     this->counter = this->first_step;
     return this->counter;
 }
 
 int Counter::forward() {
-    // Step forward by one.
-    if (this->counter < (this->max_value - 1)) {
-        this->counter++;
-    } else {
+    // Improved forward with proper wrapping
+    this->counter++;
+    if (this->counter >= this->max_value) {
         this->counter = this->first_step;
     }
-
     return this->counter;
 }
 
 int Counter::back() {
-    // Step back by one.
-    if (this->counter > 0) {
-        this->counter--;
+    // Improved backward with proper wrapping  
+    if (this->counter == this->first_step) {
+        this->counter = this->max_value - 1;
     } else {
-        this->counter = (this->max_value - 1);
+        this->counter--;
     }
-
     return this->counter;
 }
 
 bool Counter::direction(){
+    return this->dir;
+}
+
+// Add function to toggle direction if needed
+bool Counter::toggle_direction(){
     this->dir = !this->dir;
     return this->dir;
 }
 
 int Counter::set(int val) {
-    // Set the value of the counter.
     if (0 <= val && val < this->max_value){
         this->counter = val;
     }
-
     return this->counter;
 }
 
 int Counter::preset(){
-    // Activate the preset value.
     this->counter = this->preset_value;
     return this->counter;
 }
@@ -54,6 +52,9 @@ int Counter::step(){
     if (this->dir){
         return this->forward();
     }
-    
     return this->back();
+}
+
+int Counter::value() { 
+    return this->counter; 
 }

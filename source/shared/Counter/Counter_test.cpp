@@ -1,7 +1,7 @@
-#include "catch2/catch_test_macros.hpp"
+#include <catch2/catch.hpp>
 #include "Counter.hpp"
 
-SCENARIO("Test Initialize") {
+SCENARIO("Test Initialize") {	
 	Counter c = Counter(10);
 
 	REQUIRE(true);

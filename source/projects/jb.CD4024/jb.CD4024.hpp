@@ -12,10 +12,11 @@
 #include <io.h>
 #include <fcntl.h>
 #include <ext_mess.h>
+#include "CD4024/CD4024.hpp"
 
 using namespace c74::min;
 
-class CD4024 : public c74::min::object<CD4024> {
+class CD4024_MAX : public c74::min::object<CD4024_MAX> {
     public:
         MIN_DESCRIPTION	{"CMOS CD4024"};
         MIN_TAGS		{"cmos"};
@@ -41,10 +42,8 @@ class CD4024 : public c74::min::object<CD4024> {
             &output_4,
             &output_5,
             &output_6
-        }; 
+        };
 
-        void step();
-        void reset_counter();
         void send_bangs();
         void handle_output();
         int find_bit(int output);
@@ -65,19 +64,19 @@ class CD4024 : public c74::min::object<CD4024> {
 
         c74::min::message<c74::min::threadsafe::yes> bang{ this, "bang", "Steps the counter.",
             MIN_FUNCTION {
-                this->step();
+                this->counter.step();
                 return {};
             }
         };
 
         c74::min::message<c74::min::threadsafe::yes> reset{ this, "reset", "Reset the counter.",
             MIN_FUNCTION {
-                this->reset_counter();
+                this->counter.reset();
                 return {};
             }
         };
 
     private:
-        int counter = -1;
+        CD4024 counter = CD4024(10);
         bool bang_enabled = FALSE;
 };

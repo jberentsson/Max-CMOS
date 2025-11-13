@@ -1,5 +1,2 @@
-set(PROJECT_LIBRARIES
-    Counter
-)
-
-library_template(PROJECT_LIBRARIES)
+set(PROJECT_NAME "CD4024")
+library_template(Counter)

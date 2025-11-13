@@ -10,8 +10,8 @@ SCENARIO("object produces correct output") {
     ext_main(nullptr);
 
     GIVEN("An instance of our object") {
-        test_wrapper<CD4024> an_instance;
-        CD4024&              my_object = an_instance;
+        test_wrapper<CD4024_MAX> an_instance;
+        CD4024_MAX&              my_object = an_instance;
 
         WHEN("a 'bang' is received") {
             my_object.bang();
