@@ -65,3 +65,9 @@ int Counter::step(){
     }
     return this->back();
 }
+
+int Counter::enable(){
+    // Enable or disable the output.
+    this->is_enabled = !this->is_enabled;
+    return this->is_enabled;
+}

@@ -3,8 +3,3 @@
 CD4017::CD4017(int n) {
     this->max_value = n;
 }
-
-int CD4017::step() {
-    // Step forward by one.
-    return this->forward();
-}

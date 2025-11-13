@@ -21,6 +21,7 @@ class Counter {
         virtual int set(int val);
         virtual int forward();
         virtual int preset();
+        virtual int enable();
         virtual int set_preset(int p);
         virtual int reset();
         virtual int back();
