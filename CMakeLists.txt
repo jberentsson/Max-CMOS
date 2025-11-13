@@ -26,6 +26,7 @@ project(${THIS_PACKAGE_NAME} VERSION 1.0.0 LANGUAGES C CXX)
 #############################################################
 # Functions
 #############################################################
+
 macro(build_info)
     # Build info variables
     set(PROJECT_VERSION "1.0.0")
@@ -33,7 +34,6 @@ macro(build_info)
     string(TIMESTAMP BUILD_TIME "%H:%M:%S") 
     string(TIMESTAMP BUILD_DATETIME "%Y-%m-%d %H:%M:%S")
 endmacro()
-
 
 macro(project_name)
     # Creates the name of the package from the directory name.
