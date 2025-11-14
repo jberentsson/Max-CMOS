@@ -7,30 +7,48 @@
 
 using namespace c74::min;
 
-int CD4024_MAX::find_bit(int output) {
+int CD4024_MAX::get_bit(int output) {
     // isolate the correct bit.
     return ((this->counter.value()) >> output) & 0x1;
 }
 
-void CD4024_MAX::handle_output() {
+void CD4024_MAX::update_outputs() {
     // Send data to the outputs
-    // TODO: Send only data on change
+    for (int i = 0; i < OUTPUT_COUNT; i++){
+        int current = OUTPUT_COUNT - i - 1;
 
-    if (this->bang_enabled) {
-        this->send_bangs();
-    } else {
-        for (int i = 0; i < 7; i++){
-            this->outputs[i]->send(this->find_bit(i));
+        if (this->bang_enabled) {
+            if (this->get_bit(i)) {
+                this->outputs[current]->send("bang");
+            }
+        } else {
+            this->outputs[current]->send(this->get_bit(i));
         }
     }
 }
 
-void CD4024_MAX::send_bangs() {
-    for (int i = 0; i < 7; i++){
-        if (this->find_bit(i)) {
-            this->outputs[i]->send("bang");
-        }
-    }
+void CD4024_MAX::enable_bangs() {
+    this->bang_enabled = TRUE;
+}
+
+void CD4024_MAX::disable_bangs() {
+    this->bang_enabled = FALSE;
+}
+
+int CD4024_MAX::counter_value() {
+    return this->counter.value();
+}
+
+int CD4024_MAX::set_preset(int p){
+    return this->counter.set_preset(p);
+}
+
+int CD4024_MAX::preset(){
+    return this->counter.preset();
+}
+
+int CD4024_MAX::max_value(){
+    return this->counter.get_max_value();
 }
 
 MIN_EXTERNAL(CD4024_MAX);

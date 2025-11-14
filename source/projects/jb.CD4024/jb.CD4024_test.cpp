@@ -13,61 +13,116 @@ SCENARIO("object produces correct output") {
         test_wrapper<CD4024_MAX> an_instance;
         CD4024_MAX&              my_object = an_instance;
 
-        WHEN("a 'bang' is received") {
+        WHEN("test the rollover") {
             my_object.bang();
+            my_object.max_value();
 
             THEN("a 'bang' is received") {
                 REQUIRE(&my_object != nullptr);
             }
             
+            THEN("check counter value") {
+                REQUIRE(my_object.counter_value() == 0);
+            }
+            
             THEN("our greeting is produced at the outlet") {
-                auto& output_0 = *c74::max::object_getoutput(my_object, 0);
-                REQUIRE(output_0.size() == 0);
-                //REQUIRE((output_0[0].size() == 1));
-                //REQUIRE((output_0[0][0] == int(0)));
+                int expected[6][8] = {
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 1},
+                    {0, 0, 0, 0, 0, 0, 1, 0},
+                    {0, 0, 0, 0, 0, 0, 1, 1},
+                    {0, 0, 0, 0, 0, 1, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                };
 
-                auto& output_1 = *c74::max::object_getoutput(my_object, 1);
-                REQUIRE((output_1.size() == 0));
-                auto& output_2 = *c74::max::object_getoutput(my_object, 2);
-                REQUIRE((output_2.size() == 0));
-                auto& output_3 = *c74::max::object_getoutput(my_object, 3);
-                REQUIRE((output_3.size() == 0));
-                auto& output_4 = *c74::max::object_getoutput(my_object, 4);
-                REQUIRE((output_4.size() == 0));
-                auto& output_5 = *c74::max::object_getoutput(my_object, 5);
-                REQUIRE((output_5.size() == 0));
-                auto& output_6 = *c74::max::object_getoutput(my_object, 6);
-                REQUIRE((output_6.size() == 0));
+                REQUIRE(my_object.counter_value() == 0);
+
+                my_object.bang();
+
+                REQUIRE(my_object.counter_value() == 1);
+                
+                my_object.bang();
+                
+                REQUIRE(my_object.counter_value() == 2);
+
+                my_object.bang();
+                
+                REQUIRE(my_object.counter_value() == 3);
+
+                my_object.bang();
+                
+                REQUIRE(my_object.counter_value() == 4);
+
+                my_object.reset();
+                my_object.bang();
+
+                REQUIRE(my_object.counter_value() == 0);
+
+                for(int i = 0; i < 5; i++){
+                    for(int j = 0; j < OUTPUT_COUNT; j++){
+                        auto& out = *c74::max::object_getoutput(my_object, j);
+                        REQUIRE(out[0].size() == 2);
+                        REQUIRE(out[i][1] == expected[i][j]);
+                    }
+                }
+            }
+
+            WHEN("misc testing") {
+                my_object.anything(69);
+                my_object.list(42);
+                my_object.anything(69);
+                my_object.list("Reset");
             }
         }
 
-        THEN("a 'bang' is received") {
-            my_object.bang();
+        WHEN("test the preset function") {
             THEN("our greeting is produced at the outlet") {
-                REQUIRE(&my_object != nullptr);
-            }
+                int expected[6][8] = {
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 1},
+                    {0, 0, 1, 0, 0, 0, 0, 0},
+                    {0, 0, 1, 0, 0, 0, 0, 1},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 1},
+                };
 
-            THEN("our greeting is produced at the outlet") {
-                auto& output_0 = *c74::max::object_getoutput(my_object, 0);
-                REQUIRE((output_0.size() == 0));
-                auto& output_1 = *c74::max::object_getoutput(my_object, 1);
-                REQUIRE((output_1.size() == 0));
-                auto& output_2 = *c74::max::object_getoutput(my_object, 2);
-                REQUIRE((output_2.size() == 0));
-                auto& output_3 = *c74::max::object_getoutput(my_object, 3);
-                REQUIRE((output_3.size() == 0));
-                auto& output_4 = *c74::max::object_getoutput(my_object, 4);
-                REQUIRE((output_4.size() == 0));
-                auto& output_5 = *c74::max::object_getoutput(my_object, 5);
-                REQUIRE((output_5.size() == 0));
-                auto& output_6 = *c74::max::object_getoutput(my_object, 6);
-                REQUIRE((output_6.size() == 0));
-            }
-        }
+                my_object.bang();
 
-        WHEN("a 'bang' is received") {
-            THEN("our greeting is produced at the outlet") {
-                REQUIRE((my_object.find_bit(0) == 0));
+                REQUIRE(my_object.counter_value() == 0);
+
+                my_object.bang();
+
+                REQUIRE(my_object.counter_value() == 1);
+                
+                my_object.set_preset(32);
+                my_object.preset();
+                
+                REQUIRE(my_object.counter_value() == 31);
+
+                my_object.bang();
+                
+                REQUIRE(my_object.counter_value() == 32);
+
+                my_object.bang();
+                
+                REQUIRE(my_object.counter_value() == 33);
+
+                my_object.reset();
+                my_object.bang();
+
+                REQUIRE(my_object.counter_value() == 0);
+
+                my_object.bang();
+
+                REQUIRE(my_object.counter_value() == 1);
+
+                for(int i = 0; i < 6; i++){
+                    for(int j = 0; j < OUTPUT_COUNT; j++){
+                        auto& out = *c74::max::object_getoutput(my_object, j);
+                        REQUIRE(out[0].size() == 2);
+                        REQUIRE(out[i][1] == expected[i][j]);
+                    }
+                }
             }
         }
     }

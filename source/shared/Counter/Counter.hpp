@@ -1,5 +1,8 @@
 #pragma once
 
+#include <cmath>
+
+// TODO: Find a better number.
 #define MAX_VALUE 10
 
 class Counter {
@@ -19,6 +22,7 @@ class Counter {
         virtual int get_direction() { return this->dir; }
         virtual int value(){ return this->counter; }
         virtual int set(int val);
+        virtual int set_max_value(int m);
         virtual int forward();
         virtual int preset();
         virtual int enable();

@@ -53,7 +53,7 @@ int Counter::set(int val) {
 
 int Counter::preset(){
     // Set the counter to the preset value.
-    this->counter = this->preset_value;
+    this->counter = this->preset_value - 1;
     return this->counter;
 }
 
@@ -68,7 +68,7 @@ int Counter::step(){
     if (this->dir){
         return this->forward();
     }
-    
+
     return this->back();
 }
 
@@ -76,4 +76,10 @@ int Counter::enable(){
     // Enable or disable the output.
     this->is_enabled = !this->is_enabled;
     return this->is_enabled;
+}
+
+int Counter::set_max_value(int m){
+    // Set the maximum value for the counter.
+    this->max_value = m;
+    return this->max_value;
 }

@@ -16,6 +16,8 @@
 
 using namespace c74::min;
 
+#define OUTPUT_COUNT 8
+
 class CD4024_MAX : public c74::min::object<CD4024_MAX> {
     public:
         MIN_DESCRIPTION	{"CMOS CD4024"};
@@ -23,7 +25,18 @@ class CD4024_MAX : public c74::min::object<CD4024_MAX> {
         MIN_AUTHOR		{"Jóhann Berentsson"};
         MIN_RELATED		{"print, jit.print, dict.print"};
 
-        c74::min::inlet<>  input_0 { this, "(bang) input pulse" };
+        void enable_bangs();
+        void disable_bangs();
+
+        void update_outputs();
+        int get_bit(int output);
+
+        int counter_value();
+        int set_preset(int p);
+        int preset();
+        int max_value();
+
+        c74::min::inlet<>  input_0 { this, "(bang | list | reset) input pulse" };
         c74::min::inlet<>  input_1 { this, "(reset) reset pulse" };
 
         c74::min::outlet<> output_0 { this, "(anything) output bit 0" };
@@ -33,24 +46,22 @@ class CD4024_MAX : public c74::min::object<CD4024_MAX> {
         c74::min::outlet<> output_4 { this, "(anything) output bit 4" };
         c74::min::outlet<> output_5 { this, "(anything) output bit 5" };
         c74::min::outlet<> output_6 { this, "(anything) output bit 6" };
+        c74::min::outlet<> output_7 { this, "(anything) output bit 6" };
 
-        c74::min::outlet<> *outputs[7] = {
+        c74::min::outlet<> *outputs[OUTPUT_COUNT] = {
             &output_0,
             &output_1,
             &output_2,
             &output_3,
             &output_4,
             &output_5,
-            &output_6
+            &output_6,
+            &output_7
         };
-
-        void send_bangs();
-        void handle_output();
-        int find_bit(int output);
 
         c74::min::argument<c74::min::symbol> bang_arg{ this, "bang_on", "Initial value for the bang attribute.",
             MIN_ARGUMENT_FUNCTION {
-                bang_enabled = TRUE;
+                bang_enabled = FALSE;
             }
         };
 
@@ -64,19 +75,60 @@ class CD4024_MAX : public c74::min::object<CD4024_MAX> {
 
         c74::min::message<c74::min::threadsafe::yes> bang{ this, "bang", "Steps the counter.",
             MIN_FUNCTION {
-                this->counter.step();
+                if (this->already_banged) {
+                    if(this->reset_triggered){
+                        this->counter.reset();
+                        this->reset_triggered = FALSE;
+                    } else {
+                        this->counter.step();
+                    }
+                } else {
+                    this->already_banged = TRUE;
+                }
+
+                this->update_outputs();
                 return {};
             }
         };
 
-        c74::min::message<c74::min::threadsafe::yes> reset{ this, "reset", "Reset the counter.",
+        //c74::min::message<c74::min::threadsafe::yes> reset { this, "reset", "Reset the counter.",
+        //    MIN_FUNCTION {
+        //        this->reset_triggered = TRUE;
+        //        return {};
+        //    }
+        //};
+
+        c74::min::message<> list { this, "list", "Handle any message",
             MIN_FUNCTION {
-                this->counter.reset();
+                std::cout << "LIST!" << std::endl;
+                if (args.size() >= 1) {
+                    for(int i = 0; i < args.size(); i++){
+                        std::cout << "THE ARG: " << args[i] << std::endl;
+                    }
+                }
+                
+                return {};
+            }
+        };
+
+        c74::min::message<> reset { this, "reset", "Handle any message",
+            MIN_FUNCTION {
+                this->reset_triggered = TRUE;
+                
+                return {};
+            }
+        };
+
+        c74::min::message<> anything { this, "anything", "Handle any message",
+            MIN_FUNCTION {
+                std::cout << "ANYTHING!" << std::endl;
                 return {};
             }
         };
 
     private:
-        CD4024 counter = CD4024(10);
+        CD4024 counter = CD4024(OUTPUT_COUNT);
         bool bang_enabled = FALSE;
+        bool already_banged = FALSE;
+        bool reset_triggered = FALSE;
 };
