@@ -8,7 +8,7 @@
 using namespace c74::min;
 
 int CD4024_MAX::get_bit(int output) {
-    // isolate the correct bit.
+    // Isolate the correct bit.
     return ((this->counter.value()) >> output) & 0x1;
 }
 

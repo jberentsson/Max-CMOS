@@ -85,7 +85,8 @@ include(FetchContent)
 FetchContent_Declare(
     Catch2
     GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-    GIT_TAG        v2.13.8 # This version is important. Newer releases don't work.
+    GIT_TAG        v2.13.8 # This version is important. 
+                           # Newer releases don't work.
 )
 
 # FORCE STATIC LIBRARY

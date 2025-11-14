@@ -66,13 +66,6 @@ SCENARIO("object produces correct output") {
                     }
                 }
             }
-
-            WHEN("misc testing") {
-                my_object.anything(69);
-                my_object.list(42);
-                my_object.anything(69);
-                my_object.list("Reset");
-            }
         }
 
         WHEN("test the preset function") {
