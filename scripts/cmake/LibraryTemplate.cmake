@@ -92,8 +92,8 @@ macro(library_template PROJECT_LIBRARIES)
     # AUTOMATIC TEST REGISTRATION WITH CTEST
     #############################################################
 
-    if(EXISTS ${PROJECT_ROOT}/scripts//cmake/AddTests.cmake)
-        include(${PROJECT_ROOT}/scripts//cmake/AddTests.cmake)
+    if(EXISTS ${PROJECT_ROOT}/scripts/cmake/AddTests.cmake)
+        include(${PROJECT_ROOT}/scripts/cmake/AddTests.cmake)
     endif()
 
 endmacro()
