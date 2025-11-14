@@ -2,10 +2,10 @@
 
 #include "../Counter/Counter.hpp"
 
-class CD4024 : public Counter {
+class BinaryCounter : public Counter {
 	public:
-		CD4024();
-		CD4024(int n);
+		BinaryCounter();
+		BinaryCounter(int n);
 
 		int get_max_value();
 		int set_max_value(int n);
@@ -15,5 +15,4 @@ class CD4024 : public Counter {
 		using Counter::enable;
 		using Counter::value;
 		using Counter::direction;
-		//using Counter::set_max_value;
 };

@@ -2,9 +2,9 @@
 
 #include "../Counter/Counter.hpp"
 
-class CD4017 : public Counter {
+class NCounter : public Counter {
 	public:
-		CD4017(int n);
+		NCounter(int n);
 
 		using Counter::step;
 		using Counter::reset;

@@ -36,16 +36,16 @@ include(${C74_MIN_API_DIR}/test/min-object-unittest.cmake)
 # Import Shared Code And Link It To Our Binaries
 #############################################################
 
-set(PROJECT_LIBRARIES CD4024 Counter)
+set(PROJECT_LIBRARIES BinaryCounter Counter)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_LIBRARIES})
 target_link_directories(${PROJECT_NAME} PRIVATE
     ${PROJECT_ROOT}/source/shared/Counter
-    ${PROJECT_ROOT}/source/shared/CD4024
+    ${PROJECT_ROOT}/source/shared/BinaryCounter
 )
 
 target_link_libraries(${PROJECT_NAME}_test PRIVATE ${PROJECT_LIBRARIES})
 target_link_directories(${PROJECT_NAME}_test PRIVATE
     ${PROJECT_ROOT}/source/shared/Counter
-    ${PROJECT_ROOT}/source/shared/CD4024
+    ${PROJECT_ROOT}/source/shared/BinaryCounter
 )

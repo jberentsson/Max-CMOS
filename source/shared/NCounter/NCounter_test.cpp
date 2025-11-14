@@ -1,14 +1,14 @@
 #include <catch2/catch.hpp>
-#include "CD4017.hpp"
+#include "NCounter.hpp"
 
 SCENARIO("Test Initialize") {
-	CD4017 c = CD4017(10);
+	NCounter c = NCounter(10);
 
 	REQUIRE(true);
 }
 
 SCENARIO("Test Reset") {
-	CD4017 c = CD4017(10);
+	NCounter c = NCounter(10);
 
 	REQUIRE(c.value() == 0);
 

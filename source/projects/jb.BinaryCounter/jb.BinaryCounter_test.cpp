@@ -1,17 +1,19 @@
-/// @file       jb.CD4024_test.cpp
+/// @file       jb.BinaryCounter_test.cpp
 ///	@ingroup 	jb.cmos
 ///	@copyright	Copyright 2025 - Jóhann Berentsson. All rights reserved.
 ///	@license	Use of this source code is governed by the MIT License found in the License.md file.
 
 #include "c74_min_unittest.h"
-#include "jb.CD4024.cpp"
+#include "jb.BinaryCounter.cpp"
+
+using namespace c74::max;
 
 SCENARIO("object produces correct output") {
     ext_main(nullptr);
 
     GIVEN("An instance of our object") {
-        test_wrapper<CD4024_MAX> an_instance;
-        CD4024_MAX&              my_object = an_instance;
+        test_wrapper<BinaryCounter_MAX> an_instance;
+        BinaryCounter_MAX&              my_object = an_instance;
 
         WHEN("test the rollover") {
             my_object.bang();
@@ -60,7 +62,7 @@ SCENARIO("object produces correct output") {
 
                 for(int i = 0; i < 5; i++){
                     for(int j = 0; j < OUTPUT_COUNT; j++){
-                        auto& out = *c74::max::object_getoutput(my_object, j);
+                        auto& out = *object_getoutput(my_object, j);
                         REQUIRE(out[0].size() == 2);
                         REQUIRE(out[i][1] == expected[i][j]);
                     }
@@ -111,7 +113,7 @@ SCENARIO("object produces correct output") {
 
                 for(int i = 0; i < 6; i++){
                     for(int j = 0; j < OUTPUT_COUNT; j++){
-                        auto& out = *c74::max::object_getoutput(my_object, j);
+                        auto& out = *object_getoutput(my_object, j);
                         REQUIRE(out[0].size() == 2);
                         REQUIRE(out[i][1] == expected[i][j]);
                     }

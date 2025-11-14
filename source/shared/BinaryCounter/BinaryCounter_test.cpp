@@ -1,14 +1,14 @@
 #include <catch2/catch.hpp>
-#include "CD4024.hpp"
+#include "BinaryCounter.hpp"
 
 SCENARIO("Test Initialize") {
-	CD4024 c = CD4024(8);
+	BinaryCounter c = BinaryCounter(8);
 
 	REQUIRE(true);
 }
 
 SCENARIO("Back And Forth") {
-	CD4024 c = CD4024(4);
+	BinaryCounter c = BinaryCounter(4);
 	REQUIRE(c.direction() == 1);
 	REQUIRE(c.value() == 0);
 	REQUIRE(c.toggle_direction() == 0);
@@ -19,7 +19,7 @@ SCENARIO("Back And Forth") {
 }
 
 SCENARIO("Preset") {
-	CD4024 c = CD4024(4);
+	BinaryCounter c = BinaryCounter(4);
 	REQUIRE(c.value() == 0);
 	REQUIRE(c.set(6) == 6);
 	REQUIRE(c.set(10) == 10);

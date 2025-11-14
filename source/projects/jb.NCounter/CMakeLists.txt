@@ -36,16 +36,16 @@ include(${C74_MIN_API_DIR}/test/min-object-unittest.cmake)
 # Fix linking for tests
 #############################################################
 
-set(PROJECT_LIBRARIES CD4017 Counter)
+set(PROJECT_LIBRARIES NCounter Counter)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_LIBRARIES})
 target_link_directories(${PROJECT_NAME} PRIVATE
     ${PROJECT_ROOT}/source/shared/Counter
-    ${PROJECT_ROOT}/source/shared/CD4017
+    ${PROJECT_ROOT}/source/shared/NCounter
 )
 
 target_link_libraries(${PROJECT_NAME}_test PRIVATE ${PROJECT_LIBRARIES})
 target_link_directories(${PROJECT_NAME}_test PRIVATE
     ${PROJECT_ROOT}/source/shared/Counter
-    ${PROJECT_ROOT}/source/shared/CD4017
+    ${PROJECT_ROOT}/source/shared/NCounter
 )

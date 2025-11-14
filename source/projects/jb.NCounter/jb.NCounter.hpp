@@ -1,4 +1,4 @@
-/// @file       jb.CD4017.hpp
+/// @file       jb.NCounter.hpp
 ///	@ingroup 	jb
 ///	@copyright	Copyright 2025 - Jóhann Berentsson. All rights reserved.
 ///	@license	Use of this source code is governed by the MIT License found in the License.md file.
@@ -8,16 +8,31 @@
 #include "c74_min.h"
 #include <string>
 #include <iostream>
+#include <io.h>
+#include <fcntl.h>
+#include <ext_mess.h>
 #include <vector>
+#include "NCounter/NCounter.hpp"
 
 using namespace c74::min;
 
-class CD4017 : public object<CD4017> {
+#define OUTPUT_COUNT 10
+
+class NCounter_MAX : public object<NCounter_MAX> {
     public:
-        MIN_DESCRIPTION	{"CMOS CD4016"};
-        MIN_TAGS		{"cmos"};
+        MIN_DESCRIPTION	{"NCounter"};
+        MIN_TAGS		{"counter"};
         MIN_AUTHOR		{"Jóhann Berentsson"};
-        MIN_RELATED		{"print, jit.print, dict.print"};
+        MIN_RELATED		{"jb.*"};
+
+        NCounter_MAX(const atoms& args = {}){};
+        ~NCounter_MAX(){};
+        
+        void handle_outputs();
+        int counter_value();
+        int preset();
+        int step();
+        int set_preset(int p);
 
         inlet<>  input_0 { this, "(bang) input pulse" };
         inlet<>  input_1 { this, "(reset) reset pulse" };
@@ -44,22 +59,13 @@ class CD4017 : public object<CD4017> {
             &output_7,
             &output_8,
             &output_9
-        }; 
-    
-        CD4017(const atoms& args = {}){};
-        ~CD4017(){};
-        
-        void send_output();
-        void step();
-        void reset_counter();
-        
-        // Add test methods
-        #ifdef C74_MIN_UNIT_TESTS
-        int test_get_counter() const { return this->counter; }
-        int test_get_current_output() const { return this->current_output; }
-        std::vector<int> test_get_output_states() const { return this->output_states; }
-        #endif
-            
+        };
+
+        argument<symbol> bang_arg{ this, "bang_on", "Initial value for the bang attribute.",
+            MIN_ARGUMENT_FUNCTION {
+                bang_enabled = FALSE;
+            }
+        };       
         argument<symbol> output_type_arg{ this, "output_type", "Initial value for the greeting attribute.",
             MIN_ARGUMENT_FUNCTION {            
                 output_type = arg;
@@ -75,19 +81,26 @@ class CD4017 : public object<CD4017> {
 
         message<> bang{ this, "bang", "Steps the counter.",
             MIN_FUNCTION {
-                this->step();
+                if(this->already_banged){
+                    this->counter.step();
+                } else {
+                    this->already_banged = TRUE;
+                }
+                this->handle_outputs();
                 return {};
             }
         };
 
         message<> reset{ this, "reset", "Reset the counter.",
             MIN_FUNCTION {
-                this->reset_counter();
+                this->counter.reset();
                 return {};
             }
         };
 
     private:
-        int counter = 0;
+        NCounter counter = NCounter(OUTPUT_COUNT);
         std::vector<int> output_states;
+        bool bang_enabled = FALSE;
+        bool already_banged = FALSE;
 };
