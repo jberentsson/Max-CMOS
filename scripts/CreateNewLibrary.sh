@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
+#
+# ========================= DESCRIPTION =========================
 # This scripts creates all of the files needed 
 # to start programming a new shared library.
 #
-# === FILES ===
+# ========================= FILES ===============================
 # The files and directories that are created are.
 # - source/shared/NewLibraryName/
 # - source/shared/NewLibraryName/CMakeLists.txt
@@ -10,7 +12,7 @@
 # - source/shared/NewLibraryName/NewLibraryName.hpp
 # - source/shared/NewLibraryName/NewLibraryName_test.hpp
 #
-# === USAGE ===
+# ========================= USAGE ===============================
 # ./scripts/CreateNewLibrary.sh
 #
 
@@ -23,8 +25,10 @@ else
     NEW_LIBRARY_PATH="$NEW_LIBRARY_DIRECTORY/$NEW_LIBRARY_NAME"
 
     if [ ! -d $NEW_LIBRARY_DIRECTORY ]; then
+        # Begin.
         echo "-- Creating new library: $NEW_LIBRARY_NAME"
         echo "-- Creating directory."
+
         # Create the directory.
         mkdir -p $NEW_LIBRARY_DIRECTORY
 
