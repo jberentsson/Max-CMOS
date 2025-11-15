@@ -24,7 +24,7 @@ SCENARIO("jb.NoteRandomOctave object basic functionality") {
                 REQUIRE_NOTHROW(my_object.anything(args));
                 auto& out0 = *c74::max::object_getoutput(my_object, 0);
                 auto& out1 = *c74::max::object_getoutput(my_object, 1);
-                REQUIRE(true); // If we get here, structure is correct
+                REQUIRE(true);
             }
         }
 
@@ -118,7 +118,7 @@ SCENARIO("jb.NoteRandomOctave object basic functionality") {
                 my_object.anything(note5);
                 my_object.anything(note6);
                 
-                REQUIRE(&my_object != nullptr); // Still alive!
+                REQUIRE(&my_object != nullptr);
             }
         }
     }
@@ -253,7 +253,8 @@ SCENARIO("jb.NoteRandomOctave musical scale tests") {
 
         WHEN("a C major scale is played") {
             THEN("all scale notes are processed without crashing") {
-                int c_major[] = {60, 62, 64, 65, 67, 69, 71, 72}; // C4 to C5
+                // C4 to C5
+                int c_major[] = {60, 62, 64, 65, 67, 69, 71, 72};
                 for (int note : c_major) {
                     c74::min::atoms on_args = {note, 100};
                     c74::min::atoms off_args = {note, 0};

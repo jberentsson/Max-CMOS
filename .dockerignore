@@ -1,0 +1,10 @@
+source/min-dev
+source/max-api
+source/max-sdk-base
+source/min-api
+source/catch2
+source/Catch2
+build/
+externals/
+docker-compose.yaml
+Dockerfile
