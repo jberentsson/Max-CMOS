@@ -21,7 +21,7 @@ using namespace c74::min;
 class NCounter_MAX : public object<NCounter_MAX> {
     public:
         MIN_DESCRIPTION	{"NCounter"};
-        MIN_TAGS		{"counter"};
+        MIN_TAGS		{"jb, counter"};
         MIN_AUTHOR		{"Jóhann Berentsson"};
         MIN_RELATED		{"jb.*"};
 
@@ -65,7 +65,8 @@ class NCounter_MAX : public object<NCounter_MAX> {
             MIN_ARGUMENT_FUNCTION {
                 bang_enabled = FALSE;
             }
-        };       
+        };
+
         argument<symbol> output_type_arg{ this, "output_type", "Initial value for the greeting attribute.",
             MIN_ARGUMENT_FUNCTION {            
                 output_type = arg;
@@ -86,6 +87,7 @@ class NCounter_MAX : public object<NCounter_MAX> {
                 } else {
                     this->already_banged = TRUE;
                 }
+                
                 this->handle_outputs();
                 return {};
             }

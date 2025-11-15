@@ -14,8 +14,6 @@ int Keyboard::randomizeNote(int pitch) {
         return -1;
     }
     
-    // No octave randomization - just return original pitch
-    // Still apply range clamping for safety
     return clampPitchToRange(pitch);
 }
 
@@ -28,26 +26,20 @@ Keyboard::Keyboard(int low, int high) : rangeLow(low), rangeHigh(high) {
 }
 
 int Keyboard::note(int pitch, int velocity) {
-    std::cout << "Keyboard::note called - pitch: " << pitch << " velocity: " << velocity << std::endl;
-    
     if (pitch < 0 || pitch > 127 || velocity < 0 || velocity > 127) {
-        std::cout << "Invalid input - ignoring" << std::endl;
         return 0;
     }
     
     if (velocity > 0) {
-        // Note ON - use original pitch (no octave changes)
+        // Note ON
         int processedPitch = randomizeNote(pitch);
-        std::cout << "Original pitch: " << pitch << " -> Processed pitch: " << processedPitch << std::endl;
         
         if (processedPitch >= 0 && processedPitch <= 127) {
             activeNotes.push_back(std::make_unique<ActiveNote>(pitch, processedPitch, velocity));
-            std::cout << "Note added to active notes. Total: " << activeNotes.size() << std::endl;
             return 1;
         }
     } else {
         // Note OFF
-        std::cout << "Processing note off for pitch class: " << getPitchClass(pitch) << std::endl;
         return clearNotesByPitchClass(pitch);
     }
     
@@ -67,29 +59,22 @@ int Keyboard::clearNotesByPitchClass(int pitch) {
         }
     }
     
-    std::cout << "Cleared " << clearedCount << " notes with pitch class " << targetPitchClass << std::endl;
     return clearedCount;
 }
 
 int Keyboard::removeAll() {
     int count = activeNotes.size();
     activeNotes.clear();
-    std::cout << "Removed all " << count << " notes" << std::endl;
     return count;
 }
 
 void Keyboard::updateRange(int low, int high) {
     rangeLow = low;
     rangeHigh = high;
-    std::cout << "Range updated to: " << rangeLow << " - " << rangeHigh << std::endl;
 }
 
 void Keyboard::setRandomRange(int low, int high) {
-    // This method is kept for compatibility but does nothing
-    // since we're not doing octave randomization
-    std::cout << "setRandomRange called but octave randomization is disabled" << std::endl;
 }
-
 
 const std::vector<std::unique_ptr<ActiveNote>>& Keyboard::getActiveNotes() const {
     return activeNotes;
