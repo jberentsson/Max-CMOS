@@ -1,6 +1,6 @@
 /// @file       jb.BinaryCounter.hpp
 ///	@ingroup 	jb
-///	@copyright	Copyright 2025 - Jóhann Berentsson. All rights reserved.
+///	@copyright	Copyright 2022 - Jóhann Berentsson. All rights reserved.
 ///	@license	Use of this source code is governed by the MIT License found in the License.md file.
 
 #pragma once
@@ -21,11 +21,11 @@ using namespace c74::min;
 class BinaryCounter_MAX : public object<BinaryCounter_MAX> {
     public:
         MIN_DESCRIPTION	{"Binary Counter"};
-        MIN_TAGS		{"cmos"};
+        MIN_TAGS		{"jb, counter"};
         MIN_AUTHOR		{"Jóhann Berentsson"};
-        MIN_RELATED		{"print, jit.print, dict.print"};
+        MIN_RELATED		{"jb.*"};
         
-        BinaryCounter_MAX(const atoms& args = {}){std::cout << args.size() << std::endl;};
+        BinaryCounter_MAX(const atoms& args = {});
         ~BinaryCounter_MAX(){};
 
         void enable_bangs();
@@ -124,6 +124,7 @@ class BinaryCounter_MAX : public object<BinaryCounter_MAX> {
 
     private:
         BinaryCounter counter = BinaryCounter(OUTPUT_COUNT);
+        
         bool bang_enabled = FALSE;
         bool already_banged = FALSE;
         bool reset_triggered = FALSE;

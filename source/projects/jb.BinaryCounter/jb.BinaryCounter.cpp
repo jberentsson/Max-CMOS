@@ -1,9 +1,15 @@
 /// @file       jb.BinaryCounter.cpp
 ///	@ingroup 	jb
-///	@copyright	Copyright 2018 - Jóhann Berentsson. All rights reserved.
+///	@copyright	Copyright 2022 - Jóhann Berentsson. All rights reserved.
 ///	@license	Use of this source code is governed by the MIT License found in the License.md file.
 
 #include "jb.BinaryCounter.hpp"
+        
+BinaryCounter_MAX::BinaryCounter_MAX(const atoms& args){
+    for(int i = 0; i < args.size(); i++){
+        cout << "arg[" << i << "]" << args[i] << endl;
+    }
+}
 
 int BinaryCounter_MAX::get_bit(int output) {
     // Isolate the correct bit.
@@ -11,7 +17,7 @@ int BinaryCounter_MAX::get_bit(int output) {
 }
 
 void BinaryCounter_MAX::update_outputs() {
-    // Send data to the outputs
+    // Send data to the outputs.
     for (int i = 0; i < OUTPUT_COUNT; i++){
         int current = OUTPUT_COUNT - i - 1;
 
