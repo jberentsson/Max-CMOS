@@ -13,7 +13,7 @@
 # - source/shared/NewLibraryName/NewLibraryName_test.hpp
 #
 # ========================= USAGE ===============================
-# ./scripts/CreateNewLibrary.sh
+# ./scripts/Createibrary.sh
 #
 
 if [ $# -eq 0 ]; then
