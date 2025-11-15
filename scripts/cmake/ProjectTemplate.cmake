@@ -1,7 +1,5 @@
 # TODO: Find a way to fix thelibrary imports.
 macro(project_template)
-    cmake_minimum_required(VERSION "3.19")
-
     project_name()
 
     include(${C74_MIN_API_DIR}/script/min-pretarget.cmake)

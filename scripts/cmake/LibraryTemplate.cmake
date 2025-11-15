@@ -1,6 +1,4 @@
 macro(library_template PROJECT_LIBRARIES)
-    cmake_minimum_required(VERSION "3.19")
-
     if(NOT DEFINED PROJECT_NAME)
         message(FATAL_ERROR "PROJECT_NAME must be defined before calling library_template")
     endif()
@@ -54,15 +52,7 @@ macro(library_template PROJECT_LIBRARIES)
     add_executable(${PROJECT_NAME}_test ${TEST_SOURCES})
 
     # TODO: Simplify this.
-    if(TARGET Catch2::Catch2WithMain)
-        target_link_libraries(${PROJECT_NAME}_test PRIVATE Catch2::Catch2WithMain ${PROJECT_NAME})
-    elseif(TARGET Catch2::Catch2)
-        target_link_libraries(${PROJECT_NAME}_test PRIVATE Catch2::Catch2 ${PROJECT_NAME})
-    elseif(TARGET Catch2)
-        target_link_libraries(${PROJECT_NAME}_test PRIVATE Catch2 ${PROJECT_NAME})
-    else()
-        message(FATAL_ERROR "No Catch2 target found!")
-    endif()
+    target_link_libraries(${PROJECT_NAME}_test PRIVATE Catch2::Catch2WithMain ${PROJECT_NAME})
 
     target_include_directories(${PROJECT_NAME}_test PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}
