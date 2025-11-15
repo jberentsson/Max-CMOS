@@ -1,5 +1,5 @@
 /// @file       jb.BinaryCounter_test.cpp
-///	@ingroup 	jb.cmos
+///	@ingroup 	jb
 ///	@copyright	Copyright 2025 - Jóhann Berentsson. All rights reserved.
 ///	@license	Use of this source code is governed by the MIT License found in the License.md file.
 
