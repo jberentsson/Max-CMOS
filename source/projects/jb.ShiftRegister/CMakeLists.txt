@@ -13,30 +13,37 @@ include_directories(
     ${PROJECT_ROOT}/source/shared
 )
 
-set(SOURCE_FILES
-    ${PROJECT_NAME}.cpp
+set( SOURCE_FILES
     ${PROJECT_NAME}.hpp
+    ${PROJECT_NAME}.cpp
 )
 
-add_library(${PROJECT_NAME} MODULE 
+add_library(
+    ${PROJECT_NAME}
+    MODULE
     ${SOURCE_FILES}
-    ${include_directories}
 )
+
+include(${C74_MIN_API_DIR}/script/min-posttarget.cmake)
 
 #############################################################
 # UNIT TEST
 #############################################################
 
-target_link_libraries(${PROJECT_NAME} PRIVATE Keyboard)
-
-#############################################################
-# Import Shared Code
-#############################################################
-
-include(${C74_MIN_API_DIR}/script/min-posttarget.cmake)
 include(${C74_MIN_API_DIR}/test/min-object-unittest.cmake)
 
-target_link_libraries(${PROJECT_NAME}_test PRIVATE Keyboard)
-target_include_directories(${PROJECT_NAME}_test PRIVATE 
-    ${PROJECT_ROOT}/source/shared/Keyboard
+#############################################################
+# Import Shared Code And Link It To Our Binaries
+#############################################################
+
+set(PROJECT_LIBRARIES ShiftRegister)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_LIBRARIES})
+target_link_directories(${PROJECT_NAME} PRIVATE
+    ${PROJECT_ROOT}/source/shared/ShiftRegister
+)
+
+target_link_libraries(${PROJECT_NAME}_test PRIVATE ${PROJECT_LIBRARIES})
+target_link_directories(${PROJECT_NAME}_test PRIVATE
+    ${PROJECT_ROOT}/source/shared/ShiftRegister
 )
