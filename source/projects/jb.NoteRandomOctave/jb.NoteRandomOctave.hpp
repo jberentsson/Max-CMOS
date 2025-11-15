@@ -1,79 +1,76 @@
-/// @file       jb.NoteRandomOctave.hpp
-///	@ingroup 	jb
-///	@copyright	Copyright 2025 - Jóhann Berentsson. All rights reserved.
-///	@license	Use of this source code is governed by the MIT License found in the License.md file.
-
 #pragma once
+#include "Keyboard/Keyboard.hpp"
+#include <c74_min.h>
 
-#include "c74_min.h"
-#include "Keyboard.hpp"
-
+// Forward declaration
 class Keyboard;
-class ActiveNote;
 
-using namespace c74::min;
-
-class NoteRandomOctave : public object<NoteRandomOctave> {
-    public:
-        MIN_DESCRIPTION {"Randomize note octaves"};
-        MIN_TAGS {"midi, notes, random"};
-        MIN_AUTHOR {"Jóhann Berentsson"};
-        MIN_RELATED {"jb.*"};
-
-        // Inlets
-        inlet<>  input  { this, "(list) note messages" };
+class NoteRandomOctave : public c74::min::object<NoteRandomOctave> {
+    private:
+        Keyboard* keyboard;
         
-        // Outlets  
-        outlet<> output_0 { this, "(number) note" };
-        outlet<> output_1 { this, "(number) velocity" };
-
-        // Messages
-        message<> NoteRandomOctave::note_list = { this, "list", "Process note messages.",
+    public:
+        NoteRandomOctave(const c74::min::atoms& args = {});
+        ~NoteRandomOctave();
+        
+        // Methods
+        void processNoteMessage(int note, int velocity);
+        void clearNoteMessage(int note);
+        void clearAllNotesMessage();
+        void setRangeMessage(int low, int high);
+        void printActiveNotes();
+        
+        // Inlets and outlets
+        c74::min::inlet<>  input_0  { this, "(int) note, (int) velocity" };
+        c74::min::outlet<> output_0 { this, "(int) pitch" };
+        c74::min::outlet<> output_1 { this, "(int) velocity" };
+        
+        // Handle any message to the left inlet
+        c74::min::message<> anything { this, "anything", "Handle any message",
+            MIN_FUNCTION {
+                // Convert any numeric types to integers
+                if (args.size() >= 2) {
+                    int note = args[0];
+                    int velocity = args[1];
+                    processNoteMessage(note, velocity);
+                }
+                return {};
+            }
+        };
+        
+        // Simple message handlers
+        c74::min::message<> clear { this, "clear", "Clear specific note",
             MIN_FUNCTION {
                 if (args.size() >= 1) {
                     int note = args[0];
-                    int velocity = DEFAULT_VELOCITY;
-
-                    if(args.size() == 2){
-                        velocity = args[1];
-                    }
-
-                    output_0.send(note);
-                    output_1.send(velocity);
-
-                    std::vector<ActiveNote*> notes = keyboard->note(note, velocity);
-                    
-                    if (velocity == 0){
-                        keyboard->clearNotes(note);
-                    }
+                    clearNoteMessage(note);
                 }
-                
                 return {};
             }
         };
-
-        // Range list
-        message<> NoteRandomOctave::range_list = { this, "range", "Set the range of the notes.",
+        
+        c74::min::message<> clearall { this, "clearall", "Clear all notes",
+            MIN_FUNCTION {
+                clearAllNotesMessage();
+                return {};
+            }
+        };
+        
+        c74::min::message<> range { this, "range", "Set random range",
             MIN_FUNCTION {
                 if (args.size() >= 2) {
-                    keyboard->setRandomRange(args[0], args[1]);
+                    int low = args[0];
+                    int high = args[1];
+                    setRangeMessage(low, high);
                 }
                 return {};
             }
         };
-
-        // Attributes
-        attribute<symbol> output_type { 
-            this, 
-            "output_type", 
-            "number",
-            description {"Output type: note or velocity"}
+        
+        c74::min::message<> debug { this, "debug", "Print active notes",
+            MIN_FUNCTION {
+                printActiveNotes();
+                return {};
+            }
         };
-
-        NoteRandomOctave(const atoms& args = {});
-        ~NoteRandomOctave();
-
-    private:
-        Keyboard* keyboard;
-        static const int DEFAULT_VELOCITY = 127;
 };

@@ -19,6 +19,7 @@ cmake_install.cmake
 install_manifest.txt
 C
 Makefile
+CMakeTestfile.cmake
 
 # Build output binaries (not needed in repo)
 *.exe
@@ -70,3 +71,7 @@ externals/
 # Libraries
 source/catch2/
 source/min-api/
+source/Catch2/
+source/max-api/
+source/max-sdk/
+source/min-devkit/
