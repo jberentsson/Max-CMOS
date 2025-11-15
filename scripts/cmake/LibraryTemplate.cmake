@@ -1,4 +1,8 @@
 macro(library_template PROJECT_LIBRARIES)
+    #############################################################
+    # Library Projecte Template
+    #############################################################
+    
     if(NOT DEFINED PROJECT_NAME)
         message(FATAL_ERROR "PROJECT_NAME must be defined before calling library_template")
     endif()
@@ -19,9 +23,7 @@ macro(library_template PROJECT_LIBRARIES)
         )
     endif()
 
-    target_include_directories(${PROJECT_NAME} PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}
-    )
+    target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
     # Link with Counter for dependent libraries
     if(NOT ${PROJECT_NAME} STREQUAL "Counter")
@@ -42,7 +44,7 @@ macro(library_template PROJECT_LIBRARIES)
     )
 
     #############################################################
-    # TEST TARGET - NO CATCH2 LIBRARY LINKING
+    # TEST TARGET
     #############################################################
 
     set(TEST_SOURCES
@@ -51,14 +53,13 @@ macro(library_template PROJECT_LIBRARIES)
 
     add_executable(${PROJECT_NAME}_test ${TEST_SOURCES})
 
-    # TODO: Simplify this.
+    # Catch2
     target_link_libraries(${PROJECT_NAME}_test PRIVATE Catch2::Catch2WithMain ${PROJECT_NAME})
 
     target_include_directories(${PROJECT_NAME}_test PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${CMAKE_CURRENT_SOURCE_DIR}/../
         ${CMAKE_CURRENT_SOURCE_DIR}/../extern
-        ${CMAKE_CURRENT_SOURCE_DIR}/../shared/Counter
     )
 
     # Force static runtime for test executable
@@ -79,11 +80,15 @@ macro(library_template PROJECT_LIBRARIES)
     )
 
     #############################################################
-    # AUTOMATIC TEST REGISTRATION WITH CTEST
+    # Unit Tests
     #############################################################
 
     if(EXISTS ${PROJECT_ROOT}/scripts/cmake/AddTests.cmake)
         include(${PROJECT_ROOT}/scripts/cmake/AddTests.cmake)
     endif()
+
+    #############################################################
+    # Done!
+    #############################################################
 
 endmacro()

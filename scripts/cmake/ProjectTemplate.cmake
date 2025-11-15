@@ -1,5 +1,8 @@
-# TODO: Find a way to fix thelibrary imports.
 macro(project_template)
+    #############################################################
+    # Max Module Templat
+    #############################################################
+
     project_name()
 
     include(${C74_MIN_API_DIR}/script/min-pretarget.cmake)
@@ -41,11 +44,18 @@ macro(project_template)
         ${PROJECT_NAME}_test
     )
 
+    #############################################################
     # Link the libraries to the targets.
+    #############################################################
+
     foreach(PLT ${PROJECT_LIBRARIES_TARGETS})
         foreach(LIB ${PROJECT_LIBRARIES})
             target_link_libraries(${PLT} PRIVATE ${LIB})
             target_link_directories(${PLT} PRIVATE ${PROJECT_ROOT}/source/shared/${LIB})
         endforeach()
     endforeach()
+
+    #############################################################
+    # Done!
+    #############################################################
 endmacro()
