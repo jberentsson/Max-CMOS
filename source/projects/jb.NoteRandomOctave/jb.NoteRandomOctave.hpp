@@ -7,43 +7,38 @@ class Keyboard;
 
 class NoteRandomOctave : public c74::min::object<NoteRandomOctave> {
     private:
-        Keyboard* keyboard;
+        Keyboard keyboard = Keyboard();
         
     public:
         NoteRandomOctave(const c74::min::atoms& args = {});
         ~NoteRandomOctave();
         
-        // Methods
         void processNoteMessage(int note, int velocity);
         void clearNoteMessage(int note);
         void clearAllNotesMessage();
         void setRangeMessage(int low, int high);
         void printActiveNotes();
         
-        // Inlets and outlets
         c74::min::inlet<>  input_0  { this, "(int) note, (int) velocity" };
         c74::min::outlet<> output_0 { this, "(int) pitch" };
         c74::min::outlet<> output_1 { this, "(int) velocity" };
         
-        // Handle any message to the left inlet
         c74::min::message<> anything { this, "anything", "Handle any message",
             MIN_FUNCTION {
-                // Convert any numeric types to integers
                 if (args.size() >= 2) {
                     int note = args[0];
                     int velocity = args[1];
-                    processNoteMessage(note, velocity);
+                    this->processNoteMessage(note, velocity);
                 }
                 return {};
             }
         };
         
-        // Simple message handlers
         c74::min::message<> clear { this, "clear", "Clear specific note",
             MIN_FUNCTION {
                 if (args.size() >= 1) {
                     int note = args[0];
-                    clearNoteMessage(note);
+                    this->clearNoteMessage(note);
                 }
                 return {};
             }
@@ -51,7 +46,7 @@ class NoteRandomOctave : public c74::min::object<NoteRandomOctave> {
         
         c74::min::message<> clearall { this, "clearall", "Clear all notes",
             MIN_FUNCTION {
-                clearAllNotesMessage();
+                this->clearAllNotesMessage();
                 return {};
             }
         };
@@ -61,7 +56,7 @@ class NoteRandomOctave : public c74::min::object<NoteRandomOctave> {
                 if (args.size() >= 2) {
                     int low = args[0];
                     int high = args[1];
-                    setRangeMessage(low, high);
+                    this->setRangeMessage(low, high);
                 }
                 return {};
             }
@@ -69,7 +64,7 @@ class NoteRandomOctave : public c74::min::object<NoteRandomOctave> {
         
         c74::min::message<> debug { this, "debug", "Print active notes",
             MIN_FUNCTION {
-                printActiveNotes();
+                this->printActiveNotes();
                 return {};
             }
         };
