@@ -1,9 +1,9 @@
-/// @file       jb.BinaryCounter.cpp
+/// @file       seidr.BinaryCounter.cpp
 ///	@ingroup 	jb
 ///	@copyright	Copyright 2022 - Jóhann Berentsson. All rights reserved.
 ///	@license	Use of this source code is governed by the MIT License found in the License.md file.
 
-#include "jb.BinaryCounter.hpp"
+#include "seidr.BinaryCounter.hpp"
         
 BinaryCounter_MAX::BinaryCounter_MAX(const atoms& args){
     for(int i = 0; i < args.size(); i++){

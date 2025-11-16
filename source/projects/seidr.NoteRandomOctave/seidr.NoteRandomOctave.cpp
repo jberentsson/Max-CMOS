@@ -1,4 +1,4 @@
-#include "jb.NoteRandomOctave.hpp"
+#include "seidr.NoteRandomOctave.hpp"
 #include <iostream>
 
 using namespace c74::min;

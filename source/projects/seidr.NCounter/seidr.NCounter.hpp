@@ -1,4 +1,4 @@
-/// @file       jb.NCounter.hpp
+/// @file       seidr.NCounter.hpp
 ///	@ingroup 	jb
 ///	@copyright	Copyright 2025 - Jóhann Berentsson. All rights reserved.
 ///	@license	Use of this source code is governed by the MIT License found in the License.md file.
@@ -23,7 +23,7 @@ class NCounter_MAX : public object<NCounter_MAX> {
         MIN_DESCRIPTION	{"NCounter"};
         MIN_TAGS		{"jb, counter"};
         MIN_AUTHOR		{"Jóhann Berentsson"};
-        MIN_RELATED		{"jb.*"};
+        MIN_RELATED		{"seidr.*"};
 
         NCounter_MAX(const atoms& args = {}){};
         ~NCounter_MAX(){};

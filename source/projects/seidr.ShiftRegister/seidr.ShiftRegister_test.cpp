@@ -1,10 +1,10 @@
-/// @file       jb.ShiftRegister_test.cpp
+/// @file       seidr.ShiftRegister_test.cpp
 ///	@ingroup 	jb
 ///	@copyright	Copyright 2025 - Jóhann Berentsson. All rights reserved.
 ///	@license	Use of this source code is governed by the MIT License found in the License.md file.
 
 #include "c74_min_unittest.h"
-#include "jb.ShiftRegister.cpp"
+#include "seidr.ShiftRegister.cpp"
 
 using namespace c74::max;
 
