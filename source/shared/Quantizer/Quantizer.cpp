@@ -64,12 +64,14 @@ int Quantizer::round_down(int n) {
 }
 
 int Quantizer::set_range(int l, int h){
+    // Set the quantizer output range.
     this->range_high = h;
     this->range_low = l;
     return 0;
 }
 
 int Quantizer::clear(){
+    // Clear all set notes from the keyboard.
     for(int i = 0; i < KEYBOARD_SIZE; i++){
         this->keyboard[i] = 0;
     }
@@ -79,6 +81,7 @@ int Quantizer::clear(){
 }
 
 int Quantizer::get_note(int n){
+    // Check if the note has been set.
     if (n < 0 || n >= KEYBOARD_SIZE) {
         return 0;
     }
@@ -87,10 +90,14 @@ int Quantizer::get_note(int n){
 }
 
 int Quantizer::add_note(int n){
+    // Add note to the keyboard.
+
+    // Return error if the note value is out of range.
     if (n < 0 || n >= KEYBOARD_SIZE) {
         return -1;
     }
 
+    // Depending on the mode add the note or notes to the keyboard.
     if(this->mode == QuantizeMode::TWELVE_NOTES){
         int degree = n % OCTAVE_SIZE;
         
