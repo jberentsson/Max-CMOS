@@ -19,6 +19,7 @@ cmake_install.cmake
 install_manifest.txt
 C
 Makefile
+CMakeTestfile.cmake
 
 # Build output binaries (not needed in repo)
 *.exe
@@ -66,7 +67,3 @@ tmp/
 temp/
 Testing
 externals/
-
-# Libraries
-source/catch2/
-source/min-api/
