@@ -6,11 +6,11 @@
 #
 # ========================= FILES ===============================
 # The files and directories that are created are.
-# - source/shared/NewProjectName/
-# - source/shared/NewProjectName/CMakeLists.txt
-# - source/shared/NewProjectName/NewProjectName.cpp
-# - source/shared/NewProjectName/NewProjectName.hpp
-# - source/shared/NewProjectName/NewProjectName_test.hpp
+# - source/Projects/NewProjectName/
+# - source/Projects/NewProjectName/CMakeLists.txt
+# - source/Projects/NewProjectName/NewProjectName.cpp
+# - source/Projects/NewProjectName/NewProjectName.hpp
+# - source/Projects/NewProjectName/NewProjectName_test.hpp
 #
 # ========================= USAGE ===============================
 # ./scripts/CrateProject.sh
