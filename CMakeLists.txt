@@ -108,21 +108,7 @@ endif()
 # CATCH2 TESTS FOR SHARED LIBRARIES WITHOUT MAX/MIN
 #############################################################
 
-<<<<<<< HEAD
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/source/shared)
-=======
-SUBDIRLIST(SHARED_DIRS ${PROJECT_ROOT}/source/shared)
-
-# Generate a project for every folder in the "source/shared" folder.
-foreach (project_dir ${SHARED_DIRS})
-    if (EXISTS "${PROJECT_ROOT}/source/shared/${project_dir}/CMakeLists.txt")
-        message("Generating: ${project_dir}")
-        add_subdirectory(${PROJECT_ROOT}/source/shared/${project_dir})
-    endif ()
-endforeach ()
-
-set(CMAKE_SUPPRESS_REGENERATION true)
->>>>>>> 6bfff4088c7ae73006ab86353f627d3ceb678c71
 
 #############################################################
 # Max
@@ -138,8 +124,5 @@ if(WIN32)
         endif ()
     endforeach ()
 endif()
-<<<<<<< HEAD
 
 set(CMAKE_SUPPRESS_REGENERATION true)
-=======
->>>>>>> 6bfff4088c7ae73006ab86353f627d3ceb678c71
