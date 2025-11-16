@@ -1,11 +1,13 @@
 macro(project_template)
     #############################################################
-    # Max Module Templat
+    # Max Module Template
     #############################################################
 
     project_name()
 
     include(${C74_MIN_API_DIR}/script/min-pretarget.cmake)
+
+    set(THULR_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../thulr)
 
     #############################################################
     # MAX EXTERNAL
@@ -13,7 +15,7 @@ macro(project_template)
 
     include_directories( 
         ${C74_INCLUDES}
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../shared
+        ${THULR_PATH}
     )
 
     set( SOURCE_FILES
@@ -51,7 +53,7 @@ macro(project_template)
     foreach(PLT ${PROJECT_LIBRARIES_TARGETS})
         foreach(LIB ${PROJECT_LIBRARIES})
             target_link_libraries(${PLT} PRIVATE ${LIB})
-            target_link_directories(${PLT} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../../shared/${LIB})
+            target_link_directories(${PLT} PRIVATE ${THULR_PATH}/${LIB})
         endforeach()
     endforeach()
 
