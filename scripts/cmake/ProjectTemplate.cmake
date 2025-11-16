@@ -13,7 +13,7 @@ macro(project_template)
 
     include_directories( 
         ${C74_INCLUDES}
-        ${PROJECT_ROOT}/source/shared
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../shared
     )
 
     set( SOURCE_FILES
@@ -51,7 +51,7 @@ macro(project_template)
     foreach(PLT ${PROJECT_LIBRARIES_TARGETS})
         foreach(LIB ${PROJECT_LIBRARIES})
             target_link_libraries(${PLT} PRIVATE ${LIB})
-            target_link_directories(${PLT} PRIVATE ${PROJECT_ROOT}/source/shared/${LIB})
+            target_link_directories(${PLT} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../../shared/${LIB})
         endforeach()
     endforeach()
 
