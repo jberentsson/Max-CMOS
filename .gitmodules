@@ -12,4 +12,7 @@
 	url = https://github.com/Cycling74/max-sdk-base.git
 [submodule "source/shared"]
 	path = source/shared
-	url = git@github.com:jberentsson/thulr.git
+	url = https://github.com/jberentsson/thulr.git
+[submodule "source/min-lib"]
+	path = source/min-lib
+	url = https://github.com/Cycling74/min-lib.git
