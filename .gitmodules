@@ -7,3 +7,6 @@
 [submodule "source/thulr"]
 	path = source/thulr
 	url = https://github.com/jberentsson/thulr.git
+[submodule "source/min-lib"]
+	path = source/min-lib
+	url = https://github.com/Cycling74/min-lib.git
