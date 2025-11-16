@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.19)
 
-set(PROJECT_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 set(C74_MIN_API_DIR ${CMAKE_CURRENT_SOURCE_DIR}/source/min-api)
 
 # Extract package name from directory path.
@@ -36,8 +35,13 @@ macro(project_name)
     project(${THIS_PACKAGE_NAME} VERSION 1.0.0 LANGUAGES C CXX)
 endmacro()
 
+<<<<<<< HEAD
+include(${CMAKE_CURRENT_SOURCE_DIR}/scripts/cmake/ProjectTemplate.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/source/shared/scripts/cmake/LibraryTemplate.cmake)
+=======
 include(${PROJECT_ROOT}/scripts/cmake/ProjectTemplate.cmake)
 include(${PROJECT_ROOT}/scripts//cmake/LibraryTemplate.cmake)
+>>>>>>> 6bfff4088c7ae73006ab86353f627d3ceb678c71
 
 # Enable testing framework.
 enable_testing()
@@ -109,6 +113,9 @@ endif()
 # CATCH2 TESTS FOR SHARED LIBRARIES WITHOUT MAX/MIN
 #############################################################
 
+<<<<<<< HEAD
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/source/shared)
+=======
 SUBDIRLIST(SHARED_DIRS ${PROJECT_ROOT}/source/shared)
 
 # Generate a project for every folder in the "source/shared" folder.
@@ -120,6 +127,7 @@ foreach (project_dir ${SHARED_DIRS})
 endforeach ()
 
 set(CMAKE_SUPPRESS_REGENERATION true)
+>>>>>>> 6bfff4088c7ae73006ab86353f627d3ceb678c71
 
 #############################################################
 # Max
@@ -135,3 +143,8 @@ if(WIN32)
         endif ()
     endforeach ()
 endif()
+<<<<<<< HEAD
+
+set(CMAKE_SUPPRESS_REGENERATION true)
+=======
+>>>>>>> 6bfff4088c7ae73006ab86353f627d3ceb678c71

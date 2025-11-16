@@ -1,12 +1,12 @@
-/// @file       jb.NoteRandomOctave_test.cpp
-///	@ingroup 	jb.cmos
+/// @file       seidr.NoteRandomOctave_test.cpp
+///	@ingroup 	jb
 ///	@copyright	Copyright 2025 - Jóhann Berentsson. All rights reserved.
 ///	@license	Use of this source code is governed by the MIT License found in the License.md file.
 
 #include "c74_min_unittest.h"
-#include "jb.NoteRandomOctave.cpp"
+#include "seidr.NoteRandomOctave.cpp"
 
-SCENARIO("jb.NoteRandomOctave object basic functionality") {
+SCENARIO("seidr.NoteRandomOctave object basic functionality") {
     ext_main(nullptr);
 
     GIVEN("An instance of NoteRandomOctave") {
@@ -124,7 +124,7 @@ SCENARIO("jb.NoteRandomOctave object basic functionality") {
     }
 }
 
-SCENARIO("jb.NoteRandomOctave stress and performance tests") {
+SCENARIO("seidr.NoteRandomOctave stress and performance tests") {
     ext_main(nullptr);
 
     GIVEN("An instance under stress conditions") {
@@ -169,7 +169,7 @@ SCENARIO("jb.NoteRandomOctave stress and performance tests") {
     }
 }
 
-SCENARIO("jb.NoteRandomOctave error handling tests") {
+SCENARIO("seidr.NoteRandomOctave error handling tests") {
     ext_main(nullptr);
 
     GIVEN("An instance handling invalid input") {
@@ -244,7 +244,7 @@ SCENARIO("jb.NoteRandomOctave error handling tests") {
     }
 }
 
-SCENARIO("jb.NoteRandomOctave musical scale tests") {
+SCENARIO("seidr.NoteRandomOctave musical scale tests") {
     ext_main(nullptr);
 
     GIVEN("An instance processing musical scales") {

@@ -1,4 +1,4 @@
-/// @file       jb.ShiftRegister.cpp
+/// @file       seidr.ShiftRegister.cpp
 ///	@ingroup 	jb
 ///	@copyright	Copyright 2018 - Jóhann Berentsson. All rights reserved.
 ///	@license	Use of this source code is governed by the MIT License found in the License.md file.
@@ -6,7 +6,7 @@
 #include <iostream>
 
 #include "c74_min.h"
-#include "jb.ShiftRegister.hpp"
+#include "seidr.ShiftRegister.hpp"
 
 using namespace c74::min;
 

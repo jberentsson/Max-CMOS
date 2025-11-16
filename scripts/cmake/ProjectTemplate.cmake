@@ -1,6 +1,7 @@
-# TODO: Find a way to fix thelibrary imports.
 macro(project_template)
-    cmake_minimum_required(VERSION "3.19")
+    #############################################################
+    # Max Module Templat
+    #############################################################
 
     project_name()
 
@@ -10,16 +11,11 @@ macro(project_template)
     # MAX EXTERNAL
     #############################################################
 
-    # Extract package name from directory path.
-    #string(REGEX REPLACE ".*/([^/]+)" "\\1" THIS_PACKAGE_NAME "${CMAKE_CURRENT_SOURCE_DIR}")
-    #project(${THIS_PACKAGE_NAME})
-
     include_directories( 
         ${C74_INCLUDES}
-        ${PROJECT_ROOT}/source/shared
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../shared
     )
 
-    # SOURCE FILES FOR MAX EXTERNAL ONLY
     set( SOURCE_FILES
         ${PROJECT_NAME}.hpp
         ${PROJECT_NAME}.cpp
@@ -43,11 +39,23 @@ macro(project_template)
     # Import Shared Code And Link It To Our Binaries
     #############################################################
 
-    if(DEFINED PROJECT_LIBRARIES AND PROJECT_LIBRARIES)
-        message("THE PROJECT LIBRARIES ARE: ${PROJECT_LIBRARIES}")
-            target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_LIBRARIES})
-            target_link_directories(${PROJECT_NAME} PRIVATE ${PROJECT_LIBRARIES})
-            target_link_libraries(${PROJECT_NAME}_test PRIVATE ${PROJECT_LIBRARIES})
-            target_link_directories(${PROJECT_NAME}_test PRIVATE ${PROJECT_LIBRARIES})
-    endif()
+    set(PROJECT_LIBRARIES_TARGETS
+        ${PROJECT_NAME}
+        ${PROJECT_NAME}_test
+    )
+
+    #############################################################
+    # Link the libraries to the targets.
+    #############################################################
+
+    foreach(PLT ${PROJECT_LIBRARIES_TARGETS})
+        foreach(LIB ${PROJECT_LIBRARIES})
+            target_link_libraries(${PLT} PRIVATE ${LIB})
+            target_link_directories(${PLT} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../../shared/${LIB})
+        endforeach()
+    endforeach()
+
+    #############################################################
+    # Done!
+    #############################################################
 endmacro()

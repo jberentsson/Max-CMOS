@@ -1,4 +1,4 @@
-/// @file       jb.BinaryCounter.hpp
+/// @file       seidr.BinaryCounter.hpp
 ///	@ingroup 	jb
 ///	@copyright	Copyright 2022 - Jóhann Berentsson. All rights reserved.
 ///	@license	Use of this source code is governed by the MIT License found in the License.md file.
@@ -23,7 +23,7 @@ class BinaryCounter_MAX : public object<BinaryCounter_MAX> {
         MIN_DESCRIPTION	{"Binary Counter"};
         MIN_TAGS		{"jb, counter"};
         MIN_AUTHOR		{"Jóhann Berentsson"};
-        MIN_RELATED		{"jb.*"};
+        MIN_RELATED		{"seidr.*"};
         
         BinaryCounter_MAX(const atoms& args = {});
         ~BinaryCounter_MAX(){};

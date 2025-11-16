@@ -18,14 +18,14 @@ cmake --build build --config Release --clean-first --target <TARGET_NAME>
 
 ## Available Targets
 ### Projects:
-- jb.BinaryCounter
-- jb.BinaryCounter_test
-- jb.NCounter
-- jb.NCounter_test
-- jb.RandomNoteOctave
-- jb.RandomNoteOctave_tess
-- jb.ShiftRegister
-- jb.ShiftRegister_test
+- seidr.BinaryCounter
+- seidr.BinaryCounter_test
+- seidr.NCounter
+- seidr.NCounter_test
+- seidr.RandomNoteOctave
+- seidr.RandomNoteOctave_tess
+- seidr.ShiftRegister
+- seidr.ShiftRegister_test
 
 ### Libraries:
 - BinaryCounter

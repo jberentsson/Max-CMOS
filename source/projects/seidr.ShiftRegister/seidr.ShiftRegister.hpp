@@ -1,4 +1,4 @@
-/// @file       jb.BinaryCounter.hpp
+/// @file       seidr.BinaryCounter.hpp
 ///	@ingroup 	jb
 ///	@copyright	Copyright 2025 - Jóhann Berentsson. All rights reserved.
 ///	@license	Use of this source code is governed by the MIT License found in the License.md file.
@@ -25,7 +25,7 @@ class ShiftRegister_MAX : public object<ShiftRegister_MAX> {
         MIN_DESCRIPTION	{"Shift Register"};
         MIN_TAGS		{"jb, cmos"};
         MIN_AUTHOR		{"Jóhann Berentsson"};
-        MIN_RELATED		{"jb.*"};
+        MIN_RELATED		{"seidr.*"};
         
         ShiftRegister_MAX(const atoms& args = {});
         ~ShiftRegister_MAX(){};
