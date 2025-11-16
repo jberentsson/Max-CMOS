@@ -36,7 +36,7 @@ macro(project_name)
 endmacro()
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/scripts/cmake/ProjectTemplate.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/source/shared/scripts/cmake/LibraryTemplate.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/source/thulr/scripts/cmake/LibraryTemplate.cmake)
 
 # Enable testing framework.
 enable_testing()
@@ -105,10 +105,10 @@ else()
 endif()
 
 #############################################################
-# CATCH2 TESTS FOR SHARED LIBRARIES WITHOUT MAX/MIN
+# CATCH2 TESTS FOR THULR LIBRARIES WITHOUT MAX/MIN
 #############################################################
 
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/source/shared)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/source/thulr)
 
 #############################################################
 # Max
