@@ -1,9 +1,5 @@
 cmake_minimum_required(VERSION 3.19)
 
-<<<<<<< HEAD
-=======
-set(PROJECT_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
->>>>>>> 6bfff4088c7ae73006ab86353f627d3ceb678c71
 set(C74_MIN_API_DIR ${CMAKE_CURRENT_SOURCE_DIR}/source/min-api)
 
 # Extract package name from directory path.
