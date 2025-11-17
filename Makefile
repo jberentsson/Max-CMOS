@@ -8,7 +8,7 @@ tidy:
     -Wno-everything
 
 format:
-	clang-format -i source/projects/*/*.{hpp,cpp}
+	clang-format -i -style=file source/projects/*/*.{hpp,cpp}
 
 test:
 	cd build && ctest -C Release --output-on-failure
