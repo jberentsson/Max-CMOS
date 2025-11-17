@@ -25,7 +25,7 @@ AlwaysBreakTemplateDeclarations: MultiLine
 BinPackArguments: true
 BinPackParameters: true
 =======
-# .clang-format - Aggressive auto-formatting for Min-API
+# .clang-format - Auto-formatter for Min-API
 Language: Cpp
 AccessModifierOffset: -4
 
@@ -35,7 +35,6 @@ BinPackParameters: true
 
 # Consistent brace style
 BreakBeforeBraces: Attach
->>>>>>> f20614735ac47689de3825c874c98ac79dd369dc
 BraceWrapping:
   AfterCaseLabel: false
   AfterClass: false
@@ -55,22 +54,6 @@ BraceWrapping:
   SplitEmptyFunction: false
   SplitEmptyRecord: false
   SplitEmptyNamespace: false
-<<<<<<< HEAD
-BreakBeforeBinaryOperators: None
-BreakBeforeBraces: Custom
-BreakBeforeInheritanceComma: false
-BreakInheritanceList: BeforeColon
-BreakBeforeTernaryOperators: true
-BreakConstructorInitializers: BeforeColon
-BreakAfterJavaFieldAnnotations: false
-BreakStringLiterals: true
-ColumnLimit: 120
-CommentPragmas: '^ IWYU pragma:'
-CompactNamespaces: false
-ConstructorInitializerAllOnOneLineOrOnePerLine: false
-ConstructorInitializerIndentWidth: 4
-ContinuationIndentWidth: 4
-=======
 
 # Standard column limit
 ColumnLimit: 100
@@ -108,60 +91,47 @@ SpaceBeforeInheritanceColon: true
 
 # Enable alignment for clean code
 AlignAfterOpenBracket: Align
-AlignConsecutiveMacros: true
-AlignConsecutiveAssignments: true
-AlignConsecutiveDeclarations: true
+AlignConsecutiveMacros: None
+AlignConsecutiveAssignments: None
+AlignConsecutiveDeclarations: None
 AlignEscapedNewlines: Right
 AlignOperands: Align
 AlignTrailingComments: true
-
-# Allow multi-line for better readability
-AllowAllArgumentsOnNextLine: true
-AllowAllConstructorInitializersOnNextLine: true
-AllowAllParametersOfDeclarationOnNextLine: true
-
-# Short form rules
+AllowAllArgumentsOnNextLine: false
+AllowAllConstructorInitializersOnNextLine: false
+AllowAllParametersOfDeclarationOnNextLine: false
 AllowShortBlocksOnASingleLine: Empty
-AllowShortCaseLabelsOnASingleLine: true
+AllowShortCaseLabelsOnASingleLine: false
 AllowShortFunctionsOnASingleLine: InlineOnly
-AllowShortIfStatementsOnASingleLine: WithoutElse
+AllowShortIfStatementsOnASingleLine: Never
 AllowShortLambdasOnASingleLine: All
-AllowShortLoopsOnASingleLine: true
-
-# Break rules
+AllowShortLoopsOnASingleLine: false
 AlwaysBreakAfterDefinitionReturnType: None
 AlwaysBreakAfterReturnType: None
-AlwaysBreakBeforeMultilineStrings: true
+AlwaysBreakBeforeMultilineStrings: false
 AlwaysBreakTemplateDeclarations: MultiLine
-
-BreakBeforeBinaryOperators: NonAssignment
+BinPackArguments: false
+BinPackParameters: false
+BreakBeforeBinaryOperators: None
+BreakBeforeBraces: Custom
 BreakBeforeInheritanceComma: false
-BreakInheritanceList: BeforeColon
 BreakBeforeTernaryOperators: true
-
 BreakConstructorInitializers: BeforeColon
-BreakAfterJavaFieldAnnotations: false
+BreakInheritanceList: BeforeColon
 BreakStringLiterals: true
-
-# Comments
+ColumnLimit: 120
 CommentPragmas: '^ IWYU pragma:'
 CompactNamespaces: false
 ConstructorInitializerAllOnOneLineOrOnePerLine: false
 
->>>>>>> f20614735ac47689de3825c874c98ac79dd369dc
 Cpp11BracedListStyle: true
 DeriveLineEnding: true
 DerivePointerAlignment: false
 DisableFormat: false
-<<<<<<< HEAD
+
 EmptyLineBeforeAccessModifier: LogicalBlock
 ExperimentalAutoDetectBinPacking: false
 FixNamespaceComments: true
-ForEachMacros:
-  - 'MIN_FUNCTION'
-  - 'foreach'
-  - 'Q_FOREACH'
-  - 'BOOST_FOREACH'
 IncludeBlocks: Regroup
 IncludeCategories:
   - Regex: '^"(c74|min)'
@@ -171,15 +141,7 @@ IncludeCategories:
   - Regex: '^<(.*)'
     Priority: 3
 IncludeIsMainRegex: '(Test)?$'
-=======
 
-EmptyLineBeforeAccessModifier: LogicalBlock
-ExperimentalAutoDetectBinPacking: false
-FixNamespaceComments: true
-
-IncludeIsMainRegex: '(Test)?$'
-
->>>>>>> f20614735ac47689de3825c874c98ac79dd369dc
 IndentCaseLabels: false
 IndentGotoLabels: false
 IndentPPDirectives: BeforeHash
@@ -197,11 +159,8 @@ ObjCBinPackProtocolList: Auto
 ObjCBlockIndentWidth: 4
 ObjCSpaceAfterProperty: false
 ObjCSpaceBeforeProtocolList: true
-<<<<<<< HEAD
-=======
 
 # Reasonable penalties for breaks
->>>>>>> f20614735ac47689de3825c874c98ac79dd369dc
 PenaltyBreakAssignment: 2
 PenaltyBreakBeforeFirstCallParameter: 19
 PenaltyBreakComment: 300
@@ -210,36 +169,13 @@ PenaltyBreakString: 1000
 PenaltyBreakTemplateDeclaration: 10
 PenaltyExcessCharacter: 1000000
 PenaltyReturnTypeOnItsOwnLine: 60
-<<<<<<< HEAD
-PointerAlignment: Left
-RawStringFormats:
-  - Language: Cpp
-    Delimiters:
-      - 'cc'
-      - 'CC'
-      - 'cpp'
-      - 'Cpp'
-      - 'CPP'
-      - 'c++'
-      - 'C++'
-    CanonicalDelimiter: ''
-    BasedOnStyle: ''
+
 ReflowComments: true
-SortIncludes: false    # Important: Don't sort includes for Max projects
-SortUsingDeclarations: false
+SortIncludes: true
+SortUsingDeclarations: true
 SpaceAfterCStyleCast: false
 SpaceAfterLogicalNot: false
 SpaceAfterTemplateKeyword: true
-SpaceBeforeAssignmentOperators: true
-=======
-
-ReflowComments: true
-
-# Space configurations
-SpaceAfterCStyleCast: false
-SpaceAfterLogicalNot: false
-SpaceAfterTemplateKeyword: true
->>>>>>> f20614735ac47689de3825c874c98ac79dd369dc
 SpaceBeforeCpp11BracedList: false
 SpaceBeforeCtorInitializerColon: true
 SpaceBeforeInheritanceColon: true
@@ -255,9 +191,15 @@ SpacesInContainerLiterals: true
 SpacesInCStyleCastParentheses: false
 SpacesInParentheses: false
 SpacesInSquareBrackets: false
+
 Standard: Cpp11
 
 # Min-API macro handling
 ForEachMacros:
   - 'MIN_FUNCTION'
   - 'MIN_EXTERNAL'
+  - 'MIN_DESCRIPTION'
+  - 'MIN_TAGS'
+  - 'MIN_AUTHOR'
+  - 'MIN_RELATED'
+  
