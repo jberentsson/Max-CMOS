@@ -12,7 +12,7 @@
 #include <string>
 #include <vector>
 
-#include "../../thulr/ShiftRegister/ShiftRegister.hpp"
+#include "ShiftRegister/ShiftRegister.hpp"
 #include "c74_min.h"
 
 using namespace c74::min;

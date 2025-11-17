@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "../../thulr/NCounter/NCounter.hpp"
+#include "NCounter/NCounter.hpp"
 #include "c74_min.h"
 #include <ext_mess.h>
 #include <fcntl.h>

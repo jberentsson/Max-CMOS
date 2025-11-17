@@ -1,5 +1,5 @@
 #pragma once
-#include "../../thulr/Keyboard/Keyboard.hpp"
+#include "Keyboard/Keyboard.hpp"
 #include <c74_min.h>
 
 // Forward declaration

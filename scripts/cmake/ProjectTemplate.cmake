@@ -47,32 +47,18 @@ macro(project_template)
     )
 
     #############################################################
-    # Fix include directories for ALL targets
+    # Add the parent directory of thulr/source to include path
+    # This makes #include "BinaryCounter/BinaryCounter.hpp" work
     #############################################################
 
-    # Get all the library subdirectories in thulr
-    file(GLOB THULR_LIBRARIES RELATIVE ${THULR_PATH} ${THULR_PATH}/*)
-    set(THULR_INCLUDE_DIRS "")
-    
-    foreach(LIB ${THULR_LIBRARIES})
-        if(IS_DIRECTORY ${THULR_PATH}/${LIB})
-            list(APPEND THULR_INCLUDE_DIRS ${THULR_PATH}/${LIB})
-        endif()
-    endforeach()
-
-    # Add Utils directory if it exists
-    if(EXISTS ${THULR_PATH}/Utils)
-        list(APPEND THULR_INCLUDE_DIRS ${THULR_PATH}/Utils)
-    endif()
+    # Get the parent directory of thulr/source (should be thulr/)
+    get_filename_component(THULR_PARENT_PATH ${THULR_PATH} DIRECTORY)
 
     # Apply include directories to all targets
     foreach(TARGET ${PROJECT_LIBRARIES_TARGETS})
         target_include_directories(${TARGET} PRIVATE
-            ${THULR_PATH}
-            ${THULR_INCLUDE_DIRS}
-            ${CMAKE_CURRENT_SOURCE_DIR}/../../thulr/source
-            ${CMAKE_CURRENT_SOURCE_DIR}/../thulr/source
-            ${CMAKE_CURRENT_SOURCE_DIR}/source/thulr/source
+            ${THULR_PARENT_PATH}  # This makes folder/file.hpp includes work
+            ${THULR_PATH}         # Keep this for direct includes
         )
     endforeach()
 
@@ -82,7 +68,6 @@ macro(project_template)
 
     foreach(PLT ${PROJECT_LIBRARIES_TARGETS})
         foreach(LIB ${PROJECT_LIBRARIES})
-            # Find the actual library target
             if(TARGET ${LIB})
                 target_link_libraries(${PLT} PRIVATE ${LIB})
             endif()

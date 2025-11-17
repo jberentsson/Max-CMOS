@@ -154,4 +154,3 @@ endforeach()
 #)
 
 
-set(CMAKE_SUPPRESS_REGENERATION true)
