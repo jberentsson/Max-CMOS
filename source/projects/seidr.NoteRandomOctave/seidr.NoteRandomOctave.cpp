@@ -52,8 +52,7 @@ void NoteRandomOctave::processNoteMessage(int note, int velocity) {
         // Send to outputs.
         output_0.send(lastNote->pitch());
         output_1.send(lastNote->velocity());
-    }
-    else {
+    } else {
         // Note OFF
         output_0.send(note);
         output_1.send(0);

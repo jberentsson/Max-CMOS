@@ -1,6 +1,6 @@
 all:
 	cmake -B build
-	cmake --build build --config Release
+	cmake --build build --config Release -j8
 
 tidy:
 	clang-tidy source/projects/seidr.*/*.{cpp,hpp} -- -std=c++17 \

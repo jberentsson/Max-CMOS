@@ -14,7 +14,7 @@ Checks: >
   -readability-function-cognitive-complexity
 WarningsAsErrors: ''
 HeaderFilterRegex: '.*'
-AnalyzeTemporaryDtors: false
+#AnalyzeTemporaryDtors: false
 FormatStyle: file
 CheckOptions:
   - key: modernize-use-using.CheckTemplateTypedefs
