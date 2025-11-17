@@ -2,7 +2,7 @@
 ///	@ingroup 	jb
 ///	@copyright	Copyright 2022 - Jóhann Berentsson. All rights reserved.
 ///	@license	Use of this source code is governed by the MIT License
-///found in the License.md file.
+/// found in the License.md file.
 
 #pragma once
 
@@ -19,95 +19,89 @@ using namespace c74::min;
 #define OUTPUT_COUNT 8
 
 class BinaryCounter_MAX : public object<BinaryCounter_MAX> {
-    public:
-        MIN_DESCRIPTION	{"Binary Counter"};
-        MIN_TAGS		{"jb, counter"};
-        MIN_AUTHOR		{"Jóhann Berentsson"};
-        MIN_RELATED		{"seidr.*"};
-        
-        BinaryCounter_MAX(const atoms& args = {});
-        ~BinaryCounter_MAX(){};
+public:
+	MIN_DESCRIPTION {"Binary Counter"};
+	MIN_TAGS {"jb, counter"};
+	MIN_AUTHOR {"Jóhann Berentsson"};
+	MIN_RELATED {"seidr.*"};
 
-        void enable_bangs();
-        void disable_bangs();
+	explicit BinaryCounter_MAX(const atoms& args = {});
+	~BinaryCounter_MAX() { };
 
-        void update_outputs();
-        int get_bit(int output);
+	void enable_bangs();
+	void disable_bangs();
 
-        int counter_value();
-        int set_preset(int p);
-        int preset();
-        int max_value();
+	void update_outputs();
+	int  get_bit(int output);
 
-        inlet<>  input_0 { this, "(bang | list | reset) input pulse" };
-        inlet<>  input_1 { this, "(reset) reset pulse" };
+	int counter_value();
+	int set_preset(int p);
+	int preset();
+	int max_value();
 
-        std::vector<std::unique_ptr<outlet<>>> outputs;
+	inlet<> input_0 {this, "(bang | list | reset) input pulse"};
+	inlet<> input_1 {this, "(reset) reset pulse"};
 
-        argument<symbol> bang_arg{ this, "bang", "Initial value for the bang attribute.",
-            MIN_ARGUMENT_FUNCTION {
-                bang_enabled = FALSE;
-            }
-        };
+	std::vector<std::unique_ptr<outlet<>>> outputs;
 
-        attribute<symbol> bang_on{ this, "bang", "symbol",
-            description {
-                "The output mode."
-                "bool : boolean"
-                "int  : integers"
-            }
-        };
+	argument<symbol> bang_arg {this, "bang", "Initial value for the bang attribute.", MIN_ARGUMENT_FUNCTION {bang_enabled = FALSE;
+}
+}
+;
 
-        message<threadsafe::yes> bang{ this, "bang", "Steps the counter.",
-            MIN_FUNCTION {
-                if (this->already_banged) {
-                    if(this->reset_triggered){
-                        this->counter.reset();
-                        this->reset_triggered = FALSE;
-                    } else {
-                        this->counter.step();
-                    }
-                } else {
-                    this->already_banged = TRUE;
-                }
+attribute<symbol> bang_on {this, "bang", "symbol",
+	description {"The output mode."
+				 "bool : boolean"
+				 "int  : integers"}};
 
-                this->update_outputs();
-                return {};
-            }
-        };
+message<threadsafe::yes> bang {
+	this, "bang", "Steps the counter.", MIN_FUNCTION {if (this->already_banged) {if (this->reset_triggered) {this->counter.reset();
+this->reset_triggered = FALSE;
+}
+else {
+	this->counter.step();
+}
+}
+else {
+	this->already_banged = TRUE;
+}
 
-        message<threadsafe::yes> list { this, "list", "Handle any list.",
-            MIN_FUNCTION {
-                std::cout << "LIST!" << std::endl;
-                if (args.size() >= 1) {
-                    for(int i = 0; i < args.size(); i++){
-                        std::cout << "THE ARG: " << args[i] << std::endl;
-                    }
-                }
-                
-                return {};
-            }
-        };
+this->update_outputs();
+return {};
+}
+}
+;
 
-        message<threadsafe::yes> reset { this, "reset", "Reset the counter.",
-            MIN_FUNCTION {
-                this->reset_triggered = TRUE;
-                
-                return {};
-            }
-        };
+message<threadsafe::yes> list {this, "list", "Handle any list.", MIN_FUNCTION {std::cout << "LIST!" << std::endl;
+if (args.size() >= 1) {
+	for (int i = 0; i < args.size(); i++) {
+		std::cout << "THE ARG: " << args[i] << std::endl;
+	}
+}
 
-        message<threadsafe::yes> anything { this, "anything", "Handle any message.",
-            MIN_FUNCTION {
-                std::cout << "ANYTHING!" << std::endl;
-                return {};
-            }
-        };
+return {};
+}
+}
+;
 
-    private:
-        BinaryCounter counter = BinaryCounter(OUTPUT_COUNT);
-        
-        bool bang_enabled = FALSE;
-        bool already_banged = FALSE;
-        bool reset_triggered = FALSE;
-};
+message<threadsafe::yes> reset {this, "reset", "Reset the counter.", MIN_FUNCTION {this->reset_triggered = TRUE;
+
+return {};
+}
+}
+;
+
+message<threadsafe::yes> anything {this, "anything", "Handle any message.", MIN_FUNCTION {std::cout << "ANYTHING!" << std::endl;
+return {};
+}
+}
+;
+
+private:
+BinaryCounter counter = BinaryCounter(OUTPUT_COUNT);
+
+bool bang_enabled    = FALSE;
+bool already_banged  = FALSE;
+bool reset_triggered = FALSE;
+}
+;
