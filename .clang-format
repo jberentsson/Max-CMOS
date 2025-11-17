@@ -21,8 +21,8 @@ AlwaysBreakAfterDefinitionReturnType: None
 AlwaysBreakAfterReturnType: None
 AlwaysBreakBeforeMultilineStrings: false
 AlwaysBreakTemplateDeclarations: MultiLine
-BinPackArguments: true
-BinPackParameters: true
+BinPackArguments: false  # Important: Don't pack Min-API arguments
+BinPackParameters: false # Important: Don't pack Min-API parameters
 BraceWrapping:
   AfterCaseLabel: false
   AfterClass: false
@@ -116,7 +116,7 @@ RawStringFormats:
     CanonicalDelimiter: ''
     BasedOnStyle: ''
 ReflowComments: true
-SortIncludes: false    # Important: Don't sort includes for Max projects
+SortIncludes: false
 SortUsingDeclarations: false
 SpaceAfterCStyleCast: false
 SpaceAfterLogicalNot: false
