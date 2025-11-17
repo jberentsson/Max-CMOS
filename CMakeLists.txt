@@ -125,4 +125,24 @@ if(WIN32)
     endforeach ()
 endif()
 
+
+
+#############################################################
+# clang tidy
+#############################################################
+
+include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}/source/thulr/source
+    ${CMAKE_CURRENT_SOURCE_DIR}/source/min-api/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/catch2-src/single_include
+)
+
+find_program(CLANG_TIDY_EXE NAMES clang-tidy)
+add_custom_target(clang-tidy
+    COMMAND ./tidy.sh
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    COMMENT "Running clang-tidy"
+)
+
+
 set(CMAKE_SUPPRESS_REGENERATION true)

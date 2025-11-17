@@ -1,18 +1,18 @@
 /// @file       seidr.BinaryCounter.hpp
 ///	@ingroup 	jb
 ///	@copyright	Copyright 2022 - Jóhann Berentsson. All rights reserved.
-///	@license	Use of this source code is governed by the MIT License found in the License.md file.
+///	@license	Use of this source code is governed by the MIT License
+///found in the License.md file.
 
 #pragma once
 
-#include "c74_min.h"
-#include <string>
-#include <iostream>
-#include <io.h>
-#include <fcntl.h>
-#include <ext_mess.h>
-#include <vector>
 #include "BinaryCounter/BinaryCounter.hpp"
+#include "c74_min.h"
+#include <ext_mess.h>
+#include <fcntl.h>
+#include <iostream>
+#include <string>
+#include <vector>
 
 using namespace c74::min;
 
