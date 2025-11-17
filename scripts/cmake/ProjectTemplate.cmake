@@ -8,6 +8,11 @@ macro(project_template)
     include(${C74_MIN_API_DIR}/script/min-pretarget.cmake)
 
     set(THULR_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../thulr/source)
+    
+    # Debug info for GitHub Actions
+    message(STATUS "=== Configuring ${PROJECT_NAME} ===")
+    message(STATUS "THULR_PATH: ${THULR_PATH}")
+    message(STATUS "Current source dir: ${CMAKE_CURRENT_SOURCE_DIR}")
 
     #############################################################
     # MAX EXTERNAL
@@ -47,19 +52,41 @@ macro(project_template)
     )
 
     #############################################################
-    # Add the parent directory of thulr/source to include path
-    # This makes #include "BinaryCounter/BinaryCounter.hpp" work
+    # Comprehensive include path setup for GitHub Actions
     #############################################################
 
-    # Get the parent directory of thulr/source (should be thulr/)
+    # Get the parent directory of thulr/source
     get_filename_component(THULR_PARENT_PATH ${THULR_PATH} DIRECTORY)
+    
+    # List all possible include paths
+    set(ALL_INCLUDE_PATHS
+        ${THULR_PARENT_PATH}                    # For folder/file.hpp includes
+        ${THULR_PATH}                           # For direct file includes
+        ${THULR_PATH}/Utils                     # Specifically for Utils/
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../thulr
+        ${CMAKE_CURRENT_SOURCE_DIR}/../thulr  
+        ${CMAKE_CURRENT_SOURCE_DIR}/thulr
+    )
 
-    # Apply include directories to all targets
+    # Debug: Check if Utils directory exists
+    if(EXISTS ${THULR_PATH}/Utils)
+        message(STATUS "Utils directory found: ${THULR_PATH}/Utils")
+        file(GLOB UTILS_FILES ${THULR_PATH}/Utils/*.hpp)
+        message(STATUS "Utils header files:")
+        foreach(UTIL_FILE ${UTILS_FILES})
+            message(STATUS "  - ${UTIL_FILE}")
+        endforeach()
+    else()
+        message(WARNING "Utils directory NOT found: ${THULR_PATH}/Utils")
+    endif()
+
+    # Apply to all targets
     foreach(TARGET ${PROJECT_LIBRARIES_TARGETS})
-        target_include_directories(${TARGET} PRIVATE
-            ${THULR_PARENT_PATH}  # This makes folder/file.hpp includes work
-            ${THULR_PATH}         # Keep this for direct includes
-        )
+        target_include_directories(${TARGET} PRIVATE ${ALL_INCLUDE_PATHS})
+        message(STATUS "Include paths for ${TARGET}:")
+        foreach(INCLUDE_PATH ${ALL_INCLUDE_PATHS})
+            message(STATUS "  - ${INCLUDE_PATH}")
+        endforeach()
     endforeach()
 
     #############################################################
@@ -70,6 +97,7 @@ macro(project_template)
         foreach(LIB ${PROJECT_LIBRARIES})
             if(TARGET ${LIB})
                 target_link_libraries(${PLT} PRIVATE ${LIB})
+                message(STATUS "Linked ${PLT} with ${LIB}")
             endif()
         endforeach()
     endforeach()
