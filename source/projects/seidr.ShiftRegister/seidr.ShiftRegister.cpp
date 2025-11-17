@@ -36,7 +36,6 @@ void ShiftRegister_MAX::handle_outputs() {
     for (int i = 0; i < outputs.size() - 1; i++){
         this->outputs[i]->send(this->send_bangs ? bang() : atoms({(uint64_t) this->sr.get(i)}));
     }
-  }
 }
 
 void ShiftRegister_MAX::handle_through() {
@@ -48,8 +47,10 @@ void ShiftRegister_MAX::handle_through() {
         this->outputs[last_output_index]->send(this->send_bangs ? bang() : c74::min::atoms({dt}));
         this->last_output[last_output_index].set(dt);
     }
-    this->last_output[8] = dt;
-  }
+    LastNote x = LastNote();
+    x.set(dt);
+
+    this->last_output[8] = x;
 }
 
 int ShiftRegister_MAX::size() {

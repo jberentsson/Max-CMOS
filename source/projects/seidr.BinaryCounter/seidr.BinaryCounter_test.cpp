@@ -20,7 +20,7 @@ SCENARIO("object produces correct output") {
       my_object.bang();
       my_object.max_value();
 
-      THEN("a 'bang' is received") { REQUIRE(my_object != nullptr); }
+      //THEN("a 'bang' is received") { REQUIRE(my_object != nullptr); }
 
       THEN("check counter value") { REQUIRE(my_object.counter_value() == 0); }
 

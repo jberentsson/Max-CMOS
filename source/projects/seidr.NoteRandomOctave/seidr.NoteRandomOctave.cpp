@@ -1,5 +1,5 @@
-#include "seidr.NoteRandomOctave.hpp"
 #include <iostream>
+#include "seidr.NoteRandomOctave.hpp"
 
 using namespace c74::min;
 

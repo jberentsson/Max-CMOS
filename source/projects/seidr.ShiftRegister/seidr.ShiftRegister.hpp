@@ -23,7 +23,7 @@ using namespace c74::min;
 
 class LastNote {
     private:
-        int pitch = NULL;
+        uint64_t pitch = NULL;
 
     public:
         bool dirty = FALSE;
