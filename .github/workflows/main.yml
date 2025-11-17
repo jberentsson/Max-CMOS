@@ -17,6 +17,16 @@ jobs:
         submodules: 'recursive'
         fetch-depth: '0'
 
+    - name: Update submodules to latest
+      run: |
+        git submodule update --init --remote --recursive
+        echo "=== Submodule status ==="
+        git submodule status
+        echo "=== Checking for Utils directory ==="
+        find . -name "Utils" -type d | head -10
+        echo "=== Checking for Constants.hpp ==="
+        find . -name "Constants.hpp" -type f
+
     - uses: benjlevesque/short-sha@v1.2
       id: short-sha
       with:
