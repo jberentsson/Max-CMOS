@@ -7,27 +7,67 @@ class Keyboard;
 
 class NoteRandomOctave : public c74::min::object<NoteRandomOctave> {
 private:
-	Keyboard keyboard = Keyboard();
+    Keyboard keyboard = Keyboard();
 
 public:
-	explicit NoteRandomOctave(const c74::min::atoms& args = {});
-	~NoteRandomOctave();
+    explicit NoteRandomOctave(const c74::min::atoms& args = {});
+    ~NoteRandomOctave();
 
-	void processNoteMessage(int note, int velocity);
-	void clearNoteMessage(int note);
-	void clearAllNotesMessage();
-	void setRangeMessage(int low, int high);
-	void printActiveNotes();
+    void processNoteMessage(int note, int velocity);
+    void clearNoteMessage(int note);
+    void clearAllNotesMessage();
+    void setRangeMessage(int low, int high);
+    void printActiveNotes();
 
-	// Inlets and outlets
-	c74::min::inlet<>  input_0 {this, "(int) note, (int) velocity"};
-	c74::min::outlet<> output_0 {this, "(int) pitch"};
-	c74::min::outlet<> output_1 {this, "(int) velocity"};
+    // Inlets and outlets
+    c74::min::inlet<>  input_0 {this, "(int) note, (int) velocity"};
+    c74::min::outlet<> output_0 {this, "(int) pitch"};
+    c74::min::outlet<> output_1 {this, "(int) velocity"};
 
-	// Messages - declare them here but define the handlers separately
-	c74::min::message<> anything;
-	c74::min::message<> clear;
-	c74::min::message<> clearall;
-	c74::min::message<> range;
-	c74::min::message<> debug;
+    // Messages with handlers defined inline
+    c74::min::message<> anything { this, "anything", "Process note messages",
+        MIN_FUNCTION {
+            if (args.size() >= 2) {
+                int note = args[0];
+                int velocity = args[1];
+                processNoteMessage(note, velocity);
+            }
+            return {};
+        }
+    };
+
+    c74::min::message<> clear { this, "clear", "Clear specific note",
+        MIN_FUNCTION {
+            if (args.size() >= 1) {
+                int note = args[0];
+                clearNoteMessage(note);
+            }
+            return {};
+        }
+    };
+
+    c74::min::message<> clearall { this, "clearall", "Clear all notes",
+        MIN_FUNCTION {
+            clearAllNotesMessage();
+            return {};
+        }
+    };
+
+    c74::min::message<> range { this, "range", "Set range",
+        MIN_FUNCTION {
+            if (args.size() >= 2) {
+                int low = args[0];
+                int high = args[1];
+                setRangeMessage(low, high);
+            }
+            return {};
+        }
+    };
+
+    c74::min::message<> debug { this, "debug", "Print debug info",
+        MIN_FUNCTION {
+            printActiveNotes();
+            return {};
+        }
+    };
 };
