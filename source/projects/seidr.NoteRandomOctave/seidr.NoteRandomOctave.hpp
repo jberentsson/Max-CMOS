@@ -10,7 +10,7 @@ private:
   Keyboard keyboard = Keyboard();
 
 public:
-  NoteRandomOctave(const c74::min::atoms &args = {});
+  explicit NoteRandomOctave(const c74::min::atoms &args = {});
   ~NoteRandomOctave();
 
   void processNoteMessage(int note, int velocity);

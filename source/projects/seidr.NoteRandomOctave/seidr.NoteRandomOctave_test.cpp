@@ -15,14 +15,14 @@ SCENARIO("seidr.NoteRandomOctave object basic functionality") {
     NoteRandomOctave &my_object = an_instance;
 
     WHEN("the object is created") {
-      THEN("it initializes successfully") { REQUIRE(&my_object != nullptr); }
+      THEN("it initializes successfully") { REQUIRE(my_object != nullptr); }
 
       THEN("it has the correct number of inlets and outlets") {
         // Test basic object structure
         c74::min::atoms args = {60, 100};
         REQUIRE_NOTHROW(my_object.anything(args));
         auto &out0 = *c74::max::object_getoutput(my_object, 0);
-        auto &out1 = *c74::max::object_getoutput(my_object, 1);
+        const auto &out1 = *c74::max::object_getoutput(my_object, 1);
         REQUIRE(true);
       }
     }
@@ -117,7 +117,7 @@ SCENARIO("seidr.NoteRandomOctave object basic functionality") {
         my_object.anything(note5);
         my_object.anything(note6);
 
-        REQUIRE(&my_object != nullptr);
+        REQUIRE(my_object != nullptr);
       }
     }
   }

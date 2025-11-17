@@ -4,7 +4,8 @@ ColumnLimit: 140
 UseTab: ForContinuationAndIndentation
 TabWidth: 4
 
-BreakBeforeBraces: Attach
+# The program didn't like this twice.
+#BreakBeforeBraces: Attach
 
 Cpp11BracedListStyle: true
 AllowShortFunctionsOnASingleLine: Empty

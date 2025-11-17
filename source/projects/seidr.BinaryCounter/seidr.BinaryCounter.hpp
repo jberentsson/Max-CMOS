@@ -10,7 +10,6 @@
 #include "c74_min.h"
 #include <ext_mess.h>
 #include <fcntl.h>
-#include <io.h>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -26,7 +25,7 @@ public:
   MIN_AUTHOR{"Jóhann Berentsson"};
   MIN_RELATED{"seidr.*"};
 
-  BinaryCounter_MAX(const atoms &args = {});
+  explicit BinaryCounter_MAX(const atoms &args = {});
   ~BinaryCounter_MAX() {};
 
   void enable_bangs();

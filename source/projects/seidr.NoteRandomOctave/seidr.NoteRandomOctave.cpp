@@ -13,8 +13,6 @@ void NoteRandomOctave::clearNoteMessage(int note) {
 }
 
 void NoteRandomOctave::clearAllNotesMessage() {
-  int clearedCount = keyboard.removeAll();
-
   // Send all notes off as fallback.
   for (int note = 0; note < 128; note++) {
     output_0.send(note);
@@ -36,8 +34,6 @@ NoteRandomOctave::~NoteRandomOctave() { clearAllNotesMessage(); }
 
 void NoteRandomOctave::processNoteMessage(int note, int velocity) {
   // Process the note.
-  int result = keyboard.note(note, velocity);
-
   if (velocity > 0) {
     // Note ON
     const auto &activeNotes = keyboard.getActiveNotes();

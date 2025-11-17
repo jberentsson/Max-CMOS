@@ -6,15 +6,14 @@
 
 #pragma once
 
-#include <ext_mess.h>
-#include <fcntl.h>
-#include <io.h>
+//#include <ext_mess.h>
+//#include <fcntl.h>
 #include <iostream>
 #include <string>
 #include <vector>
 
-#include "ShiftRegister/ShiftRegister.hpp"
 #include "c74_min.h"
+#include "ShiftRegister/ShiftRegister.hpp"
 
 using namespace c74::min;
 
@@ -28,7 +27,7 @@ public:
   MIN_AUTHOR{"Jóhann Berentsson"};
   MIN_RELATED{"seidr.*"};
 
-  ShiftRegister_MAX(const atoms &args = {});
+  explicit ShiftRegister_MAX(const atoms &args = {});
   ~ShiftRegister_MAX() {};
 
   void handle_outputs();
