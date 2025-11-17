@@ -1,5 +1,10 @@
 # Max Modules
+## Description
 This package was created using the Min-DevKit for Max, an API and supporting tools for writing externals in modern C++.
+
+## Build Status
+[![Test](https://github.com/jberentsson/seidr/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/jberentsson/seidr/actions/workflows/test.yml)
+[![Test](https://github.com/jberentsson/seidr/actions/workflows/test.yml/badge.svg?branch=develop)](https://github.com/jberentsson/seidr/actions/workflows/test.yml)
 
 ## Build
 ```bash

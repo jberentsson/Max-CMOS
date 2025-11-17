@@ -85,6 +85,10 @@ jobs:
         GITHUB_REPOSITORY_NAME: ${{ github.event.repository.name }}
         GITHUB_CONFIG: ${{ matrix.config }}
       run: |
+        echo "=== File Structure ==="
+        find . -name "Constants.hpp" -type f
+        echo "=== thulr directory contents ==="  
+        find ./thulr -name "*.hpp" -type f | head -20
         set PACKAGE_NAME=%GITHUB_REPOSITORY_NAME%
         mkdir %PACKAGE_NAME%
         if exist extensions cp -a extensions %PACKAGE_NAME%
