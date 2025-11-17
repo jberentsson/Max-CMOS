@@ -1,13 +1,13 @@
-# .clang-format - Custom config for Min-API patterns
+# .clang-format - Aggressive auto-formatting for Min-API
 Language: Cpp
 AccessModifierOffset: -4
 
-# Critical: Don't mess with Min-API macro formatting
-BinPackArguments: false
-BinPackParameters: false
+# Enable packing for consistent formatting
+BinPackArguments: true
+BinPackParameters: true
 
-# Brace handling that works with MIN_FUNCTION
-BreakBeforeBraces: Custom
+# Consistent brace style
+BreakBeforeBraces: Attach
 BraceWrapping:
   AfterCaseLabel: false
   AfterClass: false
@@ -28,83 +28,92 @@ BraceWrapping:
   SplitEmptyRecord: false
   SplitEmptyNamespace: false
 
-# Conservative column limit
-ColumnLimit: 120
+# Standard column limit
+ColumnLimit: 100
 
-# Indentation
+# Consistent indentation
 IndentWidth: 4
 ContinuationIndentWidth: 4
 TabWidth: 4
 UseTab: Never
 
-# Preserve code structure
-KeepEmptyLinesAtTheStartOfBlocks: true
-MaxEmptyLinesToKeep: 2
+# Clean up empty lines
+KeepEmptyLinesAtTheStartOfBlocks: false
+MaxEmptyLinesToKeep: 1
 
-# Pointer alignment
+# Consistent pointer alignment
 PointerAlignment: Left
 
-# Critical: Don't reorder includes or declarations
-SortIncludes: false
-SortUsingDeclarations: false
+# Organize includes
+SortIncludes: true
+SortUsingDeclarations: true
+IncludeBlocks: Regroup
+IncludeCategories:
+  - Regex: '^"(c74|min)'
+    Priority: 1
+  - Regex: '^"(.*)'
+    Priority: 2
+  - Regex: '^<(.*)'
+    Priority: 3
 
-# Space handling
+# Consistent spacing
 SpaceBeforeParens: ControlStatements
 SpaceBeforeAssignmentOperators: true
 SpaceBeforeCtorInitializerColon: true
 SpaceBeforeInheritanceColon: true
 
-# Disable aggressive formatting features
-AlignAfterOpenBracket: DontAlign
-AlignConsecutiveMacros: false
-AlignConsecutiveAssignments: false
-AlignConsecutiveDeclarations: false
-AlignEscapedNewlines: DontAlign
-AlignOperands: DontAlign
-AlignTrailingComments: false
+# Enable alignment for clean code
+AlignAfterOpenBracket: Align
+AlignConsecutiveMacros: true
+AlignConsecutiveAssignments: true
+AlignConsecutiveDeclarations: true
+AlignEscapedNewlines: Right
+AlignOperands: Align
+AlignTrailingComments: true
 
-AllowAllArgumentsOnNextLine: false
-AllowAllConstructorInitializersOnNextLine: false
-AllowAllParametersOfDeclarationOnNextLine: false
+# Allow multi-line for better readability
+AllowAllArgumentsOnNextLine: true
+AllowAllConstructorInitializersOnNextLine: true
+AllowAllParametersOfDeclarationOnNextLine: true
 
-AllowShortBlocksOnASingleLine: false
-AllowShortCaseLabelsOnASingleLine: false
-AllowShortFunctionsOnASingleLine: false
-AllowShortIfStatementsOnASingleLine: false
-AllowShortLambdasOnASingleLine: false
-AllowShortLoopsOnASingleLine: false
+# Short form rules
+AllowShortBlocksOnASingleLine: Empty
+AllowShortCaseLabelsOnASingleLine: true
+AllowShortFunctionsOnASingleLine: InlineOnly
+AllowShortIfStatementsOnASingleLine: WithoutElse
+AllowShortLambdasOnASingleLine: All
+AllowShortLoopsOnASingleLine: true
 
+# Break rules
 AlwaysBreakAfterDefinitionReturnType: None
 AlwaysBreakAfterReturnType: None
-AlwaysBreakBeforeMultilineStrings: false
-AlwaysBreakTemplateDeclarations: false
+AlwaysBreakBeforeMultilineStrings: true
+AlwaysBreakTemplateDeclarations: MultiLine
 
-BreakBeforeBinaryOperators: None
+BreakBeforeBinaryOperators: NonAssignment
 BreakBeforeInheritanceComma: false
 BreakInheritanceList: BeforeColon
-BreakBeforeTernaryOperators: false
+BreakBeforeTernaryOperators: true
 
-BreakConstructorInitializers: AfterColon
+BreakConstructorInitializers: BeforeColon
 BreakAfterJavaFieldAnnotations: false
-BreakStringLiterals: false
+BreakStringLiterals: true
 
-CommentPragmas: ''
+# Comments
+CommentPragmas: '^ IWYU pragma:'
 CompactNamespaces: false
 ConstructorInitializerAllOnOneLineOrOnePerLine: false
 
-Cpp11BracedListStyle: false
-DeriveLineEnding: false
+Cpp11BracedListStyle: true
+DeriveLineEnding: true
 DerivePointerAlignment: false
 DisableFormat: false
 
-EmptyLineBeforeAccessModifier: Never
+EmptyLineBeforeAccessModifier: LogicalBlock
 ExperimentalAutoDetectBinPacking: false
-FixNamespaceComments: false
+FixNamespaceComments: true
 
-# Include handling
-IncludeBlocks: Preserve
-IncludeCategories: []
-IncludeIsMainRegex: ''
+IncludeIsMainRegex: '(Test)?$'
 
 IndentCaseLabels: false
 IndentGotoLabels: false
@@ -124,43 +133,36 @@ ObjCBlockIndentWidth: 4
 ObjCSpaceAfterProperty: false
 ObjCSpaceBeforeProtocolList: true
 
-# Reduce penalties to prevent unwanted breaks
-PenaltyBreakAssignment: 1000
-PenaltyBreakBeforeFirstCallParameter: 1000
-PenaltyBreakComment: 1000
-PenaltyBreakFirstLessLess: 1000
+# Reasonable penalties for breaks
+PenaltyBreakAssignment: 2
+PenaltyBreakBeforeFirstCallParameter: 19
+PenaltyBreakComment: 300
+PenaltyBreakFirstLessLess: 120
 PenaltyBreakString: 1000
-PenaltyBreakTemplateDeclaration: 1000
+PenaltyBreakTemplateDeclaration: 10
 PenaltyExcessCharacter: 1000000
-PenaltyReturnTypeOnItsOwnLine: 1000
+PenaltyReturnTypeOnItsOwnLine: 60
 
-ReflowComments: false
+ReflowComments: true
 
 # Space configurations
 SpaceAfterCStyleCast: false
 SpaceAfterLogicalNot: false
-SpaceAfterTemplateKeyword: false
+SpaceAfterTemplateKeyword: true
 SpaceBeforeCpp11BracedList: false
 SpaceInEmptyBlock: false
 SpaceInEmptyParentheses: false
 SpacesBeforeTrailingComments: 1
 SpacesInAngles: false
 SpacesInConditionalStatement: false
-SpacesInContainerLiterals: false
+SpacesInContainerLiterals: true
 SpacesInCStyleCastParentheses: false
 SpacesInParentheses: false
 SpacesInSquareBrackets: false
 
 Standard: Cpp11
 
-# Custom macro handling
+# Min-API macro handling
 ForEachMacros:
   - 'MIN_FUNCTION'
   - 'MIN_EXTERNAL'
-  - 'MIN_DESCRIPTION'
-  - 'MIN_TAGS'
-  - 'MIN_AUTHOR'
-  - 'MIN_RELATED'
-  - 'MIN_INLET'
-  - 'MIN_OUTLET'
-  
