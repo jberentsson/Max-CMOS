@@ -60,7 +60,7 @@ macro(project_template)
     foreach (project_dir ${PROJECT_DIRS})
         if (TARGET ${project_dir}_test)
             target_include_directories(${project_dir}_test PRIVATE
-                ${CMAKE_CURRENT_SOURCE_DIR}/source/thulr/source
+                ${CMAKE_CURRENT_SOURCE_DIR}/../../thulr/source
             )
         endif()
     endforeach()
