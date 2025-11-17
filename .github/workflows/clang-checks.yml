@@ -1,0 +1,67 @@
+name: Code Quality Checks
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  clang-checks:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: 'recursive'
+        fetch-depth: 0
+
+    - name: Update submodules
+      run: git submodule update --init --remote --recursive
+
+    - name: Install clang tools
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y clang-format clang-tidy
+
+    - name: Check code formatting with clang-format
+      run: |
+        # Check if formatting is correct
+        find source -name "*.cpp" -o -name "*.hpp" | xargs clang-format --dry-run --Werror
+        
+        # Show what would change (optional)
+        echo "=== Formatting differences ==="
+        find source -name "*.cpp" -o -name "*.hpp" | xargs clang-format -n --ferror-limit=0 || true
+
+    - name: Check code quality with clang-tidy
+      run: |
+        # Create compile_commands.json if needed
+        mkdir -p build
+        cd build
+        cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..
+        
+        # Run clang-tidy on all source files
+        find ../source -name "*.cpp" | xargs -I {} clang-tidy {} \
+          -p . \
+          -header-filter='.*' \
+          -quiet \
+          --warnings-as-errors='*' \
+          -checks='-*,bugprone-*,clang-analyzer-*,modernize-*,performance-*,readability-*,-bugprone-branch-clone,-bugprone-easily-swappable-parameters,-modernize-use-trailing-return-type,-readability-identifier-length,-readability-magic-numbers,-readability-function-cognitive-complexity'
+
+    - name: Auto-fix formatting issues
+      if: failure()
+      run: |
+        # Apply clang-format fixes
+        find source -name "*.cpp" -o -name "*.hpp" | xargs clang-format -i
+        
+        # Create patch file for review
+        git diff > clang-format-fixes.patch
+        
+        echo "=== Formatting fixes applied ==="
+        echo "Review the changes in clang-format-fixes.patch"
+        
+    - uses: actions/upload-artifact@v4
+      if: failure()
+      with:
+        name: clang-format-fixes
+        path: clang-format-fixes.patch
