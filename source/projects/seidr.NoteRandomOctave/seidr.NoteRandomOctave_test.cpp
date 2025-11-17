@@ -9,6 +9,8 @@
 #include "Utils/NoteValues.hpp"
 #include "seidr.NoteRandomOctave.cpp"
 
+using namespace MidiNotes;
+
 SCENARIO("seidr.NoteRandomOctave object basic functionality") {
     ext_main(nullptr);
 
