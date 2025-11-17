@@ -25,45 +25,52 @@ public:
 
   c74::min::message<> anything{
       this, "anything", "Handle any message",
-      MIN_FUNCTION{if (args.size() >= 2){int note = args[0];
-  int velocity = args[1];
-  this->processNoteMessage(note, velocity);
-} return {};
-}
-}
-;
+      MIN_FUNCTION {
+        if (args.size() >= 2) {
+          int note = args[0];
+          int velocity = args[1];
+          this->processNoteMessage(note, velocity);
+        }
+        return {};
+      }
+  };
 
-c74::min::message<> clear{this, "clear", "Clear specific note",
-                          MIN_FUNCTION{if (args.size() >= 1){int note = args[0];
-this->clearNoteMessage(note);
-}
-return {};
-}
-}
-;
+  c74::min::message<> clear{
+      this, "clear", "Clear specific note",
+      MIN_FUNCTION {
+        if (args.size() >= 1) {
+          int note = args[0];
+          this->clearNoteMessage(note);
+        }
+        return {};
+      }
+  };
 
-c74::min::message<> clearall{this, "clearall", "Clear all notes",
-                             MIN_FUNCTION{this->clearAllNotesMessage();
-return {};
-}
-}
-;
+  c74::min::message<> clearall{
+      this, "clearall", "Clear all notes",
+      MIN_FUNCTION {
+        this->clearAllNotesMessage();
+        return {};
+      }
+  };
 
-c74::min::message<> range{this, "range", "Set random range",
-                          MIN_FUNCTION{if (args.size() >= 2){int low = args[0];
-int high = args[1];
-this->setRangeMessage(low, high);
-}
-return {};
-}
-}
-;
+  c74::min::message<> range{
+      this, "range", "Set random range",
+      MIN_FUNCTION {
+        if (args.size() >= 2) {
+          int low = args[0];
+          int high = args[1];
+          this->setRangeMessage(low, high);
+        }
+        return {};
+      }
+  };
 
-c74::min::message<> debug{this, "debug", "Print active notes",
-                          MIN_FUNCTION{this->printActiveNotes();
-return {};
-}
-}
-;
-}
-;
+  c74::min::message<> debug{
+      this, "debug", "Print active notes",
+      MIN_FUNCTION {
+        this->printActiveNotes();
+        return {};
+      }
+  };
+};
