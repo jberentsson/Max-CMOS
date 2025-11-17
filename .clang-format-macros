@@ -1,0 +1,16 @@
+# Macro formatting patterns for Min-API
+MacroPatterns:
+  - Definition: '^MIN_FUNCTION'
+    Directives:
+      - AlignTrailingComments: false
+      - AllowAllParametersOfDeclarationOnNextLine: false
+      - BinPackParameters: false
+      - ColumnLimit: 0
+  - Definition: '^MIN_EXTERNAL'
+    Directives:
+      - AlignTrailingComments: false
+      - AllowAllParametersOfDeclarationOnNextLine: false
+  - Definition: '^MIN_DESCRIPTION|MIN_TAGS|MIN_AUTHOR|MIN_RELATED'
+    Directives:
+      - AlignConsecutiveMacros: true
+      - ColumnLimit: 0
