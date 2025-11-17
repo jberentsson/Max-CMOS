@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "BinaryCounter/BinaryCounter.hpp"
+#include "../../thulr/BinaryCounter/BinaryCounter.hpp"
 #include "c74_min.h"
 #include <ext_mess.h>
 #include <fcntl.h>
