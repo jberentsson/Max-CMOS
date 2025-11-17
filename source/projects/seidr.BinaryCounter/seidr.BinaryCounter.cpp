@@ -9,6 +9,12 @@ BinaryCounter_MAX::BinaryCounter_MAX(const atoms& args){
     for(int i = 0; i < args.size(); i++){
         cout << "arg[" << i << "]" << args[i] << endl;
     }
+
+    for(int i = 0; i < 8; i++){
+        outputs.push_back(
+            std::make_unique<outlet<>>( this, "(anything) output bit " + std::to_string(i))
+        );
+    }
 }
 
 int BinaryCounter_MAX::get_bit(int output) {

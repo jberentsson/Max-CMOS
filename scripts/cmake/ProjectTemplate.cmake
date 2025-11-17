@@ -7,7 +7,7 @@ macro(project_template)
 
     include(${C74_MIN_API_DIR}/script/min-pretarget.cmake)
 
-    set(THULR_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../thulr)
+    set(THULR_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../thulr/source)
 
     #############################################################
     # MAX EXTERNAL

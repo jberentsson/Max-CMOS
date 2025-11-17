@@ -42,33 +42,15 @@ class BinaryCounter_MAX : public object<BinaryCounter_MAX> {
         inlet<>  input_0 { this, "(bang | list | reset) input pulse" };
         inlet<>  input_1 { this, "(reset) reset pulse" };
 
-        outlet<> output_0 { this, "(anything) output bit 0" };
-        outlet<> output_1 { this, "(anything) output bit 1" };
-        outlet<> output_2 { this, "(anything) output bit 2" };
-        outlet<> output_3 { this, "(anything) output bit 3" };
-        outlet<> output_4 { this, "(anything) output bit 4" };
-        outlet<> output_5 { this, "(anything) output bit 5" };
-        outlet<> output_6 { this, "(anything) output bit 6" };
-        outlet<> output_7 { this, "(anything) output bit 6" };
+        std::vector<std::unique_ptr<outlet<>>> outputs;
 
-        outlet<> *outputs[OUTPUT_COUNT] = {
-            &output_0,
-            &output_1,
-            &output_2,
-            &output_3,
-            &output_4,
-            &output_5,
-            &output_6,
-            &output_7
-        };
-
-        argument<symbol> bang_arg{ this, "bang_on", "Initial value for the bang attribute.",
+        argument<symbol> bang_arg{ this, "bang", "Initial value for the bang attribute.",
             MIN_ARGUMENT_FUNCTION {
                 bang_enabled = FALSE;
             }
         };
 
-        attribute<symbol> bang_on{ this, "bang_on", "symbol",
+        attribute<symbol> bang_on{ this, "bang", "symbol",
             description {
                 "The output mode."
                 "bool : boolean"

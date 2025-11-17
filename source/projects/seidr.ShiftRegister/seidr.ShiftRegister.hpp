@@ -13,12 +13,35 @@
 #include <vector>
 
 #include "c74_min.h"
-#include "ShiftRegister/ShiftRegister.hpp"
+#include "ShiftRegister/ShiftRegister.cpp"
 
 using namespace c74::min;
 
 #define BIT_COUNT 8
 #define OUTPUT_COUNT 9
+#define MAX_OUTPUTS 32
+
+class LastNote {
+    private:
+        int pitch = NULL;
+
+    public:
+        bool dirty = FALSE;
+
+        int get(){
+            return this->pitch;
+        }
+
+        int set(int n){
+            this->pitch = n;
+            
+            if(this->dirty == FALSE){
+                this->dirty = TRUE;
+            }
+
+            return this->pitch;
+        }
+};
 
 class ShiftRegister_MAX : public object<ShiftRegister_MAX> {
     public:
@@ -34,7 +57,7 @@ class ShiftRegister_MAX : public object<ShiftRegister_MAX> {
         void handle_through();
         int size();
         int step();
-        int get(int i);
+        uint64_t get(int i);
         int data_input(int v);
         int data_through();
 
@@ -42,39 +65,8 @@ class ShiftRegister_MAX : public object<ShiftRegister_MAX> {
         inlet<>  input_1 { this, "(int|bang) input pulse" };
         inlet<>  input_2 { this, "(anything) input pulse" };
 
-        outlet<> output_0 { this, "(anything) output bit 0" };
-        outlet<> output_1 { this, "(anything) output bit 1" };
-        outlet<> output_2 { this, "(anything) output bit 2" };
-        outlet<> output_3 { this, "(anything) output bit 3" };
-        outlet<> output_4 { this, "(anything) output bit 4" };
-        outlet<> output_5 { this, "(anything) output bit 5" };
-        outlet<> output_6 { this, "(anything) output bit 6" };
-        outlet<> output_7 { this, "(anything) output bit 6" };
-        outlet<> output_8 { this, "(anything) output bit 6" };
-
-        outlet<> *outputs[OUTPUT_COUNT] = {
-            &output_0,
-            &output_1,
-            &output_2,
-            &output_3,
-            &output_4,
-            &output_5,
-            &output_6,
-            &output_7,
-            &output_8
-        };
-
-        int last_output[OUTPUT_COUNT] = {
-            NULL,
-            NULL,
-            NULL,
-            NULL,
-            NULL,
-            NULL,
-            NULL,
-            NULL,
-            NULL
-        };
+        std::vector<std::unique_ptr<outlet<>>> outputs;
+        LastNote last_output[OUTPUT_COUNT] = {};
 
         c74::min::message<threadsafe::yes> anything { this, "anything", "Handle any message",
             MIN_FUNCTION {

@@ -11,39 +11,44 @@
 using namespace c74::min;
 
 ShiftRegister_MAX::ShiftRegister_MAX(const atoms& args){
-    std::cout << args.size() << std::endl;
+    int number_of_outputs = 0;
+
+    if (args.size() > 0) {
+        number_of_outputs = args[0];        
+    } else {
+        number_of_outputs = OUTPUT_COUNT;
+    }
+
+    for (int i = 0; i < number_of_outputs; i++) {
+        outputs.push_back(
+            std::make_unique<outlet<>>(this, "( int | bang ) output " + std::to_string(i))
+        );
+    }
 
     for(int i = 0; i < args.size(); i++){
         cout << "arg[" << i << "]" << args[i] << endl;
     }
 };
 
-void ShiftRegister_MAX::handle_outputs(){
-    // Bit outputs 0-7.
-    for (int i = 0; i < BIT_COUNT; i++){
-        if (this->send_bangs){
-            this->outputs[i]->send(bang());
-        } else {
-            this->outputs[i]->send(this->sr.get(i));
-        }
+void ShiftRegister_MAX::handle_outputs() {
+    // Bit outputs from 0 to (N-1).
+    for (int i = 0; i < outputs.size() - 1; i++){
+        this->outputs[i]->send(this->send_bangs ? bang() : atoms({(uint64_t) this->sr.get(i)}));
     }
 }
 
-void ShiftRegister_MAX::handle_through(){
-    // Data through.
-    int dt = this->sr.data_through();
+void ShiftRegister_MAX::handle_through() {
+    // Output N data through.
+    uint64_t dt = this->sr.data_through();
+    int last_output_index = outputs.size() - 1;
 
-    if (every_output || dt != last_output[8]){
-        if(this->send_bangs){
-            this->output_8.send(bang());
-        } else {
-            this->output_8.send(dt);
-        }
-        this->last_output[8] = dt;
+    if (every_output || dt != last_output[8].get()){
+        this->outputs[last_output_index]->send(this->send_bangs ? bang() : c74::min::atoms({dt}));
+        this->last_output[last_output_index].set(dt);
     }
 }
 
-int ShiftRegister_MAX::size(){
+int ShiftRegister_MAX::size() {
     return this->sr.size();
 }
 
@@ -51,7 +56,7 @@ int ShiftRegister_MAX::step(){
     return this->sr.step();
 }
 
-int ShiftRegister_MAX::get(int i){
+uint64_t ShiftRegister_MAX::get(int i){
     return this->sr.get(i);
 }
 
