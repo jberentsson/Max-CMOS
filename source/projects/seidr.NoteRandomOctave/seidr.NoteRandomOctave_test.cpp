@@ -4,11 +4,10 @@
 ///	@license	Use of this source code is governed by the MIT License
 /// found in the License.md file.
 
+#include "c74_min_unittest.h"
 #include "Utils/Constants.hpp"
 #include "Utils/NoteValues.hpp"
-#include "c74_min_unittest.h"
 #include "seidr.NoteRandomOctave.cpp"
-#include "seidr.NoteRandomOctave.hpp"
 
 SCENARIO("seidr.NoteRandomOctave object basic functionality") {
     ext_main(nullptr);
