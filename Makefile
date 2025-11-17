@@ -5,7 +5,6 @@ all:
 tidy:
 	clang-tidy source/projects/seidr.*/*.{cpp,hpp} -- -std=c++17 \
     -I. -Isource -Isource/thulr/source \
-    -Isource/compatibility/stubs \
     -Wno-everything
 
 format:

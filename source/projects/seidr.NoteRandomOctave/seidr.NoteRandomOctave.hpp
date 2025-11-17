@@ -7,7 +7,7 @@ class Keyboard;
 
 class NoteRandomOctave : public c74::min::object<NoteRandomOctave> {
 private:
-  Keyboard keyboard = Keyboard();
+	Keyboard keyboard = Keyboard();
 
 public:
   explicit NoteRandomOctave(const c74::min::atoms &args = {});
