@@ -12,7 +12,7 @@ class NoteRandomOctaveMax : public c74::min::object<NoteRandomOctaveMax> {
 
   public:
     explicit NoteRandomOctaveMax(const c74::min::atoms &args = {});
-    ~NoteRandomOctaveMax();
+    ~NoteRandomOctaveMax() = default;
 
     void processNoteMessage(int note, int velocity);
     void clearNoteMessage(int note);

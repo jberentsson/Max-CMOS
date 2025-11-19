@@ -9,6 +9,7 @@
 #include "c74_min.h"
 
 #include "BinaryCounter/BinaryCounter.hpp"
+#include "BinaryCounter/BinaryCounter.cpp"
 
 #include <ext_mess.h>
 #include <fcntl.h>
@@ -19,98 +20,94 @@
 using namespace c74::min;
 
 class BinaryCounterMax : public object<BinaryCounterMax> {
-  public:
+public:
     MIN_DESCRIPTION{"Binary Counter"};
     MIN_TAGS{"jb, counter"};
     MIN_AUTHOR{"Jóhann Berentsson"};
     MIN_RELATED{"seidr.*"};
+    
+    enum {
+        OUTPUT_COUNT = 8
+    };
 
     explicit BinaryCounterMax(const atoms &args = {});
     ~BinaryCounterMax() = default;
 
     void enableBangs();
     void disableBangs();
-
     void updateOutputs();
-    int getBit(int output);
+    unsigned int getBit(int output);
 
-    int counterValue();
-    int setPreset(int p);
-    int preset();
-    int maxValue();
+    unsigned int counterValue();
+    unsigned int setPreset(unsigned int p);
+    unsigned int preset();
+    unsigned int maxValue();
 
     inlet<> input0 {this, "(bang | list | reset) input pulse"};
     inlet<> input1 {this, "(reset) reset pulse"};
 
     std::vector<std::unique_ptr<outlet<>>> outputs;
 
-    argument<symbol> bang_arg{this, "bang", "Initial value for the bang attribute.",
-                              MIN_ARGUMENT_FUNCTION{bangEnable = FALSE;
-}
-}
-;
+    // FIXED: Proper attribute for bang mode
+    attribute<bool> bang_enable{this, "bang_enable", false,
+        description{"Output mode: true for bang outputs, false for integer outputs"}};
 
-attribute<symbol> bang_on{this, "bang", "symbol",
-                          description{"The output mode."
-                                      "bool : boolean"
-                                      "int  : integers"}};
+    // FIXED: Simplified bang handler
+    message<threadsafe::yes> bang{
+        this, "bang", "Steps the counter.",
+        MIN_FUNCTION{
+            this->counter_.step();
+            this->updateOutputs();
+            return {};
+        }
+    };
 
-message<threadsafe::yes> bang{
-    this, "bang", "Steps the counter.",
-    MIN_FUNCTION{if (this->alreadyBanged){if (this->resetTriggered){this->counter.reset();
-this->resetTriggered = FALSE;
-}
-else {
-    this->counter.step();
-}
-}
-else {
-    this->alreadyBanged = TRUE;
-}
+    // FIXED: Reset handler that updates outputs
+    message<threadsafe::yes> reset{
+        this, "reset", "Reset the counter.",
+        MIN_FUNCTION{
+            this->counter_.reset();
+            this->updateOutputs();  // CRITICAL: Update outputs after reset
+            return {};
+        }
+    };
 
-this->updateOutputs();
-return {};
-}
-}
-;
+    // FIXED: Preset handler
+    message<threadsafe::yes> preset_msg{
+        this, "preset", "Set preset value.",
+        MIN_FUNCTION{
+            if (args.size() > 0) {
+                int preset_value = args[0];
+                this->counter_.setPreset(preset_value);
+                this->updateOutputs();  // Update outputs after preset change
+            }
+            return {};
+        }
+    };
 
-message<threadsafe::yes> list{this, "list", "Handle any list.",
-                              MIN_FUNCTION{std::cout << "LIST!" << std::endl;
+    // FIXED: Set value handler
+    message<threadsafe::yes> set{
+        this, "set", "Set counter value.",
+        MIN_FUNCTION{
+            if (args.size() > 0) {
+                int value = args[0];
+                // You'll need to implement a setValue method in BinaryCounter
+                //this->counter_.setValue(value);
+                this->updateOutputs();  // Update outputs after value change
+            }
+            return {};
+        }
+    };
 
-if (args.size() >= 1) {
-    for (int i = 0; i < args.size(); i++) {
-        std::cout << "THE ARG: " << args[i] << std::endl;
-    }
-}
-
-return {};
-}
-}
-;
-
-message<threadsafe::yes> reset{this, "reset", "Reset the counter.",
-                               MIN_FUNCTION{this->resetTriggered = TRUE;
-return {};
-}
-}
-;
-
-message<threadsafe::yes> anything{this, "anything", "Handle any message.",
-                                  MIN_FUNCTION{std::cout << "ANYTHING!" << std::endl;
-return {};
-}
-}
-;
+    // FIXED: Output current value
+    message<threadsafe::yes> output{
+        this, "output", "Output current value without changing it.",
+        MIN_FUNCTION{
+            this->updateOutputs();
+            return {};
+        }
+    };
 
 private:
-BinaryCounter counter_ = BinaryCounter(OUTPUT_COUNT);
-bool bangEnable = FALSE;
-bool alreadyBanged = FALSE;
-bool resetTriggered = FALSE;
-
-enum {
-    OUTPUT_COUNT = 8
+    BinaryCounter counter_ = BinaryCounter(OUTPUT_COUNT);
 };
-
-}
-;

@@ -7,6 +7,7 @@
 #include "c74_min_unittest.h"
 
 #include "seidr.NCounter.hpp"
+#include "seidr.NCounter.cpp"
 
 using namespace c74::max;
 

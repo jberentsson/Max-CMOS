@@ -1,11 +1,11 @@
-#include "seidr.NoteRandomOctaveMax.hpp"
+#include "seidr.NoteRandomOctave.hpp"
 
 #include <iostream>
 
 using namespace c74::min;
 
 void NoteRandomOctaveMax::clearNoteMessage(int note) {
-    int clearedCount = keyoard_.clearNotesByPitchClass(note);
+    int clearedCount = keyboard_.clearNotesByPitchClass(note);
 
     if (clearedCount > 0) {
         output0.send(note);
@@ -22,11 +22,11 @@ void NoteRandomOctaveMax::clearAllNotesMessage() {
 }
 
 void NoteRandomOctaveMax::setRangeMessage(int low, int high) {
-    keyoard_.setRandomRange(low, high);
+    keyboard_.setRandomRange(low, high);
 }
 
 void NoteRandomOctaveMax::printActiveNotes() {
-    keyoard_.debugPrintActiveNotes();
+    keyboard_.debugPrintActiveNotes();
 }
 
 NoteRandomOctaveMax::NoteRandomOctaveMax(const atoms &args) {
@@ -38,7 +38,7 @@ void NoteRandomOctaveMax::processNoteMessage(int note, int velocity) {
     // Process the note.
     if (velocity > 0) {
         // Note ON
-        const auto &activeNotes = keyoard_.getActiveNotes();
+        const auto &activeNotes = keyboard_.getActiveNotes();
 
         if (activeNotes.empty()) {
             return;

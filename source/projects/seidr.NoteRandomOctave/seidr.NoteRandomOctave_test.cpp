@@ -8,7 +8,8 @@
 
 #include "Utils/Constants.hpp"
 #include "Utils/NoteValues.hpp"
-#include "seidr.NoteRandomOctaveMax.hpp"
+#include "seidr.NoteRandomOctave.hpp"
+#include "seidr.NoteRandomOctave.cpp"
 
 using namespace MidiNotes;
 

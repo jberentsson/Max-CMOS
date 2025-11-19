@@ -87,14 +87,14 @@ return {};
 ;
 
 c74::min::message<threadsafe::yes> bang{this, "bang", "step the shift register",
-                                        MIN_FUNCTION{switch (inlet){case 0 : sr.step();
+                                        MIN_FUNCTION{switch (inlet){case 0 : sr_.step();
 handleThrough();
 
 case 1:
 break;
 
 case 2:
-sr.activate();
+sr_.activate();
 handleOutputs();
 
 default:
@@ -110,9 +110,9 @@ c74::min::message<threadsafe::yes> integer{
     this, "int", "data",
     MIN_FUNCTION{if (args.size()){switch (inlet){case 0 :
 
-                                                     // sr.step();
+                                                     // sr_.step();
                                                      // handleOutputs();
-                                                     case 1 : this->sr.dataInput(args[0]);
+                                                     case 1 : this->sr_.dataInput(args[0]);
 
 default:
 std::cout << "Some other integer: " << args[0] << " Inlet: " << inlet << std::endl;

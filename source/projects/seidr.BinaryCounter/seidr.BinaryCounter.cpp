@@ -5,29 +5,28 @@
 /// found in the License.md file.
 
 #include "seidr.BinaryCounter.hpp"
+#include "seidr.BinaryCounter.hpp"
 
 BinaryCounterMax::BinaryCounterMax(const atoms &args) {
-    for (int i = 0; i < args.size(); i++) {
-        cout << "arg[" << i << "]" << args[i] << endl;
-    }
-
-    for (int i = 0; i < 8; i++) {
+    // Create outputs
+    for (int i = 0; i < OUTPUT_COUNT; i++) {
         outputs.push_back(
             std::make_unique<outlet<>>(this, "(anything) output bit " + std::to_string(i)));
     }
+    
+    updateOutputs();
 }
 
 unsigned int BinaryCounterMax::getBit(int output) {
-    // Isolate the correct bit.
-    return ((this->counter.value()) >> output) & 0x1;
+    return ((this->counter_.value()) >> output) & 0x1;
 }
 
 void BinaryCounterMax::updateOutputs() {
-    // Send data to the outputs.
+    // Send data to all outputs
     for (int i = 0; i < OUTPUT_COUNT; i++) {
         int current = OUTPUT_COUNT - i - 1;
-
-        if (this->bangEnable) {
+        
+        if (this->bang_enable) {
             if (this->getBit(i) == 1) {
                 this->outputs[current]->send("bang");
             }
@@ -38,27 +37,31 @@ void BinaryCounterMax::updateOutputs() {
 }
 
 void BinaryCounterMax::enableBangs() {
-    this->bangEnable = TRUE;
+    this->bang_enable = true;
+    this->updateOutputs();
 }
 
 void BinaryCounterMax::disableBangs() {
-    this->bangEnable = FALSE;
+    this->bang_enable = false;
+    this->updateOutputs();
 }
 
 unsigned int BinaryCounterMax::counterValue() {
-    return this->counter.value();
+    return this->counter_.value();
 }
 
-int BinaryCounterMax::setPreset(int p) {
-    return this->counter.setPreset(p);
+unsigned int BinaryCounterMax::setPreset(unsigned int p) {
+    unsigned int result = this->counter_.setPreset(p);
+    this->updateOutputs();
+    return result;
 }
 
-int BinaryCounterMax::preset() {
-    return this->counter.preset();
+unsigned int BinaryCounterMax::preset() {
+    return this->counter_.preset();
 }
 
-int BinaryCounterMax::maxValue() {
-    return this->counter.getMaxValue();
+unsigned int BinaryCounterMax::maxValue() {
+    return this->counter_.getMaxValue();
 }
 
 MIN_EXTERNAL(BinaryCounterMax);

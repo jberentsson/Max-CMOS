@@ -33,10 +33,10 @@ class NCounterMax : public object<NCounterMax> {
     ~NCounterMax() = default;
 
     void handleOutputs();
-    int counterValue();
-    int preset();
-    int step();
-    int set_preset(int p);
+    unsigned int counterValue();
+    unsigned int preset();
+    unsigned int step();
+    unsigned int setPreset(int p);
 
     inlet<> input0{this, "(bang) input pulse"};
     inlet<> input1{this, "(reset) reset pulse"};
@@ -75,7 +75,7 @@ attribute<symbol> outputType{
 
 message<> bang{this, "bang", "Steps the counter.",
 
-               MIN_FUNCTION{if (this->alreadyBanged){this->counter.step();
+               MIN_FUNCTION{if (this->alreadyBanged){this->counter_.step();
 }
 else {
     this->alreadyBanged = TRUE;
@@ -87,7 +87,7 @@ return {};
 }
 ;
 
-message<> reset{this, "reset", "Reset the counter.", MIN_FUNCTION{this->counter.reset();
+message<> reset{this, "reset", "Reset the counter.", MIN_FUNCTION{this->counter_.reset();
 return {};
 }
 }
