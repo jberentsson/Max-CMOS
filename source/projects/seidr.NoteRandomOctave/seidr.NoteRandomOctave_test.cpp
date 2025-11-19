@@ -1,22 +1,23 @@
-/// @file       seidr.NoteRandomOctave_test.cpp
+/// @file       seidr.noteRandomOctave__test.cpp
 ///	@ingroup 	jb
 ///	@copyright	Copyright 2025 - Jóhann Berentsson. All rights reserved.
 ///	@license	Use of this source code is governed by the MIT License
 /// found in the License.md file.
 
 #include "c74_min_unittest.h"
+
 #include "Utils/Constants.hpp"
 #include "Utils/NoteValues.hpp"
-#include "seidr.NoteRandomOctave.cpp"
+#include "seidr.noteRandomOctave_.hpp"
 
 using namespace MidiNotes;
 
-SCENARIO("seidr.NoteRandomOctave object basic functionality") {
+SCENARIO("seidr.noteRandomOctave_ object basic functionality") {
     ext_main(nullptr);
 
-    GIVEN("An instance of NoteRandomOctave") {
-        test_wrapper<NoteRandomOctave> an_instance;
-        NoteRandomOctave& my_object = an_instance;
+    GIVEN("An instance of noteRandomOctave_") {
+        test_wrapper<noteRandomOctave_> an_instance;
+        noteRandomOctave_ &my_object = an_instance;
 
         WHEN("the object is created") {
             // THEN("it initializes successfully") { REQUIRE(my_object !=
@@ -26,8 +27,8 @@ SCENARIO("seidr.NoteRandomOctave object basic functionality") {
                 // Test basic object structure
                 c74::min::atoms args = {60, 100};
                 REQUIRE_NOTHROW(my_object.anything(args));
-                auto& out0 = *c74::max::object_getoutput(my_object, 0);
-                const auto& out1 = *c74::max::object_getoutput(my_object, 1);
+                auto &out0 = *c74::max::object_getoutput(my_object, 0);
+                const auto &out1 = *c74::max::object_getoutput(my_object, 1);
                 REQUIRE(true);
             }
         }
@@ -128,12 +129,12 @@ SCENARIO("seidr.NoteRandomOctave object basic functionality") {
     }
 }
 
-SCENARIO("seidr.NoteRandomOctave stress and performance tests") {
+SCENARIO("seidr.noteRandomOctave_ stress and performance tests") {
     ext_main(nullptr);
 
     GIVEN("An instance under stress conditions") {
-        test_wrapper<NoteRandomOctave> an_instance;
-        NoteRandomOctave& my_object = an_instance;
+        test_wrapper<noteRandomOctave_> an_instance;
+        noteRandomOctave_ &my_object = an_instance;
 
         WHEN("many rapid note messages are sent") {
             THEN("it handles rapid note-ons without crashing") {
@@ -188,12 +189,12 @@ SCENARIO("seidr.NoteRandomOctave stress and performance tests") {
     }
 }
 
-SCENARIO("seidr.NoteRandomOctave error handling tests") {
+SCENARIO("seidr.noteRandomOctave_ error handling tests") {
     ext_main(nullptr);
 
     GIVEN("An instance handling invalid input") {
-        test_wrapper<NoteRandomOctave> an_instance;
-        NoteRandomOctave& my_object = an_instance;
+        test_wrapper<noteRandomOctave_> an_instance;
+        noteRandomOctave_ &my_object = an_instance;
 
         WHEN("invalid list lengths are sent") {
             THEN("empty list is handled") {
@@ -263,12 +264,12 @@ SCENARIO("seidr.NoteRandomOctave error handling tests") {
     }
 }
 
-SCENARIO("seidr.NoteRandomOctave musical scale tests") {
+SCENARIO("seidr.noteRandomOctave_ musical scale tests") {
     ext_main(nullptr);
 
     GIVEN("An instance processing musical scales") {
-        test_wrapper<NoteRandomOctave> an_instance;
-        NoteRandomOctave& my_object = an_instance;
+        test_wrapper<noteRandomOctave_> an_instance;
+        noteRandomOctave_ &my_object = an_instance;
 
         WHEN("a C major scale is played") {
             THEN("all scale notes are processed without crashing") {

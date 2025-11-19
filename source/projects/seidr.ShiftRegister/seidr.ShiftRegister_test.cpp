@@ -5,13 +5,13 @@
 /// found in the License.md file.
 
 #include "c74_min_unittest.h"
-#include "seidr.ShiftRegister.cpp"
+
 #include "seidr.ShiftRegister.hpp"
 
 using namespace c74::max;
 
 SCENARIO("create an instance") {
-    ShiftRegister_MAX sr = ShiftRegister_MAX();
+    ShiftRegisterMax sr = ShiftRegisterMax();
 
     REQUIRE(true);
 
@@ -25,10 +25,10 @@ SCENARIO("create an instance") {
         int answer = 1;
 
         for (int i = 0; i < sr.size(); i++) {
-            sr.data_input(answer);
+            sr.dataInput(answer);
             answer = !answer;
             sr.step();
-            REQUIRE(sr.data_through() == 0);
+            REQUIRE(sr.dataThrough() == 0);
         }
     }
 

@@ -1,17 +1,18 @@
 #pragma once
 #include "Keyboard/Keyboard.hpp"
+
 #include <c74_min.h>
 
 // Forward declaration
 class Keyboard;
 
-class NoteRandomOctave : public c74::min::object<NoteRandomOctave> {
-private:
-    Keyboard keyboard = Keyboard();
+class noteRandomOctave_ : public c74::min::object<noteRandomOctave_> {
+  private:
+    Keyboard keyboard_;
 
-public:
-    explicit NoteRandomOctave(const c74::min::atoms& args = {});
-    ~NoteRandomOctave();
+  public:
+    explicit noteRandomOctave_(const c74::min::atoms &args = {});
+    ~noteRandomOctave_();
 
     void processNoteMessage(int note, int velocity);
     void clearNoteMessage(int note);
@@ -20,9 +21,9 @@ public:
     void printActiveNotes();
 
     // Inlets and outlets
-    c74::min::inlet<> input_0{this, "(int) note, (int) velocity"};
-    c74::min::outlet<> output_0{this, "(int) pitch"};
-    c74::min::outlet<> output_1{this, "(int) velocity"};
+    c74::min::inlet<> input0{this, "(int) note, (int) velocity"};
+    c74::min::outlet<> output0_{this, "(int) pitch"};
+    c74::min::outlet<> output1{this, "(int) velocity"};
 
     // Messages with handlers defined inline
     c74::min::message<> anything{this, "anything", "Process note messages",

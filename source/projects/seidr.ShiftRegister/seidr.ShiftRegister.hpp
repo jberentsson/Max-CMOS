@@ -8,63 +8,67 @@
 
 // #include <ext_mess.h>
 // #include <fcntl.h>
+#include "c74_min.h"
+
+#include "ShiftRegister/ShiftRegister.hpp"
+
 #include <iostream>
 #include <string>
 #include <vector>
 
-#include "c74_min.h"
-#include "ShiftRegister/ShiftRegister.hpp"
-
 using namespace c74::min;
 
-#define BIT_COUNT 8
-#define OUTPUT_COUNT 9
-#define MAX_OUTPUTS 32
 
 class LastNote {
-private:
-    uint64_t pitch = NULL;
+  private:
+	enum {
+		BIT_COUNT = 8,
+		OUTPUT_COUNT = 9,
+		MAX_OUTPUTS = 32,
+	};
+	
+  	uint64_t pitch_ = NULL;
 
-public:
+  public:
     bool dirty = FALSE;
 
-    int get() { return this->pitch; }
+    int get() { return this->pitch_; }
 
     int set(int n) {
-        this->pitch = n;
+        this->pitch_ = n;
 
         if (this->dirty == FALSE) {
             this->dirty = TRUE;
         }
 
-        return this->pitch;
+        return this->pitch_;
     }
 };
 
-class ShiftRegister_MAX : public object<ShiftRegister_MAX> {
-public:
+class ShiftRegisterMax : public object<ShiftRegisterMax> {
+  public:
     MIN_DESCRIPTION{"Shift Register"};
     MIN_TAGS{"jb, cmos"};
     MIN_AUTHOR{"Jóhann Berentsson"};
     MIN_RELATED{"seidr.*"};
 
-    explicit ShiftRegister_MAX(const atoms& args = {});
-    ~ShiftRegister_MAX() {};
+    explicit ShiftRegisterMax(const atoms &args = {});
+    ~ShiftRegisterMax() = default;
 
-    void handle_outputs();
-    void handle_through();
+    void handleOutputs();
+    void handleThrough();
     int size();
     int step();
     uint64_t get(int i);
-    int data_input(int v);
-    int data_through();
+    int dataInput(int v);
+    int dataThrough();
 
-    inlet<> input_0{this, "(anything) input pulse"};
-    inlet<> input_1{this, "(int|bang) input pulse"};
-    inlet<> input_2{this, "(anything) input pulse"};
+    inlet<> input0{this, "(anything) input pulse"};
+    inlet<> input1{this, "(int|bang) input pulse"};
+    inlet<> input2{this, "(anything) input pulse"};
 
     std::vector<std::unique_ptr<outlet<>>> outputs;
-    LastNote last_output[OUTPUT_COUNT] = {};
+    LastNote lastOutput[OUTPUT_COUNT] = {};
 
     c74::min::message<threadsafe::yes> anything{
         this, "anything", "Handle any message",
@@ -84,14 +88,14 @@ return {};
 
 c74::min::message<threadsafe::yes> bang{this, "bang", "step the shift register",
                                         MIN_FUNCTION{switch (inlet){case 0 : sr.step();
-handle_through();
+handleThrough();
 
 case 1:
 break;
 
 case 2:
 sr.activate();
-handle_outputs();
+handleOutputs();
 
 default:
 cout << "Some other inlet: " << inlet << endl;
@@ -107,8 +111,8 @@ c74::min::message<threadsafe::yes> integer{
     MIN_FUNCTION{if (args.size()){switch (inlet){case 0 :
 
                                                      // sr.step();
-                                                     // handle_outputs();
-                                                     case 1 : this->sr.data_input(args[0]);
+                                                     // handleOutputs();
+                                                     case 1 : this->sr.dataInput(args[0]);
 
 default:
 std::cout << "Some other integer: " << args[0] << " Inlet: " << inlet << std::endl;
@@ -121,9 +125,9 @@ return {};
 ;
 
 private:
-ShiftRegister sr = ShiftRegister(BIT_COUNT);
-bool every_output = TRUE;
-bool send_bangs = FALSE;
-int last_value = NULL;
+ShiftRegister sr_= ShiftRegister(BIT_COUNT);
+bool everyOutput = TRUE;
+bool sendBangs = FALSE;
+int lastValue = NULL;
 }
 ;

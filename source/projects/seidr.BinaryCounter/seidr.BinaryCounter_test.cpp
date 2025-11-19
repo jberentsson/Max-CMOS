@@ -5,7 +5,8 @@
 /// found in the License.md file.
 
 #include "c74_min_unittest.h"
-#include "seidr.BinaryCounter.cpp"
+
+#include "seidr.BinaryCounter.hpp"
 
 using namespace c74::max;
 
@@ -13,51 +14,55 @@ SCENARIO("object produces correct output") {
     ext_main(nullptr);
 
     GIVEN("An instance of our object") {
-        test_wrapper<BinaryCounter_MAX> an_instance;
-        BinaryCounter_MAX& my_object = an_instance;
+        test_wrapper<BinaryCounterMax> an_instance;
+        BinaryCounterMax &my_object = an_instance;
 
         WHEN("test the rollover") {
             my_object.bang();
-            my_object.max_value();
+            my_object.maxValue();
 
             // THEN("a 'bang' is received") { REQUIRE(my_object != nullptr); }
 
             THEN("check counter value") {
-                REQUIRE(my_object.counter_value() == 0);
+                REQUIRE(my_object.counterValue() == 0);
             }
 
             THEN("our greeting is produced at the outlet") {
                 int expected[6][8] = {
-                    {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 1}, {0, 0, 0, 0, 0, 0, 1, 0},
-                    {0, 0, 0, 0, 0, 0, 1, 1}, {0, 0, 0, 0, 0, 1, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 1},
+                    {0, 0, 0, 0, 0, 0, 1, 0},
+                    {0, 0, 0, 0, 0, 0, 1, 1},
+                    {0, 0, 0, 0, 0, 1, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
                 };
 
-                REQUIRE(my_object.counter_value() == 0);
+                REQUIRE(my_object.counterValue() == 0);
 
                 my_object.bang();
 
-                REQUIRE(my_object.counter_value() == 1);
+                REQUIRE(my_object.counterValue() == 1);
 
                 my_object.bang();
 
-                REQUIRE(my_object.counter_value() == 2);
+                REQUIRE(my_object.counterValue() == 2);
 
                 my_object.bang();
 
-                REQUIRE(my_object.counter_value() == 3);
+                REQUIRE(my_object.counterValue() == 3);
 
                 my_object.bang();
 
-                REQUIRE(my_object.counter_value() == 4);
+                REQUIRE(my_object.counterValue() == 4);
 
                 my_object.reset();
                 my_object.bang();
 
-                REQUIRE(my_object.counter_value() == 0);
+                REQUIRE(my_object.counterValue() == 0);
 
                 for (int i = 0; i < 5; i++) {
                     for (int j = 0; j < OUTPUT_COUNT; j++) {
-                        auto& out = *object_getoutput(my_object, j);
+                        auto &out = *object_getoutput(my_object, j);
                         REQUIRE(out[0].size() == 2);
                         REQUIRE(out[i][1] == expected[i][j]);
                     }
@@ -68,43 +73,47 @@ SCENARIO("object produces correct output") {
         WHEN("test the preset function") {
             THEN("our greeting is produced at the outlet") {
                 int expected[6][8] = {
-                    {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 1}, {0, 0, 1, 0, 0, 0, 0, 0},
-                    {0, 0, 1, 0, 0, 0, 0, 1}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 1},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 1},
+                    {0, 0, 1, 0, 0, 0, 0, 0},
+                    {0, 0, 1, 0, 0, 0, 0, 1},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 1},
                 };
 
                 my_object.bang();
 
-                REQUIRE(my_object.counter_value() == 0);
+                REQUIRE(my_object.counterValue() == 0);
 
                 my_object.bang();
 
-                REQUIRE(my_object.counter_value() == 1);
+                REQUIRE(my_object.counterValue() == 1);
 
-                my_object.set_preset(32);
+                my_object.setPreset(32);
                 my_object.preset();
 
-                REQUIRE(my_object.counter_value() == 31);
+                REQUIRE(my_object.counterValue() == 31);
 
                 my_object.bang();
 
-                REQUIRE(my_object.counter_value() == 32);
+                REQUIRE(my_object.counterValue() == 32);
 
                 my_object.bang();
 
-                REQUIRE(my_object.counter_value() == 33);
+                REQUIRE(my_object.counterValue() == 33);
 
                 my_object.reset();
                 my_object.bang();
 
-                REQUIRE(my_object.counter_value() == 0);
+                REQUIRE(my_object.counterValue() == 0);
 
                 my_object.bang();
 
-                REQUIRE(my_object.counter_value() == 1);
+                REQUIRE(my_object.counterValue() == 1);
 
                 for (int i = 0; i < 6; i++) {
                     for (int j = 0; j < OUTPUT_COUNT; j++) {
-                        auto& out = *object_getoutput(my_object, j);
+                        auto &out = *object_getoutput(my_object, j);
                         REQUIRE(out[0].size() == 2);
                         REQUIRE(out[i][1] == expected[i][j]);
                     }

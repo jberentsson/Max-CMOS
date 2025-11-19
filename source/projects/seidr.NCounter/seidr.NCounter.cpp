@@ -6,27 +6,27 @@
 
 #include "seidr.NCounter.hpp"
 
-void NCounter_MAX::handle_outputs() {
+void NCounterMax::handleOutputs() {
     // Send data to the outputs.
     for (int i = 0; i < 10; i++) {
         this->outputs[i]->send(i == this->counter.value());
     }
 }
 
-int NCounter_MAX::counter_value() {
+unsigned int NCounterMax::counterValue() {
     return this->counter.value();
 }
 
-int NCounter_MAX::set_preset(int p) {
-    return this->counter.set_preset(p);
+int NCounterMax::setPreset(int p) {
+    return this->counter.setPreset(p);
 }
 
-int NCounter_MAX::preset() {
+int NCounterMax::preset() {
     return this->counter.preset();
 }
 
-int NCounter_MAX::step() {
+int NCounterMax::step() {
     return this->counter.step();
 }
 
-MIN_EXTERNAL(NCounter_MAX);
+MIN_EXTERNAL(NCounterMax);
