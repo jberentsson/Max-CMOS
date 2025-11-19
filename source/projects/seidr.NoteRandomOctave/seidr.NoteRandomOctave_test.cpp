@@ -11,7 +11,7 @@
 #include "seidr.NoteRandomOctave.hpp"
 #include "seidr.NoteRandomOctave.cpp"
 
-using namespace MidiNotes;
+using namespace MIDI;
 
 SCENARIO("seidr.NoteRandomOctaveMax object basic functionality") {
     ext_main(nullptr);
