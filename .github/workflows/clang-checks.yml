@@ -30,8 +30,8 @@ jobs:
 
     - name: Update submodules
       run: |
-        update-ca-certificates
-        git submodule update --init --remote --recursive
+        git submodule init
+        git submodule update
     
     - name: Check code formatting with clang-format
       run: |
@@ -64,8 +64,8 @@ jobs:
         echo "=== Formatting fixes applied to thulr ==="
         echo "Review the changes in clang-format-fixes.patch"
         
-#    - uses: actions/upload-artifact@v4
-#      if: failure()
-#      with:
-#        name: clang-format-fixes
-#        path: clang-format-fixes.patch
+    - uses: actions/upload-artifact@v4
+      if: failure()
+      with:
+        name: clang-format-fixes
+        path: clang-format-fixes.patch
