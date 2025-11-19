@@ -7,7 +7,7 @@
 #include "c74_min_unittest.h"
 
 #include "Utils/Constants.hpp"
-#include "Utils/NoteValues.hpp"
+#include "../Utils/MIDI.hpp"
 #include "seidr.NoteRandomOctave.hpp"
 #include "seidr.NoteRandomOctave.cpp"
 
