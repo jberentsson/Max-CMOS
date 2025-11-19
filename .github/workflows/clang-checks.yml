@@ -9,25 +9,34 @@ on:
 jobs:
   clang-checks:
     runs-on: ubuntu-latest
+    container:  
+      image: debian:bookworm  # or debian:bullseye
     
     steps:
     - uses: actions/checkout@v4
       with:
         submodules: 'recursive'
         fetch-depth: 0
-
-    - name: Update submodules
-      run: git submodule update --init --remote --recursive
-
+    
     - name: Install clang tools
       run: |
-        sudo apt-get update
-        sudo apt-get install -y clang-format clang-tidy
+        apt-get update && break
+        apt-get install -y git clang-format
 
+    - name: Update CA certificates
+      run: |
+        apt-get update
+        apt-get install -y ca-certificates
+
+    - name: Update submodules
+      run: |
+        update-ca-certificates
+        git submodule update --init --remote --recursive
+    
     - name: Check code formatting with clang-format
       run: |
         # Only check thulr source files
-        find source/thulr -name "*.cpp" -o -name "*.hpp" | xargs clang-format --dry-run --Werror
+        find source/projects -name "*.cpp" -o -name "*.hpp" | xargs clang-format --dry-run --Werror
 
     - name: Check code quality with clang-tidy
       run: |
@@ -37,7 +46,7 @@ jobs:
         cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..
         
         # Run clang-tidy only on thulr source files
-        find ../source/thulr -name "*.cpp" | xargs -I {} clang-tidy {} \
+        find source/projects -name "*.cpp" | xargs -I {} clang-tidy {} \
           -p . \
           -header-filter='.*' \
           -quiet \
@@ -47,7 +56,7 @@ jobs:
       if: failure()
       run: |
         # Apply clang-format fixes only to thulr
-        find source/thulr -name "*.cpp" -o -name "*.hpp" | xargs clang-format -i
+        find source/projects -name "*.cpp" -o -name "*.hpp" | xargs clang-format -i
         
         # Create patch file for review
         git diff > clang-format-fixes.patch
@@ -55,8 +64,8 @@ jobs:
         echo "=== Formatting fixes applied to thulr ==="
         echo "Review the changes in clang-format-fixes.patch"
         
-    - uses: actions/upload-artifact@v4
-      if: failure()
-      with:
-        name: clang-format-fixes
-        path: clang-format-fixes.patch
+#    - uses: actions/upload-artifact@v4
+#      if: failure()
+#      with:
+#        name: clang-format-fixes
+#        path: clang-format-fixes.patch

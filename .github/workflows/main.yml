@@ -9,7 +9,8 @@ on:
 jobs:
   clang-checks:
     runs-on: ubuntu-latest
-    
+    container:
+      image: debian:bookworm
     steps:
     - uses: actions/checkout@v4
       with:
@@ -22,7 +23,7 @@ jobs:
     - name: Install clang tools and dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y clang-format clang-tidy
+        sudo apt-get install -y clang clang-format clang-tidy
 
     - name: Build project to generate compile_commands.json
       run: |
