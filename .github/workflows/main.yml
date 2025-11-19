@@ -17,13 +17,15 @@ jobs:
         submodules: 'recursive'
         fetch-depth: 0
 
-    - name: Update submodules
-      run: git submodule update --init --remote --recursive
-
     - name: Install clang tools and dependencies
       run: |
-        sudo apt-get update
-        sudo apt-get install -y clang clang-format clang-tidy
+        apt-get update
+        apt-get install -y clang clang-format clang-tidy git
+
+    - name: Update submodules
+      run: |
+        git submodule init
+        git submodule update
 
     - name: Build project to generate compile_commands.json
       run: |
@@ -36,12 +38,12 @@ jobs:
     - name: Check code formatting with clang-format
       run: |
         # Only check thulr source files (excluding tests if needed)
-        find source/thulr -name "*.cpp" -o -name "*.hpp" | grep -v "_test" | xargs clang-format --dry-run --Werror
+        find source/projects -name "*.cpp" -o -name "*.hpp" | grep -v "_test" | xargs clang-format --dry-run --Werror
 
     - name: Check code quality with clang-tidy
       run: |
         # Run clang-tidy only on thulr source files, excluding tests
-        find source/thulr -name "*.cpp" | grep -v "_test" | xargs -I {} clang-tidy {} \
+        find source/projects -name "*.cpp" | grep -v "_test" | xargs -I {} clang-tidy {} \
           -p build \
           -header-filter='.*' \
           -quiet \
@@ -54,7 +56,7 @@ jobs:
       if: failure()
       run: |
         # Apply clang-format fixes only to thulr (excluding tests)
-        find source/thulr -name "*.cpp" -o -name "*.hpp" | grep -v "_test" | xargs clang-format -i
+        find source/projects -name "*.cpp" -o -name "*.hpp" | grep -v "_test" | xargs clang-format -i
         
         # Create patch file for review
         git diff > clang-format-fixes.patch

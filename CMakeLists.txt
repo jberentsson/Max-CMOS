@@ -115,7 +115,7 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/source/thulr)
 # Max
 #############################################################
 
-if(WIN32)
+if(WIN32 OR APPLE)
     # Generate a project for every folder in the "source/projects" folder
     SUBDIRLIST(PROJECT_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/source/projects)
     foreach (project_dir ${PROJECT_DIRS})
