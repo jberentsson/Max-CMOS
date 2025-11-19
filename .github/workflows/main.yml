@@ -28,11 +28,11 @@ jobs:
 
     - name: configure_macos
       if: matrix.os == 'macos-latest'
-      run: mkdir build && cd build && cmake -G Xcode .. -DCMAKE_POLICY_VERSION_MINIMUM=3.5 
+      run: mkdir build && cd build && cmake .. -G Xcode -DCMAKE_POLICY_VERSION_MINIMUM="3.5"
  
     - name: configure_windows
       if: matrix.os == 'windows-latest'
-      run: mkdir build && cd build && cmake .. -G "Visual Studio 16 2022" -DCMAKE_POLICY_VERSION_MINIMUM=3.5 
+      run: mkdir build && cd build && cmake .. -G "Visual Studio 16 2022" -DCMAKE_POLICY_VERSION_MINIMUM="3.5"
 
     - name: build_debug
       if: matrix.config == 'debug'
