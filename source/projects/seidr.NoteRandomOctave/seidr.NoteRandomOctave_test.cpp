@@ -7,11 +7,12 @@
 #include "c74_min_unittest.h"
 
 #include "Utils/Constants.hpp"
-#include "../Utils/MIDI.hpp"
+#include "Utils/MIDI.hpp"
 #include "seidr.NoteRandomOctave.hpp"
 #include "seidr.NoteRandomOctave.cpp"
 
 using namespace MIDI;
+using namespace MIDI::Notes;
 
 SCENARIO("seidr.NoteRandomOctaveMax object basic functionality") {
     ext_main(nullptr);
