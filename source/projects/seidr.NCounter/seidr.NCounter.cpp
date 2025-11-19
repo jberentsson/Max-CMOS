@@ -1,31 +1,32 @@
 /// @file       seidr.NCounter.cpp
 ///	@ingroup 	jb
 ///	@copyright	Copyright 2022 - Jóhann Berentsson. All rights reserved.
-///	@license	Use of this source code is governed by the MIT License found in the License.md file.
+///	@license	Use of this source code is governed by the MIT License
+/// found in the License.md file.
 
 #include "seidr.NCounter.hpp"
 
-void NCounter_MAX::handle_outputs() {
+void NCounterMax::handleOutputs() {
     // Send data to the outputs.
-    for (int i = 0; i < 10; i++){
-        this->outputs[i]->send(i == this->counter.value());
+    for (int i = 0; i < 10; i++) {
+        this->outputs[i]->send(i == this->counter_.value());
     }
 }
 
-int NCounter_MAX::counter_value() {
-    return this->counter.value();
+unsigned int NCounterMax::counterValue() {
+    return this->counter_.value();
 }
 
-int NCounter_MAX::set_preset(int p){
-    return this->counter.set_preset(p);
+unsigned int NCounterMax::setPreset(int p) {
+    return this->counter_.setPreset(p);
 }
 
-int NCounter_MAX::preset(){
-    return this->counter.preset();
+unsigned  NCounterMax::preset() {
+    return this->counter_.preset();
 }
 
-int NCounter_MAX::step(){
-    return this->counter.step();
+unsigned int NCounterMax::step() {
+    return this->counter_.step();
 }
 
-MIN_EXTERNAL(NCounter_MAX);
+MIN_EXTERNAL(NCounterMax);

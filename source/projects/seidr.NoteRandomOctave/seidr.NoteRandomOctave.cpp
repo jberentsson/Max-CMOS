@@ -1,66 +1,60 @@
 #include "seidr.NoteRandomOctave.hpp"
+
 #include <iostream>
 
 using namespace c74::min;
 
-void NoteRandomOctave::clearNoteMessage(int note) {
-    int clearedCount = keyboard.clearNotesByPitchClass(note);
-    
+void NoteRandomOctaveMax::clearNoteMessage(int note) {
+    int clearedCount = keyboard_.clearNotesByPitchClass(note);
+
     if (clearedCount > 0) {
-        output_0.send(note);
-        output_1.send(0);
+        output0.send(note);
+        output1.send(0);
     }
 }
 
-void NoteRandomOctave::clearAllNotesMessage() {
-    int clearedCount = keyboard.removeAll();
-    
+void NoteRandomOctaveMax::clearAllNotesMessage() {
     // Send all notes off as fallback.
     for (int note = 0; note < 128; note++) {
-        output_0.send(note);
-        output_1.send(0);
+        output0.send(note);
+        output1.send(0);
     }
 }
 
-void NoteRandomOctave::setRangeMessage(int low, int high) {
-    keyboard.setRandomRange(low, high);
+void NoteRandomOctaveMax::setRangeMessage(int low, int high) {
+    keyboard_.setRandomRange(low, high);
 }
 
-void NoteRandomOctave::printActiveNotes() {
-    keyboard.debugPrintActiveNotes();
+void NoteRandomOctaveMax::printActiveNotes() {
+    keyboard_.debugPrintActiveNotes();
 }
 
-NoteRandomOctave::NoteRandomOctave(const atoms& args) {
+NoteRandomOctaveMax::NoteRandomOctaveMax(const atoms &args) {
     // Nothing here.
 }
 
-NoteRandomOctave::~NoteRandomOctave() {
-    clearAllNotesMessage();
-}
 
-void NoteRandomOctave::processNoteMessage(int note, int velocity) {
+void NoteRandomOctaveMax::processNoteMessage(int note, int velocity) {
     // Process the note.
-    int result = keyboard.note(note, velocity);
-    
     if (velocity > 0) {
         // Note ON
-        const auto& activeNotes = keyboard.getActiveNotes();
-        
-        if (activeNotes.empty()) {
+        const auto &activeNotes_ = keyboard_.getActiveNotes();
+
+        if (activeNotes_.empty()) {
             return;
         }
-        
+
         // Get the most recently added note.
-        const auto& lastNote = activeNotes.back();
-        
+        const auto &lastNote = activeNotes_.back();
+
         // Send to outputs.
-        output_0.send(lastNote->pitch());
-        output_1.send(lastNote->velocity());
+        output0.send(lastNote->pitch());
+        output1.send(lastNote->velocity());
     } else {
-        // Note OFF  
-        output_0.send(note);
-        output_1.send(0);
+        // Note OFF
+        output0.send(note);
+        output1.send(0);
     }
 }
 
-MIN_EXTERNAL(NoteRandomOctave);
+MIN_EXTERNAL(NoteRandomOctaveMax);

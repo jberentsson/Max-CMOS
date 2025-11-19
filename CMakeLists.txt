@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.19)
 
 set(C74_MIN_API_DIR ${CMAKE_CURRENT_SOURCE_DIR}/source/min-api)
-
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Extract package name from directory path.
 string(REGEX REPLACE ".*/([^/]+)" "\\1" THIS_PACKAGE_NAME "${CMAKE_CURRENT_SOURCE_DIR}")
 project(${THIS_PACKAGE_NAME} VERSION 1.0.0 LANGUAGES C CXX)
@@ -114,7 +115,7 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/source/thulr)
 # Max
 #############################################################
 
-if(WIN32)
+if(WIN32 OR APPLE)
     # Generate a project for every folder in the "source/projects" folder
     SUBDIRLIST(PROJECT_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/source/projects)
     foreach (project_dir ${PROJECT_DIRS})
@@ -125,4 +126,31 @@ if(WIN32)
     endforeach ()
 endif()
 
-set(CMAKE_SUPPRESS_REGENERATION true)
+
+foreach (project_dir ${PROJECT_DIRS})
+    if (TARGET ${project_dir}_test)
+        target_include_directories(${project_dir}_test PRIVATE
+            ${CMAKE_CURRENT_SOURCE_DIR}/source/thulr/source
+        )
+    endif()
+endforeach()
+
+
+#############################################################
+# clang tidy
+#############################################################
+
+#include_directories(
+#    ${CMAKE_CURRENT_SOURCE_DIR}/source/thulr/source
+#    ${CMAKE_CURRENT_SOURCE_DIR}/source/min-api/include
+#    ${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/catch2-src/single_include
+#)
+
+#find_program(CLANG_TIDY_EXE NAMES clang-tidy)
+#add_custom_target(clang-tidy
+#    COMMAND ./tidy.sh
+#    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+#    COMMENT "Running clang-tidy"
+#)
+
+

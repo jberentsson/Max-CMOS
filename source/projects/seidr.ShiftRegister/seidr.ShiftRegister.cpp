@@ -1,66 +1,77 @@
 /// @file       seidr.ShiftRegister.cpp
 ///	@ingroup 	jb
 ///	@copyright	Copyright 2018 - Jóhann Berentsson. All rights reserved.
-///	@license	Use of this source code is governed by the MIT License found in the License.md file.
+///	@license	Use of this source code is governed by the MIT License
+/// found in the License.md file.
+
+#include "seidr.ShiftRegister.hpp"
+
+#include "c74_min.h"
 
 #include <iostream>
 
-#include "c74_min.h"
-#include "seidr.ShiftRegister.hpp"
-
 using namespace c74::min;
 
-ShiftRegister_MAX::ShiftRegister_MAX(const atoms& args){
-    std::cout << args.size() << std::endl;
+ShiftRegisterMax::ShiftRegisterMax(const atoms &args) {
+    int numberOfOutputs = 0;
 
-    for(int i = 0; i < args.size(); i++){
+    if (args.size() > 0) {
+        numberOfOutputs = args[0];
+    } else {
+        numberOfOutputs = OUTPUT_COUNT;
+    }
+
+    for (int i = 0; i < numberOfOutputs; i++) {
+        outputs.push_back(
+            std::make_unique<outlet<>>(this, "( int | bang ) output " + std::to_string(i)));
+    }
+
+    for (int i = 0; i < args.size(); i++) {
         cout << "arg[" << i << "]" << args[i] << endl;
     }
 };
 
-void ShiftRegister_MAX::handle_outputs(){
-    // Bit outputs 0-7.
-    for (int i = 0; i < BIT_COUNT; i++){
-        if (this->send_bangs){
-            this->outputs[i]->send(bang());
-        } else {
-            this->outputs[i]->send(this->sr.get(i));
-        }
+void ShiftRegisterMax::handleOutputs() {
+    // Bit outputs from 0 to (N-1).
+    for (int i = 0; i < outputs.size() - 1; i++) {
+        this->outputs[i]->send(this->sendBangs ? bang() : atoms({(uint64_t)this->sr_.get(i)}));
     }
 }
 
-void ShiftRegister_MAX::handle_through(){
-    // Data through.
-    int dt = this->sr.data_through();
+void ShiftRegisterMax::handleThrough() {
+    // Output N data through.
+    uint64_t dt = this->sr_.dataThrough();
+    int lastOutputIndex = outputs.size() - 1;
 
-    if (every_output || dt != last_output[8]){
-        if(this->send_bangs){
-            this->output_8.send(bang());
-        } else {
-            this->output_8.send(dt);
-        }
-        this->last_output[8] = dt;
+    if (everyOutput_ || dt != lastOutput[8].get()) {
+        this->outputs[lastOutputIndex]->send(this->sendBangs ? bang() : c74::min::atoms({dt}));
+        this->lastOutput[lastOutputIndex].set(dt);
     }
+
+    LastNote x = LastNote();
+    x.set(dt);
+
+    this->lastOutput[8] = x;
 }
 
-int ShiftRegister_MAX::size(){
-    return this->sr.size();
+int ShiftRegisterMax::size() {
+    return this->sr_.size();
 }
 
-int ShiftRegister_MAX::step(){
-    return this->sr.step();
+int ShiftRegisterMax::step() {
+    return this->sr_.step();
 }
 
-int ShiftRegister_MAX::get(int i){
-    return this->sr.get(i);
+uint64_t ShiftRegisterMax::get(int i) {
+    return this->sr_.get(i);
 }
 
-int ShiftRegister_MAX::data_input(int v){
-    return this->sr.data_input(v);
+int ShiftRegisterMax::dataInput(int v) {
+    return this->sr_.dataInput(v);
 }
 
-int ShiftRegister_MAX::data_through(){
-    return this->sr.data_through();
+int ShiftRegisterMax::dataThrough() {
+    return this->sr_.dataThrough();
 }
 
-MIN_EXTERNAL(ShiftRegister_MAX);
+MIN_EXTERNAL(ShiftRegisterMax);

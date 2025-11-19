@@ -18,7 +18,6 @@ CMakeFiles/
 cmake_install.cmake
 install_manifest.txt
 C
-Makefile
 CMakeTestfile.cmake
 
 # Build output binaries (not needed in repo)
@@ -65,5 +64,6 @@ __pycache__/
 # Other
 tmp/
 temp/
-Testing
+Testing/
 externals/
+package-info.json
