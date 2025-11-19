@@ -1,5 +1,5 @@
 #pragma once
-#include "Keyboard/Keyboard.hpp"
+#include q"Keyboard/Keyboard.hpp"
 
 #include <c74_min.h>
 
@@ -18,7 +18,7 @@ class NoteRandomOctaveMax : public c74::min::object<NoteRandomOctaveMax> {
     void clearNoteMessage(int note);
     void clearAllNotesMessage();
     void setRangeMessage(int low, int high);
-    void printActiveNotes();
+    void printactiveNotes_();
 
     // Inlets and outlets
     c74::min::inlet<> input0{this, "(int) note, (int) velocity"};
@@ -61,7 +61,7 @@ return {};
 }
 ;
 
-c74::min::message<> debug{this, "debug", "Print debug info", MIN_FUNCTION{printActiveNotes();
+c74::min::message<> debug{this, "debug", "Print debug info", MIN_FUNCTION{printactiveNotes_();
 return {};
 }
 }

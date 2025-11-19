@@ -25,8 +25,8 @@ void NoteRandomOctaveMax::setRangeMessage(int low, int high) {
     keyboard_.setRandomRange(low, high);
 }
 
-void NoteRandomOctaveMax::printActiveNotes() {
-    keyboard_.debugPrintActiveNotes();
+void NoteRandomOctaveMax::printactiveNotes_() {
+    keyboard_.debugPrintactiveNotes_();
 }
 
 NoteRandomOctaveMax::NoteRandomOctaveMax(const atoms &args) {
@@ -38,14 +38,14 @@ void NoteRandomOctaveMax::processNoteMessage(int note, int velocity) {
     // Process the note.
     if (velocity > 0) {
         // Note ON
-        const auto &activeNotes = keyboard_.getActiveNotes();
+        const auto &activeNotes_ = keyboard_.getactiveNotes_();
 
-        if (activeNotes.empty()) {
+        if (activeNotes_.empty()) {
             return;
         }
 
         // Get the most recently added note.
-        const auto &lastNote = activeNotes.back();
+        const auto &lastNote = activeNotes_.back();
 
         // Send to outputs.
         output0.send(lastNote->pitch());

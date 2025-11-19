@@ -73,17 +73,17 @@ public:
     };
 
     // FIXED: Preset handler
-    message<threadsafe::yes> preset_msg{
-        this, "preset", "Set preset value.",
-        MIN_FUNCTION{
-            if (args.size() > 0) {
-                int preset_value = args[0];
-                this->counter_.setPreset(preset_value);
-                this->updateOutputs();  // Update outputs after preset change
-            }
-            return {};
-        }
-    };
+    //message<threadsafe::yes> preset_msg{
+    //    this, "preset", "Set preset value.",
+    //    MIN_FUNCTION{
+    //        if (args.size() > 0) {
+    //            int preset_value = args[0];
+    //            this->counter_.setPreset(preset_value);
+    //            this->updateOutputs();  // Update outputs after preset change
+    //        }
+    //        return {};
+    //    }
+    //};
 
     // FIXED: Set value handler
     message<threadsafe::yes> set{

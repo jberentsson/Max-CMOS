@@ -5,7 +5,6 @@
 /// found in the License.md file.
 
 #include "seidr.BinaryCounter.hpp"
-#include "seidr.BinaryCounter.hpp"
 
 BinaryCounterMax::BinaryCounterMax(const atoms &args) {
     // Create outputs
