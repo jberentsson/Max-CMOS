@@ -20,7 +20,7 @@ jobs:
     - name: Install clang tools and dependencies
       run: |
         apt-get update
-        apt-get install -y clang clang-format clang-tidy git
+        apt-get install -y clang clang-format clang-tidy git nodejs
 
     - name: Update submodules
       run: |
@@ -29,11 +29,8 @@ jobs:
 
     - name: Build project to generate compile_commands.json
       run: |
-        mkdir -p build
-        cd build
-        cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..
-        # Build to ensure all dependencies are resolved
-        cmake --build . --parallel 2
+        cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON build
+        cmake --build build --config Release --parallel 2
 
     - name: Check code formatting with clang-format
       run: |
