@@ -43,7 +43,7 @@ void ShiftRegisterMax::handleThrough() {
     uint64_t dt = this->sr_.dataThrough();
     int lastOutputIndex = outputs.size() - 1;
 
-    if (everyOutput || dt != lastOutput[8].get()) {
+    if (everyOutput_ || dt != lastOutput[8].get()) {
         this->outputs[lastOutputIndex]->send(this->sendBangs ? bang() : c74::min::atoms({dt}));
         this->lastOutput[lastOutputIndex].set(dt);
     }

@@ -126,8 +126,8 @@ return {};
 
 private:
 ShiftRegister sr_= ShiftRegister(BIT_COUNT);
-bool everyOutput = TRUE;
+bool everyOutput_ = TRUE;
 bool sendBangs = FALSE;
-int lastValue = NULL;
+int lastValue_= NULL;
 }
 ;

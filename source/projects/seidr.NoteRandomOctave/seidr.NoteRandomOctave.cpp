@@ -1,10 +1,10 @@
-#include "seidr.NoteRandomOctave.hpp"
+#include "seidr.NoteRandomOctaveMax.hpp"
 
 #include <iostream>
 
 using namespace c74::min;
 
-void NoteRandomOctave::clearNoteMessage(int note) {
+void NoteRandomOctaveMax::clearNoteMessage(int note) {
     int clearedCount = keyoard_.clearNotesByPitchClass(note);
 
     if (clearedCount > 0) {
@@ -13,7 +13,7 @@ void NoteRandomOctave::clearNoteMessage(int note) {
     }
 }
 
-void NoteRandomOctave::clearAllNotesMessage() {
+void NoteRandomOctaveMax::clearAllNotesMessage() {
     // Send all notes off as fallback.
     for (int note = 0; note < 128; note++) {
         output0.send(note);
@@ -21,20 +21,20 @@ void NoteRandomOctave::clearAllNotesMessage() {
     }
 }
 
-void NoteRandomOctave::setRangeMessage(int low, int high) {
+void NoteRandomOctaveMax::setRangeMessage(int low, int high) {
     keyoard_.setRandomRange(low, high);
 }
 
-void NoteRandomOctave::printActiveNotes() {
+void NoteRandomOctaveMax::printActiveNotes() {
     keyoard_.debugPrintActiveNotes();
 }
 
-NoteRandomOctave::NoteRandomOctave_(const atoms &args) {
+NoteRandomOctaveMax::NoteRandomOctaveMax(const atoms &args) {
     // Nothing here.
 }
 
 
-void NoteRandomOctave::processNoteMessage(int note, int velocity) {
+void NoteRandomOctaveMax::processNoteMessage(int note, int velocity) {
     // Process the note.
     if (velocity > 0) {
         // Note ON
@@ -57,4 +57,4 @@ void NoteRandomOctave::processNoteMessage(int note, int velocity) {
     }
 }
 
-MIN_EXTERNAL(NoteRandomOctave_);
+MIN_EXTERNAL(NoteRandomOctaveMax);

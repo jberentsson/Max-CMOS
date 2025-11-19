@@ -6,13 +6,13 @@
 // Forward declaration
 class Keyboard;
 
-class NoteRandomOctave_ : public c74::min::object<NoteRandomOctave_> {
+class NoteRandomOctaveMax : public c74::min::object<NoteRandomOctaveMax> {
   private:
     Keyboard keyboard_;
 
   public:
-    explicit NoteRandomOctave_(const c74::min::atoms &args = {});
-    ~NoteRandomOctave_();
+    explicit NoteRandomOctaveMax(const c74::min::atoms &args = {});
+    ~NoteRandomOctaveMax();
 
     void processNoteMessage(int note, int velocity);
     void clearNoteMessage(int note);
