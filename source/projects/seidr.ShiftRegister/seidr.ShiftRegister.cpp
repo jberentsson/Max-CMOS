@@ -34,13 +34,13 @@ ShiftRegisterMax::ShiftRegisterMax(const atoms &args) {
 void ShiftRegisterMax::handleOutputs() {
     // Bit outputs from 0 to (N-1).
     for (int i = 0; i < outputs.size() - 1; i++) {
-        this->outputs[i]->send(this->sendBangs ? bang() : atoms({(uint64_t)this->sr.get(i)}));
+        this->outputs[i]->send(this->sendBangs ? bang() : atoms({(uint64_t)this->sr_.get(i)}));
     }
 }
 
 void ShiftRegisterMax::handleThrough() {
     // Output N data through.
-    uint64_t dt = this->sr.dataThrough();
+    uint64_t dt = this->sr_.dataThrough();
     int lastOutputIndex = outputs.size() - 1;
 
     if (everyOutput || dt != lastOutput[8].get()) {
@@ -55,23 +55,23 @@ void ShiftRegisterMax::handleThrough() {
 }
 
 int ShiftRegisterMax::size() {
-    return this->sr.size();
+    return this->sr_.size();
 }
 
 int ShiftRegisterMax::step() {
-    return this->sr.step();
+    return this->sr_.step();
 }
 
 uint64_t ShiftRegisterMax::get(int i) {
-    return this->sr.get(i);
+    return this->sr_.get(i);
 }
 
 int ShiftRegisterMax::dataInput(int v) {
-    return this->sr.dataInput(v);
+    return this->sr_.dataInput(v);
 }
 
 int ShiftRegisterMax::dataThrough() {
-    return this->sr.dataThrough();
+    return this->sr_.dataThrough();
 }
 
 MIN_EXTERNAL(ShiftRegisterMax);

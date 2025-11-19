@@ -21,12 +21,6 @@ using namespace c74::min;
 
 class LastNote {
   private:
-	enum {
-		BIT_COUNT = 8,
-		OUTPUT_COUNT = 9,
-		MAX_OUTPUTS = 32,
-	};
-	
   	uint64_t pitch_ = NULL;
 
   public:
@@ -51,6 +45,12 @@ class ShiftRegisterMax : public object<ShiftRegisterMax> {
     MIN_TAGS{"jb, cmos"};
     MIN_AUTHOR{"Jóhann Berentsson"};
     MIN_RELATED{"seidr.*"};
+    
+	enum {
+		BIT_COUNT = 8,
+		OUTPUT_COUNT = 9,
+		MAX_OUTPUTS = 32,
+	};
 
     explicit ShiftRegisterMax(const atoms &args = {});
     ~ShiftRegisterMax() = default;
