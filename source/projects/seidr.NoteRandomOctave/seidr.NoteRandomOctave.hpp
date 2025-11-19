@@ -6,13 +6,13 @@
 // Forward declaration
 class Keyboard;
 
-class noteRandomOctave_ : public c74::min::object<noteRandomOctave_> {
+class NoteRandomOctave_ : public c74::min::object<NoteRandomOctave_> {
   private:
     Keyboard keyboard_;
 
   public:
-    explicit noteRandomOctave_(const c74::min::atoms &args = {});
-    ~noteRandomOctave_();
+    explicit NoteRandomOctave_(const c74::min::atoms &args = {});
+    ~NoteRandomOctave_();
 
     void processNoteMessage(int note, int velocity);
     void clearNoteMessage(int note);
@@ -22,7 +22,7 @@ class noteRandomOctave_ : public c74::min::object<noteRandomOctave_> {
 
     // Inlets and outlets
     c74::min::inlet<> input0{this, "(int) note, (int) velocity"};
-    c74::min::outlet<> output0_{this, "(int) pitch"};
+    c74::min::outlet<> output0{this, "(int) pitch"};
     c74::min::outlet<> output1{this, "(int) velocity"};
 
     // Messages with handlers defined inline

@@ -1,47 +1,44 @@
-#include "seidr.noteRandomOctave.hpp"
+#include "seidr.NoteRandomOctave.hpp"
 
 #include <iostream>
 
 using namespace c74::min;
 
-void noteRandomObjectclearNoteMessage(int note) {
-    int clearedCount = keyboard.clearNotesByPitchClass(note);
+void NoteRandomOctave::clearNoteMessage(int note) {
+    int clearedCount = keyoard_.clearNotesByPitchClass(note);
 
     if (clearedCount > 0) {
-        output0_.send(note);
+        output0.send(note);
         output1.send(0);
     }
 }
 
-void noteRandomObjectclearAllNotesMessage() {
+void NoteRandomOctave::clearAllNotesMessage() {
     // Send all notes off as fallback.
     for (int note = 0; note < 128; note++) {
-        output0_.send(note);
+        output0.send(note);
         output1.send(0);
     }
 }
 
-void noteRandomObjectsetRangeMessage(int low, int high) {
-    keyboard.setRandomRange(low, high);
+void NoteRandomOctave::setRangeMessage(int low, int high) {
+    keyoard_.setRandomRange(low, high);
 }
 
-void noteRandomObjectprintActiveNotes() {
-    keyboard.debugPrintActiveNotes();
+void NoteRandomOctave::printActiveNotes() {
+    keyoard_.debugPrintActiveNotes();
 }
 
-noteRandomObjectnoteRandomOctave_(const atoms &args) {
+NoteRandomOctave::NoteRandomOctave_(const atoms &args) {
     // Nothing here.
 }
 
-noteRandomObject~noteRandomOctave_() {
-    clearAllNotesMessage();
-}
 
-void noteRandomObjectprocessNoteMessage(int note, int velocity) {
+void NoteRandomOctave::processNoteMessage(int note, int velocity) {
     // Process the note.
     if (velocity > 0) {
         // Note ON
-        const auto &activeNotes = keyboard.getActiveNotes();
+        const auto &activeNotes = keyoard_.getActiveNotes();
 
         if (activeNotes.empty()) {
             return;
@@ -51,13 +48,13 @@ void noteRandomObjectprocessNoteMessage(int note, int velocity) {
         const auto &lastNote = activeNotes.back();
 
         // Send to outputs.
-        output0_.send(lastNote->pitch());
+        output0.send(lastNote->pitch());
         output1.send(lastNote->velocity());
     } else {
         // Note OFF
-        output0_.send(note);
+        output0.send(note);
         output1.send(0);
     }
 }
 
-MIN_EXTERNAL(noteRandomOctave_);
+MIN_EXTERNAL(NoteRandomOctave_);

@@ -1,4 +1,4 @@
-/// @file       seidr.noteRandomOctave__test.cpp
+/// @file       seidr.NoteRandomOctave__test.cpp
 ///	@ingroup 	jb
 ///	@copyright	Copyright 2025 - Jóhann Berentsson. All rights reserved.
 ///	@license	Use of this source code is governed by the MIT License
@@ -8,16 +8,16 @@
 
 #include "Utils/Constants.hpp"
 #include "Utils/NoteValues.hpp"
-#include "seidr.noteRandomOctave_.hpp"
+#include "seidr.NoteRandomOctave_.hpp"
 
 using namespace MidiNotes;
 
-SCENARIO("seidr.noteRandomOctave_ object basic functionality") {
+SCENARIO("seidr.NoteRandomOctave_ object basic functionality") {
     ext_main(nullptr);
 
-    GIVEN("An instance of noteRandomOctave_") {
-        test_wrapper<noteRandomOctave_> an_instance;
-        noteRandomOctave_ &my_object = an_instance;
+    GIVEN("An instance of NoteRandomOctave_") {
+        test_wrapper<NoteRandomOctave_> an_instance;
+        NoteRandomOctave_ &my_object = an_instance;
 
         WHEN("the object is created") {
             // THEN("it initializes successfully") { REQUIRE(my_object !=
@@ -129,12 +129,12 @@ SCENARIO("seidr.noteRandomOctave_ object basic functionality") {
     }
 }
 
-SCENARIO("seidr.noteRandomOctave_ stress and performance tests") {
+SCENARIO("seidr.NoteRandomOctave_ stress and performance tests") {
     ext_main(nullptr);
 
     GIVEN("An instance under stress conditions") {
-        test_wrapper<noteRandomOctave_> an_instance;
-        noteRandomOctave_ &my_object = an_instance;
+        test_wrapper<NoteRandomOctave_> an_instance;
+        NoteRandomOctave_ &my_object = an_instance;
 
         WHEN("many rapid note messages are sent") {
             THEN("it handles rapid note-ons without crashing") {
@@ -189,12 +189,12 @@ SCENARIO("seidr.noteRandomOctave_ stress and performance tests") {
     }
 }
 
-SCENARIO("seidr.noteRandomOctave_ error handling tests") {
+SCENARIO("seidr.NoteRandomOctave_ error handling tests") {
     ext_main(nullptr);
 
     GIVEN("An instance handling invalid input") {
-        test_wrapper<noteRandomOctave_> an_instance;
-        noteRandomOctave_ &my_object = an_instance;
+        test_wrapper<NoteRandomOctave_> an_instance;
+        NoteRandomOctave_ &my_object = an_instance;
 
         WHEN("invalid list lengths are sent") {
             THEN("empty list is handled") {
@@ -264,12 +264,12 @@ SCENARIO("seidr.noteRandomOctave_ error handling tests") {
     }
 }
 
-SCENARIO("seidr.noteRandomOctave_ musical scale tests") {
+SCENARIO("seidr.NoteRandomOctave_ musical scale tests") {
     ext_main(nullptr);
 
     GIVEN("An instance processing musical scales") {
-        test_wrapper<noteRandomOctave_> an_instance;
-        noteRandomOctave_ &my_object = an_instance;
+        test_wrapper<NoteRandomOctave_> an_instance;
+        NoteRandomOctave_ &my_object = an_instance;
 
         WHEN("a C major scale is played") {
             THEN("all scale notes are processed without crashing") {
