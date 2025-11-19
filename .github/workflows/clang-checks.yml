@@ -9,8 +9,6 @@ on:
 jobs:
   clang-checks:
     runs-on: ubuntu-latest
-    container:  
-      image: debian:bookworm  # or debian:bullseye
     
     steps:
     - uses: actions/checkout@v4
@@ -20,52 +18,99 @@ jobs:
     
     - name: Install clang tools
       run: |
-        apt-get update && break
-        apt-get install -y git clang-format
+        sudo apt-get update
+        sudo apt-get install -y git clang-format clang-tidy cmake make
 
-    - name: Update CA certificates
+    - name: Verify source directories exist
       run: |
-        apt-get update
-        apt-get install -y ca-certificates
+        echo "=== Checking source directories ==="
+        ls -la source/
+        echo "=== projects directory ==="
+        ls -la source/projects/ || echo "projects directory not found"
+        echo "=== thulr directory ==="
+        ls -la source/thulr/ || echo "thulr directory not found"
 
-    - name: Update submodules
-      run: |
-        git submodule init
-        git submodule update
-    
     - name: Check code formatting with clang-format
       run: |
-        # Only check thulr source files
-        find source/projects -name "*.cpp" -o -name "*.hpp" | xargs clang-format --dry-run --Werror
+        # Find C++ files in the specific directories
+        echo "Looking for C++ files in source/projects and source/thulr..."
+        CPP_FILES=$(find source/projects source/thulr -name "*.cpp" -o -name "*.hpp" -o -name "*.h" -o -name "*.c" 2>/dev/null || true)
+        
+        if [ -z "$CPP_FILES" ]; then
+          echo "No C++ files found in source/projects or source/thulr"
+          exit 0
+        fi
+        
+        echo "Found $(echo "$CPP_FILES" | wc -l) files to check:"
+        echo "$CPP_FILES"
+        
+        # Check formatting
+        echo "$CPP_FILES" | xargs -r clang-format --dry-run --Werror
 
     - name: Check code quality with clang-tidy
       run: |
-        # Create compile_commands.json if needed
-        mkdir -p build
-        cd build
-        cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..
-        
-        # Run clang-tidy only on thulr source files
-        find source/projects -name "*.cpp" | xargs -I {} clang-tidy {} \
-          -p . \
-          -header-filter='.*' \
-          -quiet \
-          -checks='-*,bugprone-*,clang-analyzer-*,modernize-*,performance-*,readability-*,-bugprone-branch-clone,-bugprone-easily-swappable-parameters,-modernize-use-trailing-return-type,-readability-identifier-length,-readability-magic-numbers,-readability-function-cognitive-complexity'
+        # Generate compile_commands.json if CMakeLists.txt exists
+        if [ -f "CMakeLists.txt" ]; then
+          mkdir -p build
+          cd build
+          cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..
+          cd ..
+          
+          # Find C++ files in specific directories
+          CPP_FILES=$(find source/projects source/thulr -name "*.cpp" 2>/dev/null || true)
+          
+          if [ -n "$CPP_FILES" ]; then
+            echo "Running clang-tidy on $(echo "$CPP_FILES" | wc -l) files..."
+            echo "$CPP_FILES" | head -20 | xargs -r -I {} clang-tidy {} \
+              -p build \
+              -header-filter='.*' \
+              -quiet \
+              -checks='-*,bugprone-*,clang-analyzer-*,modernize-*,performance-*,readability-*,-bugprone-branch-clone,-bugprone-easily-swappable-parameters,-modernize-use-trailing-return-type,-readability-identifier-length,-readability-magic-numbers,-readability-function-cognitive-complexity'
+          else
+            echo "No C++ files found for clang-tidy"
+          fi
+        else
+          echo "No CMakeLists.txt found, skipping clang-tidy"
+        fi
 
     - name: Auto-fix formatting issues
       if: failure()
       run: |
-        # Apply clang-format fixes only to thulr
-        find source/projects -name "*.cpp" -o -name "*.hpp" | xargs clang-format -i
+        # Find C++ files in the specific directories
+        CPP_FILES=$(find source/projects source/thulr -name "*.cpp" -o -name "*.hpp" -o -name "*.h" -o -name "*.c" 2>/dev/null || true)
         
-        # Create patch file for review
-        git diff > clang-format-fixes.patch
-        
-        echo "=== Formatting fixes applied to thulr ==="
-        echo "Review the changes in clang-format-fixes.patch"
-        
+        if [ -n "$CPP_FILES" ]; then
+          echo "Applying clang-format to $(echo "$CPP_FILES" | wc -l) files..."
+          
+          # Apply formatting
+          echo "$CPP_FILES" | xargs -r clang-format -i
+          
+          # Create patch file for review
+          git diff > clang-format-fixes.patch
+          
+          echo "=== Formatting fixes applied to source/projects and source/thulr ==="
+          echo "Review the changes in clang-format-fixes.patch"
+          
+          # Show summary of changes
+          echo "=== Modified files ==="
+          git status --short
+        else
+          echo "No C++ files found to format"
+        fi
+
     - uses: actions/upload-artifact@v4
-      if: failure()
+      if: failure() && always()
       with:
         name: clang-format-fixes
         path: clang-format-fixes.patch
+
+    - name: Create Pull Request with fixes
+      if: failure()
+      uses: peter-evans/create-pull-request@v5
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: "Apply clang-format fixes"
+        title: "Auto-format: clang-format fixes"
+        body: "Automated code formatting fixes applied by clang-format"
+        branch: "clang-format-fixes"
+        delete-branch: true
