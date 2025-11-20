@@ -13,7 +13,7 @@ void NoteRandomOctaveMax::clearNoteMessage(int note) {
     }
 }
 
-static void NoteRandomOctaveMax::clearAllNotesMessage() {
+void NoteRandomOctaveMax::clearAllNotesMessage() {
     // Send all notes off as fallback.
     for (int note = 0; note < 128; note++) {
         output0.send(note);
@@ -40,7 +40,7 @@ void NoteRandomOctaveMax::processNoteMessage(int note, int velocity) {
         // Note ON
         const auto &activeNotes = keyboard_.getActiveNotes();
 
-        if (activeNotes_.empty()) {
+        if (activeNotes.empty()) {
             return;
         }
 

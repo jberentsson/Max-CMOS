@@ -43,7 +43,7 @@ class ShiftRegisterMax : public object<ShiftRegisterMax> {
     MIN_AUTHOR{"Jóhann Berentsson"};   // NOLINT 
     MIN_RELATED{"seidr.*"};            // NOLINT 
     
-	enum : std:uint8_t {
+	enum : uint8_t {
 		BIT_COUNT = 8,
 		OUTPUT_COUNT = 9,
 		MAX_OUTPUTS = 32,

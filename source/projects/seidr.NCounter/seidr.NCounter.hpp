@@ -20,7 +20,7 @@ using namespace c74::min;
 
 class NCounterMax : public object<NCounterMax> {
 public:
-    enum : std:uint8_t {
+    enum : uint8_t {
         OUTPUT_COUNT = 10
     };
 
@@ -72,7 +72,7 @@ public:
                     "received."}};
 
     message<> bang{this, "bang", "Steps the counter.",
-                MIN_FUNCTION{if (this->alreadyBanged){this->counter_.step();
+                MIN_FUNCTION{if (this->alreadyBanged){this->counter.step();
         } else {
             this->alreadyBanged = TRUE;
         }
@@ -82,13 +82,13 @@ public:
     }
     };
 
-    message<> reset{this, "reset", "Reset the counter.", MIN_FUNCTION{this->counter_.reset();
+    message<> reset{this, "reset", "Reset the counter.", MIN_FUNCTION{this->counter.reset();
         return {};
     }
     };
 
 private:
-    NCounter counter = NCounter(OUTPUT_COUNT);
+    NCounter counter = NCounter(this->OUTPUT_COUNT);
     std::vector<int> outputStates_;
     bool bangEnabled = FALSE;
     bool alreadyBanged = FALSE;

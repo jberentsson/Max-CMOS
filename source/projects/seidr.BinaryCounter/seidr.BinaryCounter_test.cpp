@@ -5,13 +5,13 @@
 /// found in the License.md file.
 
 #include "c74_min_unittest.h"
-#include "seidr.BinaryCounter.hpp"
+//#include "seidr.BinaryCounter.hpp"
+#include "seidr.BinaryCounter.cpp"
 
 using namespace c74::max;
 
 SCENARIO("object produces correct output") { // NOLINT 
     ext_main(nullptr);
-
     GIVEN("An instance of our object") {
         test_wrapper<BinaryCounterMax> an_instance;
         BinaryCounterMax &myObject = an_instance;
