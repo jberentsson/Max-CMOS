@@ -5,16 +5,14 @@
 /// found in the License.md file.
 
 #include "c74_min_unittest.h"
-
 #include "Utils/Constants.hpp"
 #include "Utils/MIDI.hpp"
 #include "seidr.NoteRandomOctave.hpp"
-#include "seidr.NoteRandomOctave.cpp"
 
 using namespace MIDI;
 using namespace MIDI::Notes;
 
-SCENARIO("seidr.NoteRandomOctaveMax object basic functionality") {
+SCENARIO("seidr.NoteRandomOctaveMax object basic functionality") { // NOLINT 
     ext_main(nullptr);
 
     GIVEN("An instance of NoteRandomOctaveMax") {
@@ -131,7 +129,7 @@ SCENARIO("seidr.NoteRandomOctaveMax object basic functionality") {
     }
 }
 
-SCENARIO("seidr.NoteRandomOctaveMax stress and performance tests") {
+SCENARIO("seidr.NoteRandomOctaveMax stress and performance tests") { // NOLINT 
     ext_main(nullptr);
 
     GIVEN("An instance under stress conditions") {
@@ -191,7 +189,7 @@ SCENARIO("seidr.NoteRandomOctaveMax stress and performance tests") {
     }
 }
 
-SCENARIO("seidr.NoteRandomOctaveMax error handling tests") {
+SCENARIO("seidr.NoteRandomOctaveMax error handling tests") { // NOLINT 
     ext_main(nullptr);
 
     GIVEN("An instance handling invalid input") {
@@ -266,7 +264,7 @@ SCENARIO("seidr.NoteRandomOctaveMax error handling tests") {
     }
 }
 
-SCENARIO("seidr.NoteRandomOctaveMax musical scale tests") {
+SCENARIO("seidr.NoteRandomOctaveMax musical scale tests") { // NOLINT 
     ext_main(nullptr);
 
     GIVEN("An instance processing musical scales") {

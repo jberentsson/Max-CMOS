@@ -7,7 +7,6 @@
 #pragma once
 
 #include "c74_min.h"
-
 #include "NCounter/NCounter.hpp"
 
 #include <ext_mess.h>
@@ -15,19 +14,20 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <cstdint>
 
 using namespace c74::min;
 
 class NCounterMax : public object<NCounterMax> {
-  public:
-    enum {
+public:
+    enum : std:uint8_t {
         OUTPUT_COUNT = 10
     };
 
-    MIN_DESCRIPTION{"NCounter"};
-    MIN_TAGS{"jb, counter"};
-    MIN_AUTHOR{"Jóhann Berentsson"};
-    MIN_RELATED{"seidr.*"};
+    MIN_DESCRIPTION{"NCounter"};     // NOLINT 
+    MIN_TAGS{"jb, counter"};         // NOLINT 
+    MIN_AUTHOR{"Jóhann Berentsson"}; // NOLINT 
+    MIN_RELATED{"seidr.*"};          // NOLINT 
 
     explicit NCounterMax(const atoms &args = {}) {};
     ~NCounterMax() = default;
@@ -52,51 +52,44 @@ class NCounterMax : public object<NCounterMax> {
     outlet<> output8{this, "(anything) output bit 8"};
     outlet<> output9{this, "(anything) output bit 9"};
 
-    outlet<> *outputs[10] = {&output0, &output1, &output2, &output3, &output4,
-                             &output5, &output6, &output7, &output8, &output9};
-
-    argument<symbol> bang_arg{this, "bang_on", "Initial value for the bang attribute.",
+    std::array<outlet<>*, 10> outputs = {&output0, &output1, &output2, &output3, &output4,
+                                     &output5, &output6, &output7, &output8, &output9};
+    
+    argument<symbol> bangArg{this, "bang_on", "Initial value for the bang attribute.",
                               MIN_ARGUMENT_FUNCTION{bangEnabled = FALSE;
-}
-}
-;
+    }
+    };
 
-argument<symbol> outputType_arg{this, "outputType", "Initial value for the greeting attribute.",
-                                 MIN_ARGUMENT_FUNCTION{outputType = arg;
-}
-}
-;
+    argument<symbol> outputTypeArg{this, "outputType", "Initial value for the greeting attribute.",
+                                    MIN_ARGUMENT_FUNCTION{outputType = arg;
+    }
+    };
 
-attribute<symbol> outputType{
-    this, "outputType", "integer",
-    description{"Greeting to be posted. "
-                "The greeting will be posted to the Max console when a bang is "
-                "received."}};
+    attribute<symbol> outputType{
+        this, "outputType", "integer",
+        description{"Greeting to be posted. "
+                    "The greeting will be posted to the Max console when a bang is "
+                    "received."}};
 
-message<> bang{this, "bang", "Steps the counter.",
+    message<> bang{this, "bang", "Steps the counter.",
+                MIN_FUNCTION{if (this->alreadyBanged){this->counter_.step();
+        } else {
+            this->alreadyBanged = TRUE;
+        }
 
-               MIN_FUNCTION{if (this->alreadyBanged){this->counter_.step();
-}
-else {
-    this->alreadyBanged = TRUE;
-}
+        this->handleOutputs();
+        return {};
+    }
+    };
 
-this->handleOutputs();
-return {};
-}
-}
-;
-
-message<> reset{this, "reset", "Reset the counter.", MIN_FUNCTION{this->counter_.reset();
-return {};
-}
-}
-;
+    message<> reset{this, "reset", "Reset the counter.", MIN_FUNCTION{this->counter_.reset();
+        return {};
+    }
+    };
 
 private:
-NCounter counter_ = NCounter(OUTPUT_COUNT);
-std::vector<int> outputStates_;
-bool bangEnabled = FALSE;
-bool alreadyBanged = FALSE;
-}
-;
+    NCounter counter = NCounter(OUTPUT_COUNT);
+    std::vector<int> outputStates_;
+    bool bangEnabled = FALSE;
+    bool alreadyBanged = FALSE;
+};

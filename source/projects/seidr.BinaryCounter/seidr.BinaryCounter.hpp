@@ -7,26 +7,25 @@
 #pragma once
 
 #include "c74_min.h"
-
 #include "BinaryCounter/BinaryCounter.hpp"
-#include "BinaryCounter/BinaryCounter.cpp"
 
 #include <ext_mess.h>
 #include <fcntl.h>
 #include <iostream>
 #include <string>
 #include <vector>
+#include <cstdint>
 
 using namespace c74::min;
 
 class BinaryCounterMax : public object<BinaryCounterMax> {
 public:
-    MIN_DESCRIPTION{"Binary Counter"};
-    MIN_TAGS{"jb, counter"};
-    MIN_AUTHOR{"Jóhann Berentsson"};
-    MIN_RELATED{"seidr.*"};
+    MIN_DESCRIPTION{"Binary Counter"}; // NOLINT 
+    MIN_TAGS{"jb, counter"};           // NOLINT 
+    MIN_AUTHOR{"Jóhann Berentsson"};   // NOLINT 
+    MIN_RELATED{"seidr.*"};            // NOLINT 
     
-    enum {
+    enum : std::uint8_t {
         OUTPUT_COUNT = 8
     };
 
@@ -49,7 +48,7 @@ public:
     std::vector<std::unique_ptr<outlet<>>> outputs;
 
     // FIXED: Proper attribute for bang mode
-    attribute<bool> bang_enable{this, "bang_enable", false,
+    attribute<bool> bangEnable{this, "bangEnable", false,
         description{"Output mode: true for bang outputs, false for integer outputs"}};
 
     // FIXED: Simplified bang handler

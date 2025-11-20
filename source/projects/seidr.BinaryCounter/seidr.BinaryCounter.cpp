@@ -25,7 +25,7 @@ void BinaryCounterMax::updateOutputs() {
     for (int i = 0; i < OUTPUT_COUNT; i++) {
         int current = OUTPUT_COUNT - i - 1;
         
-        if (this->bang_enable) {
+        if (this->bangEnable) {
             if (this->getBit(i) == 1) {
                 this->outputs[current]->send("bang");
             }
@@ -36,12 +36,12 @@ void BinaryCounterMax::updateOutputs() {
 }
 
 void BinaryCounterMax::enableBangs() {
-    this->bang_enable = true;
+    this->bangEnable = true;
     this->updateOutputs();
 }
 
 void BinaryCounterMax::disableBangs() {
-    this->bang_enable = false;
+    this->bangEnable = false;
     this->updateOutputs();
 }
 
@@ -63,4 +63,4 @@ unsigned int BinaryCounterMax::maxValue() {
     return this->counter_.getMaxValue();
 }
 
-MIN_EXTERNAL(BinaryCounterMax);
+MIN_EXTERNAL(BinaryCounterMax); // NOLINT 

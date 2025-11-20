@@ -16,7 +16,7 @@ class NoteRandomOctaveMax : public c74::min::object<NoteRandomOctaveMax> {
 
     void processNoteMessage(int note, int velocity);
     void clearNoteMessage(int note);
-    void clearAllNotesMessage();
+    static void clearAllNotesMessage();
     void setRangeMessage(int low, int high);
     void printActiveNotes();
 

@@ -29,4 +29,4 @@ unsigned int NCounterMax::step() {
     return this->counter_.step();
 }
 
-MIN_EXTERNAL(NCounterMax);
+MIN_EXTERNAL(NCounterMax); // NOLINT

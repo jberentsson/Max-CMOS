@@ -5,13 +5,11 @@
 /// found in the License.md file.
 
 #include "c74_min_unittest.h"
-
 #include "seidr.NCounter.hpp"
-#include "seidr.NCounter.cpp"
 
 using namespace c74::max;
 
-SCENARIO("NCounterMax object produces correct output") {
+SCENARIO("NCounterMax object produces correct output") { // NOLINT 
     ext_main(nullptr);
 
     GIVEN("An instance of our object") {

@@ -6,18 +6,15 @@
 
 #pragma once
 
-// #include <ext_mess.h>
-// #include <fcntl.h>
 #include "c74_min.h"
-
 #include "ShiftRegister/ShiftRegister.hpp"
 
 #include <iostream>
 #include <string>
 #include <vector>
+#include <cstdint>
 
 using namespace c74::min;
-
 
 class LastNote {
   private:
@@ -26,9 +23,9 @@ class LastNote {
   public:
     bool dirty = FALSE;
 
-    int get() { return this->pitch_; }
+    [[nodiscard]] uint64_t get() const { return this->pitch_; }
 
-    int set(int n) {
+    uint64_t set(uint64_t n) {
         this->pitch_ = n;
 
         if (this->dirty == FALSE) {
@@ -41,12 +38,12 @@ class LastNote {
 
 class ShiftRegisterMax : public object<ShiftRegisterMax> {
   public:
-    MIN_DESCRIPTION{"Shift Register"};
-    MIN_TAGS{"jb, cmos"};
-    MIN_AUTHOR{"Jóhann Berentsson"};
-    MIN_RELATED{"seidr.*"};
+    MIN_DESCRIPTION{"Shift Register"}; // NOLINT 
+    MIN_TAGS{"jb, cmos"};              // NOLINT 
+    MIN_AUTHOR{"Jóhann Berentsson"};   // NOLINT 
+    MIN_RELATED{"seidr.*"};            // NOLINT 
     
-	enum {
+	enum : std:uint8_t {
 		BIT_COUNT = 8,
 		OUTPUT_COUNT = 9,
 		MAX_OUTPUTS = 32,
@@ -126,7 +123,7 @@ return {};
 
 private:
 ShiftRegister sr_= ShiftRegister(BIT_COUNT);
-bool everyOutput_ = TRUE;
+bool everyOutput = TRUE;
 bool sendBangs = FALSE;
 int lastValue_= NULL;
 }

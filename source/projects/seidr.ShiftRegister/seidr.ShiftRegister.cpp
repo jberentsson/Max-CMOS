@@ -4,9 +4,8 @@
 ///	@license	Use of this source code is governed by the MIT License
 /// found in the License.md file.
 
-#include "seidr.ShiftRegister.hpp"
-
 #include "c74_min.h"
+#include "seidr.ShiftRegister.hpp"
 
 #include <iostream>
 
@@ -43,7 +42,7 @@ void ShiftRegisterMax::handleThrough() {
     uint64_t dt = this->sr_.dataThrough();
     int lastOutputIndex = outputs.size() - 1;
 
-    if (everyOutput_ || dt != lastOutput[8].get()) {
+    if (everyOutput || dt != lastOutput[8].get()) {
         this->outputs[lastOutputIndex]->send(this->sendBangs ? bang() : c74::min::atoms({dt}));
         this->lastOutput[lastOutputIndex].set(dt);
     }
@@ -74,4 +73,4 @@ int ShiftRegisterMax::dataThrough() {
     return this->sr_.dataThrough();
 }
 
-MIN_EXTERNAL(ShiftRegisterMax);
+MIN_EXTERNAL(ShiftRegisterMax); // NOLINT
