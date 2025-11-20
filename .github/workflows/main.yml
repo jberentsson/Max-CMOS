@@ -134,13 +134,13 @@ jobs:
     - name: zip
       run: zip -r ${{ github.event.repository.name }}-package-for-max-${{ steps.sha.outputs.sha }}.zip ${{ github.event.repository.name }}
 
-    - uses: actions/upload-artifact@v4
-      with:
-        name: ${{ github.event.repository.name }}-${{ steps.sha.outputs.sha }}-zipped-release
-        path: ${{ github.event.repository.name }}-package-for-max-${{ steps.sha.outputs.sha }}.zip
-
-    - uses: ncipollo/release-action@v1.12.0
-      with:
-        artifacts: ${{ github.event.repository.name }}-package-for-max-${{ steps.sha.outputs.sha }}.zip
-        body: "Max Package for all supported platforms"
-        token: ${{ secrets.GITHUB_TOKEN }}
+#    - uses: actions/upload-artifact@v4
+#      with:
+#        name: ${{ github.event.repository.name }}-${{ steps.sha.outputs.sha }}-zipped-release
+#        path: ${{ github.event.repository.name }}-package-for-max-${{ steps.sha.outputs.sha }}.zip
+#
+#    - uses: ncipollo/release-action@v1.12.0
+#      with:
+#        artifacts: ${{ github.event.repository.name }}-package-for-max-${{ steps.sha.outputs.sha }}.zip
+#        body: "Max Package for all supported platforms"
+#        token: ${{ secrets.GITHUB_TOKEN }}
