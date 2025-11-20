@@ -3,9 +3,27 @@ all:
 	cmake --build build --config Release -j8
 
 tidy:
-	clang-tidy source/projects/seidr.*/*.{cpp,hpp} -- -std=c++17 \
-    -I. -Isource -Isource/thulr/source \
-    -Wno-everything
+	@find source/projects/seidr.* source/thulr/source/* \( -name "*.cpp" -o -name "*.hpp" \) -exec clang-tidy {} \
+	    -- -std=c++17 \
+	    -Isource/thulr/source \
+	    -isystem source/min-api \
+	    -isystem source/min-api/include \
+	    -isystem source/min-api/max-sdk-base/c74support \
+	    -isystem source/min-api/source/c74_min_unittest \
+	    -isystem source/min-api/test \
+	    -Wno-everything \;
+
+tidy-ci:
+	@find source/projects/seidr.* source/thulr/source/* \( -name "*.cpp" -o -name "*.hpp" \) -exec clang-tidy {} \
+	    -checks='readability-*,modernize-*,performance-*,bugprone-*,-modernize-avoid-c-arrays,-readability-identifier-naming,-bugprone-chained-comparison,-llvmlibc-restrict-system-libc-headers,-cppcoreguidelines-use-enum-class' \
+	    -- -std=c++17 \
+	    -Isource/thulr/source \
+	    -isystem source/min-api \
+	    -isystem source/min-api/include \
+	    -isystem source/min-api/max-sdk-base/c74support \
+	    -isystem source/min-api/source/c74_min_unittest \
+	    -isystem source/min-api/test \
+	    -Wno-everything \;
 
 format:
 	clang-format -i -style=file source/projects/*/*.{hpp,cpp}

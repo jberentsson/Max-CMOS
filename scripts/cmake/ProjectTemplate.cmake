@@ -26,6 +26,7 @@ macro(project_template)
     set( SOURCE_FILES
         ${PROJECT_NAME}.hpp
         ${PROJECT_NAME}.cpp
+        ${PROJECT_NAME}_test.cpp
     )
 
     add_library(

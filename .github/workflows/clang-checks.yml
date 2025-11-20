@@ -32,71 +32,29 @@ jobs:
 
     - name: Check code formatting with clang-format
       run: |
-        # Find C++ files in the specific directories
-        echo "Looking for C++ files in source/projects and source/thulr..."
-        CPP_FILES=$(find source/projects source/thulr -name "*.cpp" -o -name "*.hpp" -o -name "*.h" -o -name "*.c" 2>/dev/null || true)
-        
-        if [ -z "$CPP_FILES" ]; then
-          echo "No C++ files found in source/projects or source/thulr"
-          exit 0
-        fi
-        
-        echo "Found $(echo "$CPP_FILES" | wc -l) files to check:"
-        echo "$CPP_FILES"
-        
-        # Check formatting
-        echo "$CPP_FILES" | xargs -r clang-format --dry-run --Werror
+        # Use the same approach as in your Makefile
+        find source/projects source/thulr \( -name "*.cpp" -o -name "*.hpp" -o -name "*.h" -o -name "*.c" \) -exec clang-format --dry-run --Werror {} +
 
-    - name: Check code quality with clang-tidy
+    - name: Check code quality with clang-tidy using Makefile
       run: |
-        # Generate compile_commands.json if CMakeLists.txt exists
-        if [ -f "CMakeLists.txt" ]; then
-          mkdir -p build
-          cd build
-          cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..
-          cd ..
-          
-          # Find C++ files in specific directories
-          CPP_FILES=$(find source/projects source/thulr -name "*.cpp" 2>/dev/null || true)
-          
-          if [ -n "$CPP_FILES" ]; then
-            echo "Running clang-tidy on $(echo "$CPP_FILES" | wc -l) files..."
-            echo "$CPP_FILES" | head -20 | xargs -r -I {} clang-tidy {} \
-              -p build \
-              -header-filter='.*' \
-              -quiet \
-              -checks='-*,bugprone-*,clang-analyzer-*,modernize-*,performance-*,readability-*,-bugprone-branch-clone,-bugprone-easily-swappable-parameters,-modernize-use-trailing-return-type,-readability-identifier-length,-readability-magic-numbers,-readability-function-cognitive-complexity'
-          else
-            echo "No C++ files found for clang-tidy"
-          fi
-        else
-          echo "No CMakeLists.txt found, skipping clang-tidy"
-        fi
+        # Run your existing Makefile tidy target
+        make tidy-ci
 
     - name: Auto-fix formatting issues
       if: failure()
       run: |
-        # Find C++ files in the specific directories
-        CPP_FILES=$(find source/projects source/thulr -name "*.cpp" -o -name "*.hpp" -o -name "*.h" -o -name "*.c" 2>/dev/null || true)
+        # Apply clang-format fixes
+        find source/projects source/thulr \( -name "*.cpp" -o -name "*.hpp" -o -name "*.h" -o -name "*.c" \) -exec clang-format -i {} +
         
-        if [ -n "$CPP_FILES" ]; then
-          echo "Applying clang-format to $(echo "$CPP_FILES" | wc -l) files..."
-          
-          # Apply formatting
-          echo "$CPP_FILES" | xargs -r clang-format -i
-          
-          # Create patch file for review
-          git diff > clang-format-fixes.patch
-          
-          echo "=== Formatting fixes applied to source/projects and source/thulr ==="
-          echo "Review the changes in clang-format-fixes.patch"
-          
-          # Show summary of changes
-          echo "=== Modified files ==="
-          git status --short
-        else
-          echo "No C++ files found to format"
-        fi
+        # Create patch file for review
+        git diff > clang-format-fixes.patch
+        
+        echo "=== Formatting fixes applied ==="
+        echo "Review the changes in clang-format-fixes.patch"
+        
+        # Show summary of changes
+        echo "=== Modified files ==="
+        git status --short
 
     - uses: actions/upload-artifact@v4
       if: failure() && always()
