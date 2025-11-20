@@ -62,13 +62,13 @@ jobs:
         name: clang-format-fixes
         path: clang-format-fixes.patch
 
-    - name: Create Pull Request with fixes
-      if: failure()
-      uses: peter-evans/create-pull-request@v5
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        commit-message: "Apply clang-format fixes"
-        title: "Auto-format: clang-format fixes"
-        body: "Automated code formatting fixes applied by clang-format"
-        branch: "clang-format-fixes"
-        delete-branch: true
+    # - name: Create Pull Request with fixes
+    #   if: failure()
+    #   uses: peter-evans/create-pull-request@v5
+    #   with:
+    #     token: ${{ secrets.GITHUB_TOKEN }}
+    #     commit-message: "Apply clang-format fixes"
+    #     title: "Auto-format: clang-format fixes"
+    #     body: "Automated code formatting fixes applied by clang-format"
+    #     branch: "clang-format-fixes"
+    #     delete-branch: true
