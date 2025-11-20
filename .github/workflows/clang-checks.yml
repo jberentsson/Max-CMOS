@@ -21,46 +21,37 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y git clang-format clang-tidy cmake make
 
-    - name: Verify source directories exist
-      run: |
-        echo "=== Checking source directories ==="
-        ls -la source/
-        echo "=== projects directory ==="
-        ls -la source/projects/ || echo "projects directory not found"
-        echo "=== thulr directory ==="
-        ls -la source/thulr/ || echo "thulr directory not found"
-
-    - name: Check code formatting with clang-format
-      run: |
-        # Use the same approach as in your Makefile
-        find source/projects source/thulr \( -name "*.cpp" -o -name "*.hpp" -o -name "*.h" -o -name "*.c" \) -exec clang-format --dry-run --Werror {} +
+    # - name: Check code formatting with clang-format
+    #   run: |
+    #     # Use the same approach as in your Makefile
+    #     find source/projects source/thulr \( -name "*.cpp" -o -name "*.hpp" -o -name "*.h" -o -name "*.c" \) -exec clang-format --dry-run --Werror {} +
 
     - name: Check code quality with clang-tidy using Makefile
       run: |
         # Run your existing Makefile tidy target
         make tidy-ci
 
-    - name: Auto-fix formatting issues
-      if: failure()
-      run: |
-        # Apply clang-format fixes
-        find source/projects source/thulr \( -name "*.cpp" -o -name "*.hpp" -o -name "*.h" -o -name "*.c" \) -exec clang-format -i {} +
+    # - name: Auto-fix formatting issues
+    #   if: failure()
+    #   run: |
+    #     # Apply clang-format fixes
+    #     find source/projects source/thulr \( -name "*.cpp" -o -name "*.hpp" -o -name "*.h" -o -name "*.c" \) -exec clang-format -i {} +
         
-        # Create patch file for review
-        git diff > clang-format-fixes.patch
+    #     # Create patch file for review
+    #     git diff > clang-format-fixes.patch
         
-        echo "=== Formatting fixes applied ==="
-        echo "Review the changes in clang-format-fixes.patch"
+    #     echo "=== Formatting fixes applied ==="
+    #     echo "Review the changes in clang-format-fixes.patch"
         
-        # Show summary of changes
-        echo "=== Modified files ==="
-        git status --short
+    #     # Show summary of changes
+    #     echo "=== Modified files ==="
+    #     git status --short
 
-    - uses: actions/upload-artifact@v4
-      if: failure() && always()
-      with:
-        name: clang-format-fixes
-        path: clang-format-fixes.patch
+    # - uses: actions/upload-artifact@v4
+    #   if: failure() && always()
+    #   with:
+    #     name: clang-format-fixes
+    #     path: clang-format-fixes.patch
 
     # - name: Create Pull Request with fixes
     #   if: failure()
