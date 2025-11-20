@@ -27,11 +27,11 @@ jobs:
 
     - name: configure_macos
       if: matrix.os == 'macos-latest'
-      run: mkdir build && cd build && cmake .. --verbose -G "Unix Makefiles" -DCMAKE_POLICY_VERSION_MINIMUM="3.5" -DCMAKE_BUILD_TYPE=${{ matrix.config }}
+      run: mkdir build && cd build && cmake .. -G "Unix Makefiles" -DCMAKE_POLICY_VERSION_MINIMUM="3.5" -DCMAKE_BUILD_TYPE=${{ matrix.config }} --verbose
  
     - name: configure_windows
       if: matrix.os == 'windows-latest'
-      run: mkdir build && cd build && cmake .. --verbose -G "Visual Studio 17 2022" -DCMAKE_POLICY_VERSION_MINIMUM="3.5"
+      run: mkdir build && cd build && cmake .. -G "Visual Studio 17 2022" -DCMAKE_POLICY_VERSION_MINIMUM="3.5" --verbose
 
     - name: build_debug
       if: matrix.config == 'debug'
