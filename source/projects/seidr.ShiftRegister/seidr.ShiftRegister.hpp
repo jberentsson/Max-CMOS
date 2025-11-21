@@ -28,7 +28,7 @@ class LastNote {
     auto set(uint64_t noteValue) -> uint64_t {
         this->pitch_ = noteValue;
 
-        if (this->dirty == false) {
+        if (!this->dirty) {
             this->dirty = true;
         }
 
@@ -39,7 +39,7 @@ class LastNote {
 class ShiftRegisterMax : public object<ShiftRegisterMax> {
   public:
     MIN_DESCRIPTION{"Shift Register"}; // NOLINT 
-    MIN_TAGS{"jb, cmos"};              // NOLINT 
+    MIN_TAGS{"seidr"};              // NOLINT 
     MIN_AUTHOR{"Jóhann Berentsson"};   // NOLINT 
     MIN_RELATED{"seidr.*"};            // NOLINT 
     
@@ -50,7 +50,6 @@ class ShiftRegisterMax : public object<ShiftRegisterMax> {
 	};
 
     explicit ShiftRegisterMax(const atoms &args = {});
-    ~ShiftRegisterMax() = default;
 
     void handleOutputs();
     void handleThrough();
@@ -99,13 +98,12 @@ cout << "Some other inlet: " << inlet << endl;
 }
 
 return {};
-}
-}
-;
+    }
+};
 
 c74::min::message<threadsafe::yes> integer{
     this, "int", "data",
-    MIN_FUNCTION{if (args.size()){switch (inlet){case 0 :
+    MIN_FUNCTION{if (args.size()){switch (inlet){case 0 : // NOLINT 
 
                                                      // sr_.step();
                                                      // handleOutputs();
@@ -116,15 +114,13 @@ std::cout << "Some other integer: " << args[0] << " Inlet: " << inlet << "\n";
 }
 }
 
-return {};
-}
-}
-;
+        return {};
+    }
+};
 
 private:
-ShiftRegister sr_ = ShiftRegister(BIT_COUNT);
-bool everyOutput = TRUE;
-bool sendBangs = FALSE;
-int lastValue_= NULL;
-}
-;
+    ShiftRegister sr_ = ShiftRegister(BIT_COUNT);
+    bool everyOutput = TRUE;
+    bool sendBangs = FALSE;
+    int lastValue_= NULL;
+};

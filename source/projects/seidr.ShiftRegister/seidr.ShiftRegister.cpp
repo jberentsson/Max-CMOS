@@ -33,24 +33,24 @@ ShiftRegisterMax::ShiftRegisterMax(const atoms &args) {
 void ShiftRegisterMax::handleOutputs() {
     // Bit outputs from 0 to (N-1).
     for (int i = 0; i < outputs.size() - 1; i++) {
-        this->outputs[i]->send(this->sendBangs ? bang() : atoms({(uint64_t)this->sr_.get(i)}));
+        this->outputs[i]->send(this->sendBangs ? bang() : atoms({(uint64_t)this->sr_.get(i)})); // NOLINT 
     }
 }
 
 void ShiftRegisterMax::handleThrough() {
     // Output N data through.
-    uint64_t dt = this->sr_.dataThrough();
-    int lastOutputIndex = outputs.size() - 1;
+    uint64_t currentDataThrough = this->sr_.dataThrough();
+    unsigned int lastOutputIndex = outputs.size() - 1;
 
-    if (everyOutput || dt != lastOutput[8].get()) {
-        this->outputs[lastOutputIndex]->send(this->sendBangs ? bang() : c74::min::atoms({dt}));
-        this->lastOutput[lastOutputIndex].set(dt);
+    if (everyOutput || currentDataThrough != lastOutput[8].get()) { // NOLINT 
+        this->outputs[lastOutputIndex]->send(this->sendBangs ? bang() : c74::min::atoms({currentDataThrough}));
+        this->lastOutput[lastOutputIndex].set(currentDataThrough);
     }
 
-    LastNote x = LastNote();
-    x.set(dt);
+    LastNote x = LastNote(); // NOLINT 
+    x.set(currentDataThrough);
 
-    this->lastOutput[8] = x;
+    this->lastOutput[8] = x; // NOLINT 
 }
 
 auto ShiftRegisterMax::size() -> int {

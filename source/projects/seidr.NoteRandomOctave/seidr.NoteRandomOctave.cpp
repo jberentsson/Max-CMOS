@@ -34,7 +34,7 @@ NoteRandomOctaveMax::NoteRandomOctaveMax(const atoms &args) {
 }
 
 
-void NoteRandomOctaveMax::processNoteMessage(int note, int velocity) {
+void NoteRandomOctaveMax::processNoteMessage(int note, int velocity) { // NOLINT 
     // Process the note.
     if (velocity > 0) {
         // Note ON

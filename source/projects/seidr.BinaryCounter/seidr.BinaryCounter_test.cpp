@@ -27,7 +27,7 @@ SCENARIO("object produces correct output") { // NOLINT
             }
 
             THEN("our greeting is produced at the outlet") {
-                int expected[6][8] = {
+                int expected[6][8] = { // NOLINT
                     {0, 0, 0, 0, 0, 0, 0, 0},
                     {0, 0, 0, 0, 0, 0, 0, 1},
                     {0, 0, 0, 0, 0, 0, 1, 0},
@@ -59,7 +59,7 @@ SCENARIO("object produces correct output") { // NOLINT
 
                 REQUIRE(myObject.counterValue() == 1);
 
-                for (int i = 0; i < 5; i++) {
+                for (int i = 0; i < 5; i++) { // NOLINT
                     for (int j = 0; j < BinaryCounterMax::OUTPUT_COUNT; j++) {
                         auto &out = *object_getoutput(myObject, j);
                         REQUIRE(!out.empty());
@@ -72,7 +72,7 @@ SCENARIO("object produces correct output") { // NOLINT
 
         WHEN("test the preset function") {
             THEN("our greeting is produced at the outlet") {
-                int expected[6][8] = {
+                int expected[6][8] = { // NOLINT
                     {0, 0, 0, 0, 0, 0, 0, 0},
                     {0, 0, 0, 0, 0, 0, 0, 1},
                     {0, 0, 1, 0, 0, 0, 0, 0},
@@ -89,7 +89,7 @@ SCENARIO("object produces correct output") { // NOLINT
 
                 REQUIRE(myObject.counterValue() == 2);
 
-                myObject.setPreset(32);
+                myObject.setPreset(32); // NOLINT
                 myObject.preset();
 
                 REQUIRE(myObject.counterValue() == 31);
@@ -111,7 +111,7 @@ SCENARIO("object produces correct output") { // NOLINT
 
                 REQUIRE(myObject.counterValue() == 2);
 
-                for (int i = 0; i < 6; i++) {
+                for (int i = 0; i < 6; i++) {  // NOLINT
                     for (int j = 0; j < BinaryCounterMax::OUTPUT_COUNT; j++) {
                         auto &out = *object_getoutput(myObject, j);
                         REQUIRE(!out.empty());
