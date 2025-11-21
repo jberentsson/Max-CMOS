@@ -19,7 +19,7 @@ macro(project_template)
     #############################################################
 
     include_directories( 
-        ${C74_INCLUDES}
+        #${C74_INCLUDES}
         ${THULR_PATH}
         ${CMAKE_CURRENT_SOURCE_DIR}
     )
@@ -55,6 +55,10 @@ macro(project_template)
     #############################################################
     # Comprehensive include path setup for GitHub Actions
     #############################################################
+    
+    target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE
+        ${C74_INCLUDES}
+    )
 
     # Get the parent directory of thulr/source
     get_filename_component(THULR_PARENT_PATH ${THULR_PATH} DIRECTORY)

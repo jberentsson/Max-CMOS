@@ -11,7 +11,8 @@
 #include <vector>
 #include <cstdint>
 
-#include "c74_min.h"
+#include <c74_min.h>
+
 #include "ShiftRegister/ShiftRegister.hpp"
 
 using namespace c74::min;

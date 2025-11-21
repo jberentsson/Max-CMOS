@@ -4,10 +4,8 @@
 ///	@license	Use of this source code is governed by the MIT License
 /// found in the License.md file.
 
-#include "seidr.ShiftRegister.hpp"
-#include "c74_min.h"
-
 #include <iostream>
+#include "seidr.ShiftRegister.hpp"
 
 using namespace c74::min;
 

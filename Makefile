@@ -10,7 +10,7 @@ tidy:
 	    -isystem source/min-api/include \
 	    -isystem source/min-api/max-sdk-base/c74support \
 	    -isystem source/min-api/max-sdk-base/c74support/max-includes \
-		-Isystem source/thulr/build/_deps/catch2-src/single_include/catch2 \
+		-Isystem build/_deps/catch2-src/single_include \
 	    -isystem source/min-api/test \
 	    -Wno-everything \;
 
@@ -23,7 +23,7 @@ tidy-ci:
 	    -isystem source/min-api/include \
 	    -isystem source/min-api/max-sdk-base/c74support \
 	    -isystem source/min-api/max-sdk-base/c74support/max-includes \
-		-Isystem source/thulr/build/_deps/catch2-src/single_include \
+		-Isystem build/_deps/catch2-src/single_include \
 	    -isystem source/min-api/test \
 	    -Wno-everything \;
 

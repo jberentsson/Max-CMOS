@@ -1,7 +1,7 @@
 #pragma once
 
+#include <c74_min.h>
 #include "Keyboard/Keyboard.hpp"
-#include "c74_min.h"
 
 // Forward declaration
 class Keyboard;

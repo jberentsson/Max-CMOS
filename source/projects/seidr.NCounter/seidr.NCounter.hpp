@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "c74_min.h"
+#include <c74_min.h>
 #include "NCounter/NCounter.hpp"
 
 #include <ext_mess.h>
