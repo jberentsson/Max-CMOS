@@ -17,7 +17,6 @@ class NoteRandomOctaveMax : public c74::min::object<NoteRandomOctaveMax> {
     void clearNoteMessage(int note);
     void clearAllNotesMessage();
     void setRangeMessage(int low, int high);
-    void printActiveNotes();
 
     // Inlets and outlets
     c74::min::inlet<> input0{this, "(int) note, (int) velocity"};
@@ -59,11 +58,4 @@ return {};
 }
 }
 ;
-
-c74::min::message<> debug{this, "debug", "Print debug info", MIN_FUNCTION{printActiveNotes();
-return {};
-}
-}
-;
-}
-;
+};

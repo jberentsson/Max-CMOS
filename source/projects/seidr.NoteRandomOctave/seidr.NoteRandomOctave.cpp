@@ -26,10 +26,6 @@ void NoteRandomOctaveMax::setRangeMessage(int low, int high) {
     keyboard_.setRandomRange(low, high);
 }
 
-void NoteRandomOctaveMax::printActiveNotes() {
-    keyboard_.debugPrintActiveNotes();
-}
-
 NoteRandomOctaveMax::NoteRandomOctaveMax(const atoms &args) {
     // Nothing here.
 }
