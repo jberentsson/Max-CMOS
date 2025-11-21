@@ -3,11 +3,18 @@ cmake_minimum_required(VERSION 3.19)
 set(C74_MIN_API_DIR ${CMAKE_CURRENT_SOURCE_DIR}/source/min-api)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 # Extract package name from directory path.
-string(REGEX REPLACE ".*/([^/]+)" "\\1" THIS_PACKAGE_NAME "${CMAKE_CURRENT_SOURCE_DIR}")
+string(REGEX REPLACE ".*/([^/]+)" "\\1" 
+       THIS_PACKAGE_NAME 
+       "${CMAKE_CURRENT_SOURCE_DIR}")
 project(${THIS_PACKAGE_NAME} VERSION 1.0.0 LANGUAGES C CXX)
 
-set(CMAKE_OSX_DEPLOYMENT_TARGET "15.5.99")
+if(APPLE)
+    if(POLICY CMP0118)
+        cmake_policy(SET CMP0118 NEW)
+    endif()
+endif()
 
 if(MSVC)
     # Use static runtime for both Debug and Release
@@ -117,16 +124,14 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/source/thulr)
 # Max
 #############################################################
 
-if(WIN32 OR APPLE)
-    # Generate a project for every folder in the "source/projects" folder
-    SUBDIRLIST(PROJECT_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/source/projects)
-    foreach (project_dir ${PROJECT_DIRS})
-        if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/source/projects/${project_dir}/CMakeLists.txt")
-            message("Generating: ${project_dir}")
-            add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/source/projects/${project_dir})
-        endif ()
-    endforeach ()
-endif()
+# Generate a project for every folder in the "source/projects" folder
+SUBDIRLIST(PROJECT_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/source/projects)
+foreach (project_dir ${PROJECT_DIRS})
+    if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/source/projects/${project_dir}/CMakeLists.txt")
+        message("Generating: ${project_dir}")
+        add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/source/projects/${project_dir})
+    endif ()
+endforeach ()
 
 
 foreach (project_dir ${PROJECT_DIRS})
@@ -136,23 +141,3 @@ foreach (project_dir ${PROJECT_DIRS})
         )
     endif()
 endforeach()
-
-
-#############################################################
-# clang tidy
-#############################################################
-
-#include_directories(
-#    ${CMAKE_CURRENT_SOURCE_DIR}/source/thulr/source
-#    ${CMAKE_CURRENT_SOURCE_DIR}/source/min-api/include
-#    ${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/catch2-src/single_include
-#)
-
-#find_program(CLANG_TIDY_EXE NAMES clang-tidy)
-#add_custom_target(clang-tidy
-#    COMMAND ./tidy.sh
-#    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-#    COMMENT "Running clang-tidy"
-#)
-
-

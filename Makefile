@@ -1,6 +1,6 @@
 all:
-	cmake -B build
-	cmake --build build --config Release -j8
+	cmake -B build -G "Unix Makefiles" -DCMAKE_POLICY_VERSION_MINIMUM="3.5" 
+	cmake --build build --config Release -j8 --verbose
 
 tidy:
 	@find source/projects/seidr.* source/thulr/source/* \( -name "*.cpp" -o -name "*.hpp" \) -exec clang-tidy {} \
@@ -9,7 +9,8 @@ tidy:
 	    -isystem source/min-api \
 	    -isystem source/min-api/include \
 	    -isystem source/min-api/max-sdk-base/c74support \
-	    -isystem source/min-api/source/c74_min_unittest \
+	    -isystem source/min-api/max-sdk-base/c74support/max-includes \
+		-Isystem source/thulr/build/_deps/catch2-src/single_include/catch2 \
 	    -isystem source/min-api/test \
 	    -Wno-everything \;
 
@@ -21,12 +22,14 @@ tidy-ci:
 	    -isystem source/min-api \
 	    -isystem source/min-api/include \
 	    -isystem source/min-api/max-sdk-base/c74support \
-	    -isystem source/min-api/source/c74_min_unittest \
+	    -isystem source/min-api/max-sdk-base/c74support/max-includes \
+		-Isystem source/thulr/build/_deps/catch2-src/single_include \
 	    -isystem source/min-api/test \
 	    -Wno-everything \;
 
 format:
-	clang-format -i -style=file source/projects/*/*.{hpp,cpp}
+	# TODO: Fix the header file linting.
+	clang-format -i -style=file source/projects/*/*.cpp
 
 test:
 	cd build && ctest -C Release --output-on-failure
