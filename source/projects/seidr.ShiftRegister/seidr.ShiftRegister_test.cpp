@@ -4,14 +4,14 @@
 ///	@license	Use of this source code is governed by the MIT License
 /// found in the License.md file.
 
-#include <c74_min_unittest.h>
-#include "seidr.ShiftRegister.hpp"
 #include "seidr.ShiftRegister.cpp" // NOLINT
+#include "seidr.ShiftRegister.hpp"
+#include <c74_min_unittest.h>
 
 using namespace c74::max;
 
 SCENARIO("create an instance") { // NOLINT
-    ShiftRegisterMax shiftRegister = ShiftRegisterMax();
+    auto shiftRegister = ShiftRegisterMax();
 
     REQUIRE(true);
 

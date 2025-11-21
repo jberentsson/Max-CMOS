@@ -4,9 +4,9 @@
 ///	@license	Use of this source code is governed by the MIT License
 /// found in the License.md file.
 
-#include <c74_min_unittest.h>
-#include "seidr.NCounter.hpp"
 #include "seidr.NCounter.cpp" // NOLINT
+#include "seidr.NCounter.hpp"
+#include <c74_min_unittest.h>
 
 using namespace c74::max;
 
