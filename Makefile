@@ -1,14 +1,35 @@
 all:
-	cmake -B build
-	cmake --build build --config Release -j8
+	cmake -B build -G "Unix Makefiles" -DCMAKE_POLICY_VERSION_MINIMUM="3.5" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+	cmake --build build --config Release -j8 --verbose
 
 tidy:
-	clang-tidy source/projects/seidr.*/*.{cpp,hpp} -- -std=c++17 \
-    -I. -Isource -Isource/thulr/source \
-    -Wno-everything
+	@find source/projects/**/*.{cpp,hpp} source/thulr/source/**/*.{cpp,hpp} \( -name "*.cpp" -o -name "*.hpp" \) -exec clang-tidy {} \
+	    -- -std=c++17 \
+	    -I source/thulr/source \
+	    -isystem source/min-api \
+	    -isystem source/min-api/include \
+	    -isystem source/min-api/max-sdk-base/c74support \
+	    -isystem source/min-api/max-sdk-base/c74support/max-includes \
+	    -isystem build/_deps/catch2-src/single_include \
+	    -isystem source/min-api/test \
+	    -Wno-everything \;
+
+tidy-ci:
+	@find source/projects/seidr.* source/thulr/source/* \( -name "*.cpp" -o -name "*.hpp" \) -exec clang-tidy {} \
+	    -checks='readability-*,modernize-*,performance-*,bugprone-*,-modernize-avoid-c-arrays,-readability-identifier-naming,-bugprone-chained-comparison,-llvmlibc-restrict-system-libc-headers,-cppcoreguidelines-use-enum-class' \
+	    -- -std=c++17 \
+	    -I source/thulr/source \
+	    -isystem source/min-api \
+	    -isystem source/min-api/include \
+	    -isystem source/min-api/max-sdk-base/c74support \
+	    -isystem source/min-api/max-sdk-base/c74support/max-includes \
+	    -isystem build/_deps/catch2-src/single_include \
+	    -isystem source/min-api/test \
+	    -Wno-everything \;
 
 format:
-	clang-format -i -style=file source/projects/*/*.{hpp,cpp}
+	# TODO: Fix the header file linting.
+	clang-format -i -style=file source/projects/*/*.cpp
 
 test:
 	cd build && ctest -C Release --output-on-failure

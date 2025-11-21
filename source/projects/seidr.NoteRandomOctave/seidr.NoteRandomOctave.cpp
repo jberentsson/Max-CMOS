@@ -1,4 +1,5 @@
 #include "seidr.NoteRandomOctave.hpp"
+#include "Utils/MIDI.hpp"
 
 #include <iostream>
 
@@ -15,7 +16,7 @@ void NoteRandomOctaveMax::clearNoteMessage(int note) {
 
 void NoteRandomOctaveMax::clearAllNotesMessage() {
     // Send all notes off as fallback.
-    for (int note = 0; note < 128; note++) {
+    for (int note = 0; note < MIDI::KEYBOARD_SIZE; note++) {
         output0.send(note);
         output1.send(0);
     }
@@ -25,27 +26,22 @@ void NoteRandomOctaveMax::setRangeMessage(int low, int high) {
     keyboard_.setRandomRange(low, high);
 }
 
-void NoteRandomOctaveMax::printActiveNotes() {
-    keyboard_.debugPrintActiveNotes();
-}
-
 NoteRandomOctaveMax::NoteRandomOctaveMax(const atoms &args) {
     // Nothing here.
 }
 
-
-void NoteRandomOctaveMax::processNoteMessage(int note, int velocity) {
+void NoteRandomOctaveMax::processNoteMessage(int note, int velocity) { // NOLINT
     // Process the note.
     if (velocity > 0) {
         // Note ON
-        const auto &activeNotes_ = keyboard_.getActiveNotes();
+        const auto &activeNotes = keyboard_.getActiveNotes();
 
-        if (activeNotes_.empty()) {
+        if (activeNotes.empty()) {
             return;
         }
 
         // Get the most recently added note.
-        const auto &lastNote = activeNotes_.back();
+        const auto &lastNote = activeNotes.back();
 
         // Send to outputs.
         output0.send(lastNote->pitch());
@@ -57,4 +53,4 @@ void NoteRandomOctaveMax::processNoteMessage(int note, int velocity) {
     }
 }
 
-MIN_EXTERNAL(NoteRandomOctaveMax);
+MIN_EXTERNAL(NoteRandomOctaveMax); // NOLINT

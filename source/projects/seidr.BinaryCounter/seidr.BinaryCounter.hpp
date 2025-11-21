@@ -1,47 +1,45 @@
 /// @file       seidr.BinaryCounter.hpp
-///	@ingroup 	jb
+///	@ingroup 	seidr
 ///	@copyright	Copyright 2022 - Jóhann Berentsson. All rights reserved.
 ///	@license	Use of this source code is governed by the MIT License
 /// found in the License.md file.
 
 #pragma once
 
-#include "c74_min.h"
-
+#include <c74_min.h>
 #include "BinaryCounter/BinaryCounter.hpp"
-#include "BinaryCounter/BinaryCounter.cpp"
 
 #include <ext_mess.h>
 #include <fcntl.h>
 #include <iostream>
 #include <string>
 #include <vector>
+#include <cstdint>
 
 using namespace c74::min;
 
 class BinaryCounterMax : public object<BinaryCounterMax> {
 public:
-    MIN_DESCRIPTION{"Binary Counter"};
-    MIN_TAGS{"jb, counter"};
-    MIN_AUTHOR{"Jóhann Berentsson"};
-    MIN_RELATED{"seidr.*"};
+    MIN_DESCRIPTION{"Binary Counter"}; // NOLINT 
+    MIN_TAGS{"jb, counter"};           // NOLINT 
+    MIN_AUTHOR{"Jóhann Berentsson"};   // NOLINT 
+    MIN_RELATED{"seidr.*"};            // NOLINT 
     
-    enum {
+    enum : std::uint8_t {
         OUTPUT_COUNT = 8
     };
 
     explicit BinaryCounterMax(const atoms &args = {});
-    ~BinaryCounterMax() = default;
 
     void enableBangs();
     void disableBangs();
     void updateOutputs();
-    unsigned int getBit(int output);
+    auto getBit(int output) -> unsigned int;
 
-    unsigned int counterValue();
-    unsigned int setPreset(unsigned int p);
-    unsigned int preset();
-    unsigned int maxValue();
+    auto counterValue() -> unsigned int;
+    auto setPreset(unsigned int presetValue) -> unsigned int;
+    auto preset() -> unsigned int;
+    auto maxValue() -> unsigned int;
 
     inlet<> input0 {this, "(bang | list | reset) input pulse"};
     inlet<> input1 {this, "(reset) reset pulse"};
@@ -49,7 +47,7 @@ public:
     std::vector<std::unique_ptr<outlet<>>> outputs;
 
     // FIXED: Proper attribute for bang mode
-    attribute<bool> bang_enable{this, "bang_enable", false,
+    attribute<bool> bangEnable{this, "bangEnable", false,
         description{"Output mode: true for bang outputs, false for integer outputs"}};
 
     // FIXED: Simplified bang handler
@@ -76,7 +74,7 @@ public:
     //message<threadsafe::yes> preset_msg{
     //    this, "preset", "Set preset value.",
     //    MIN_FUNCTION{
-    //        if (args.size() > 0) {
+    //        if (!args.empty()) {
     //            int preset_value = args[0];
     //            this->counter_.setPreset(preset_value);
     //            this->updateOutputs();  // Update outputs after preset change
@@ -89,7 +87,7 @@ public:
     message<threadsafe::yes> set{
         this, "set", "Set counter value.",
         MIN_FUNCTION{
-            if (args.size() > 0) {
+            if (!args.empty()) {
                 int value = args[0];
                 // You'll need to implement a setValue method in BinaryCounter
                 //this->counter_.setValue(value);

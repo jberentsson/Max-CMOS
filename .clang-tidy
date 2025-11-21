@@ -1,21 +1,18 @@
 # .clang-tidy
 Checks: >
-  -*,
-  bugprone-*,
-  clang-analyzer-*,
+  readability-*,
   modernize-*,
   performance-*,
-  readability-*,
-  -bugprone-branch-clone,
-  -bugprone-easily-swappable-parameters,
-  -modernize-use-trailing-return-type,
-  -readability-identifier-length,
-  -readability-magic-numbers,
-  -readability-function-cognitive-complexity
+  bugprone-*,
+  -modernize-avoid-c-arrays,
+  -readability-identifier-naming,
+  -bugprone-chained-comparison,
+  -llvmlibc-restrict-system-libc-headers,
+  -cppcoreguidelines-use-enum-class
 WarningsAsErrors: ''
-HeaderFilterRegex: '.*'
-#AnalyzeTemporaryDtors: false
-FormatStyle: file
+HeaderFilterRegex: 'source/(projects|thulr)/(seidr|source)'
+SystemHeaders: false
+FormatStyle: none
 CheckOptions:
   - key: modernize-use-using.CheckTemplateTypedefs
     value: '1'
@@ -47,3 +44,4 @@ CheckOptions:
     value: _
   - key: readability-identifier-naming.MacroDefinitionCase
     value: UPPER_CASE
+

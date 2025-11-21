@@ -19,8 +19,9 @@ macro(project_template)
     #############################################################
 
     include_directories( 
-        ${C74_INCLUDES}
+        #${C74_INCLUDES}
         ${THULR_PATH}
+        ${CMAKE_CURRENT_SOURCE_DIR}
     )
 
     set( SOURCE_FILES
@@ -54,18 +55,22 @@ macro(project_template)
     #############################################################
     # Comprehensive include path setup for GitHub Actions
     #############################################################
+    
+    target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${C74_INCLUDES})
 
     # Get the parent directory of thulr/source
     get_filename_component(THULR_PARENT_PATH ${THULR_PATH} DIRECTORY)
     
     # List all possible include paths
     set(ALL_INCLUDE_PATHS
-        ${THULR_PARENT_PATH}                    # For folder/file.hpp includes
-        ${THULR_PATH}                           # For direct file includes
-        ${THULR_PATH}/Utils                     # Specifically for Utils/
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${THULR_PARENT_PATH}
+        ${THULR_PATH}
+        ${THULR_PATH}/Utils
         ${CMAKE_CURRENT_SOURCE_DIR}/../../thulr
         ${CMAKE_CURRENT_SOURCE_DIR}/../thulr  
         ${CMAKE_CURRENT_SOURCE_DIR}/thulr
+        ${CMAKE_CURRENT_SOURCE_DIR}../
     )
 
     # Debug: Check if Utils directory exists

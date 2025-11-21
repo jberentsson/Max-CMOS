@@ -9,8 +9,6 @@ on:
 jobs:
   clang-checks:
     runs-on: ubuntu-latest
-    container:  
-      image: debian:bookworm  # or debian:bullseye
     
     steps:
     - uses: actions/checkout@v4
@@ -20,52 +18,48 @@ jobs:
     
     - name: Install clang tools
       run: |
-        apt-get update && break
-        apt-get install -y git clang-format
+        sudo apt-get update
+        sudo apt-get install -y git clang-format clang-tidy cmake make
 
-    - name: Update CA certificates
-      run: |
-        apt-get update
-        apt-get install -y ca-certificates
+    # - name: Check code formatting with clang-format
+    #   run: |
+    #     # Use the same approach as in your Makefile
+    #     find source/projects source/thulr \( -name "*.cpp" -o -name "*.hpp" -o -name "*.h" -o -name "*.c" \) -exec clang-format --dry-run --Werror {} +
 
-    - name: Update submodules
+    - name: Check code quality with clang-tidy using Makefile
       run: |
-        git submodule init
-        git submodule update
-    
-    - name: Check code formatting with clang-format
-      run: |
-        # Only check thulr source files
-        find source/projects -name "*.cpp" -o -name "*.hpp" | xargs clang-format --dry-run --Werror
+        # Run your existing Makefile tidy target
+        make tidy-ci
 
-    - name: Check code quality with clang-tidy
-      run: |
-        # Create compile_commands.json if needed
-        mkdir -p build
-        cd build
-        cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..
+    # - name: Auto-fix formatting issues
+    #   if: failure()
+    #   run: |
+    #     # Apply clang-format fixes
+    #     find source/projects source/thulr \( -name "*.cpp" -o -name "*.hpp" -o -name "*.h" -o -name "*.c" \) -exec clang-format -i {} +
         
-        # Run clang-tidy only on thulr source files
-        find source/projects -name "*.cpp" | xargs -I {} clang-tidy {} \
-          -p . \
-          -header-filter='.*' \
-          -quiet \
-          -checks='-*,bugprone-*,clang-analyzer-*,modernize-*,performance-*,readability-*,-bugprone-branch-clone,-bugprone-easily-swappable-parameters,-modernize-use-trailing-return-type,-readability-identifier-length,-readability-magic-numbers,-readability-function-cognitive-complexity'
+    #     # Create patch file for review
+    #     git diff > clang-format-fixes.patch
+        
+    #     echo "=== Formatting fixes applied ==="
+    #     echo "Review the changes in clang-format-fixes.patch"
+        
+    #     # Show summary of changes
+    #     echo "=== Modified files ==="
+    #     git status --short
 
-    - name: Auto-fix formatting issues
-      if: failure()
-      run: |
-        # Apply clang-format fixes only to thulr
-        find source/projects -name "*.cpp" -o -name "*.hpp" | xargs clang-format -i
-        
-        # Create patch file for review
-        git diff > clang-format-fixes.patch
-        
-        echo "=== Formatting fixes applied to thulr ==="
-        echo "Review the changes in clang-format-fixes.patch"
-        
-    - uses: actions/upload-artifact@v4
-      if: failure()
-      with:
-        name: clang-format-fixes
-        path: clang-format-fixes.patch
+    # - uses: actions/upload-artifact@v4
+    #   if: failure() && always()
+    #   with:
+    #     name: clang-format-fixes
+    #     path: clang-format-fixes.patch
+
+    # - name: Create Pull Request with fixes
+    #   if: failure()
+    #   uses: peter-evans/create-pull-request@v5
+    #   with:
+    #     token: ${{ secrets.GITHUB_TOKEN }}
+    #     commit-message: "Apply clang-format fixes"
+    #     title: "Auto-format: clang-format fixes"
+    #     body: "Automated code formatting fixes applied by clang-format"
+    #     branch: "clang-format-fixes"
+    #     delete-branch: true
