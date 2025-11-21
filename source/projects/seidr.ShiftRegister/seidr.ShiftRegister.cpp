@@ -33,7 +33,7 @@ ShiftRegisterMax::ShiftRegisterMax(const atoms &args) {
 void ShiftRegisterMax::handleOutputs() {
     // Bit outputs from 0 to (N-1).
     for (int i = 0; i < outputs.size() - 1; i++) {
-        this->outputs[i]->send(this->sendBangs ? bang() : atoms({this->sr_.get(i)})); // NOLINT
+        this->outputs[i]->send(this->sendBangs ? bang() : atoms{(uint64_t) this->sr_.get(i)}); // NOLINT 
     }
 }
 
@@ -42,8 +42,8 @@ void ShiftRegisterMax::handleThrough() {
     int currentDataThrough = this->sr_.dataThrough();
     unsigned int lastOutputIndex = outputs.size() - 1;
 
-    if (everyOutput || currentDataThrough != lastOutput[8].get()) { // NOLINT
-        this->outputs[lastOutputIndex]->send(this->sendBangs ? bang() : c74::min::atoms({currentDataThrough}));
+    if (everyOutput || currentDataThrough != lastOutput[8].get()) { // NOLINT 
+        this->outputs[lastOutputIndex]->send(this->sendBangs ? bang() : c74::min::atoms({(uint64_t) currentDataThrough}));
         this->lastOutput[lastOutputIndex].set(currentDataThrough);
     }
 
