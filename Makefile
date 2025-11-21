@@ -3,7 +3,9 @@ all:
 	cmake --build build --config Release -j8 --verbose
 
 tidy:
-	@find source/projects/**/*.{cpp,hpp} source/thulr/source/**/*.{cpp,hpp} \( -name "*.cpp" -o -name "*.hpp" \) -exec clang-tidy {} \
+	@echo "Running clang-tidy (all checks)..."
+	@find source/projects source/thulr/source -name "*.cpp" -o -name "*.hpp" | \
+	    xargs -r clang-tidy \
 	    -- -std=c++17 \
 	    -I source/thulr/source \
 	    -isystem source/min-api \
@@ -12,10 +14,12 @@ tidy:
 	    -isystem source/min-api/max-sdk-base/c74support/max-includes \
 	    -isystem build/_deps/catch2-src/single_include \
 	    -isystem source/min-api/test \
-	    -Wno-everything \;
+	    -Wno-everything
 
 tidy-ci:
-	@find source/projects/seidr.* source/thulr/source/* \( -name "*.cpp" -o -name "*.hpp" \) -exec clang-tidy {} \
+	@echo "Running clang-tidy (CI checks only)..."
+	@find source/projects source/thulr/source -name "*.cpp" -o -name "*.hpp" | \
+	    xargs -r clang-tidy \
 	    -checks='readability-*,modernize-*,performance-*,bugprone-*,-modernize-avoid-c-arrays,-readability-identifier-naming,-bugprone-chained-comparison,-llvmlibc-restrict-system-libc-headers,-cppcoreguidelines-use-enum-class' \
 	    -- -std=c++17 \
 	    -I source/thulr/source \
@@ -25,7 +29,7 @@ tidy-ci:
 	    -isystem source/min-api/max-sdk-base/c74support/max-includes \
 	    -isystem build/_deps/catch2-src/single_include \
 	    -isystem source/min-api/test \
-	    -Wno-everything \;
+	    -Wno-everything
 
 format:
 	# TODO: Fix the header file linting.
