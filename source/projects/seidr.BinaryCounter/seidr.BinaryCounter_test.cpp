@@ -27,8 +27,7 @@ SCENARIO("object produces correct output") { // NOLINT
             }
 
             THEN("our greeting is produced at the outlet") {
-                int expected[6][8] = {
-                    // NOLINT
+                int expected[6][8] = { // NOLINT
                     {0, 0, 0, 0, 0, 0, 0, 0},
                     {0, 0, 0, 0, 0, 0, 0, 1},
                     {0, 0, 0, 0, 0, 0, 1, 0},
@@ -73,8 +72,7 @@ SCENARIO("object produces correct output") { // NOLINT
 
         WHEN("test the preset function") {
             THEN("our greeting is produced at the outlet") {
-                int expected[6][8] = {
-                    // NOLINT
+                int expected[6][8] = { // NOLINT
                     {0, 0, 0, 0, 0, 0, 0, 0},
                     {0, 0, 0, 0, 0, 0, 0, 1},
                     {0, 0, 1, 0, 0, 0, 0, 0},
