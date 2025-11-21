@@ -17,10 +17,10 @@
 using namespace c74::min;
 
 class LastNote {
-  private:
-  	uint64_t pitch_ = NULL;
+private:
+    uint64_t pitch_ = 0;  // Changed from NULL to 0
 
-  public:
+public:
     bool dirty = false;
 
     [[nodiscard]] auto get() const -> uint64_t { return this->pitch_; }
@@ -37,17 +37,17 @@ class LastNote {
 };
 
 class ShiftRegisterMax : public object<ShiftRegisterMax> {
-  public:
+public:
     MIN_DESCRIPTION{"Shift Register"}; // NOLINT 
-    MIN_TAGS{"seidr"};              // NOLINT 
+    MIN_TAGS{"seidr"};                 // NOLINT 
     MIN_AUTHOR{"Jóhann Berentsson"};   // NOLINT 
     MIN_RELATED{"seidr.*"};            // NOLINT 
     
-	enum : uint8_t {
-		BIT_COUNT = 8,
-		OUTPUT_COUNT = 9,
-		MAX_OUTPUTS = 32,
-	};
+    enum : uint8_t {
+        BIT_COUNT = 8,
+        OUTPUT_COUNT = 9,
+        MAX_OUTPUTS = 32,
+    };
 
     explicit ShiftRegisterMax(const atoms &args = {});
 
@@ -68,59 +68,65 @@ class ShiftRegisterMax : public object<ShiftRegisterMax> {
 
     c74::min::message<threadsafe::yes> anything{
         this, "anything", "Handle any message",
-        MIN_FUNCTION{cout << "anything args size: " << args.size() << endl;
-    return {};
-}
-}
-;
+        MIN_FUNCTION {
+            cout << "anything args size: " << args.size() << endl;
+            return {};
+        }
+    };
 
-c74::min::message<threadsafe::yes> symbol{
-    this, "symbol", "Handle any message",
-    MIN_FUNCTION{cout << "symbol args size: " << args.size() << endl;
-return {};
-}
-}
-;
+    c74::min::message<threadsafe::yes> symbol{
+        this, "symbol", "Handle any message",
+        MIN_FUNCTION {
+            cout << "symbol args size: " << args.size() << endl;
+            return {};
+        }
+    };
 
-c74::min::message<threadsafe::yes> bang{this, "bang", "step the shift register",
-                                        MIN_FUNCTION{switch (inlet){case 0 : sr_.step();
-handleThrough();
+    c74::min::message<threadsafe::yes> bang{
+        this, "bang", "step the shift register",
+        MIN_FUNCTION {
+            switch (inlet) {
+                case 0: 
+                    sr_.step();
+                    handleThrough();
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    sr_.activate();
+                    handleOutputs();
+                    break;
+                default:
+                    cout << "Some other inlet: " << inlet << endl;
+            }
+            return {};
+        }
+    };
 
-case 1:
-break;
-
-case 2:
-sr_.activate();
-handleOutputs();
-
-default:
-cout << "Some other inlet: " << inlet << endl;
-}
-
-return {};
-    }
-};
-
-c74::min::message<threadsafe::yes> integer{
-    this, "int", "data",
-    MIN_FUNCTION{if (args.size()){switch (inlet){case 0 : // NOLINT 
-
-                                                     // sr_.step();
-                                                     // handleOutputs();
-                                                     case 1 : this->sr_.dataInput(args[0]);
-
-default:
-std::cout << "Some other integer: " << args[0] << " Inlet: " << inlet << "\n";
-}
-}
-
-        return {};
-    }
-};
+    c74::min::message<threadsafe::yes> integer{
+        this, "int", "data",
+        MIN_FUNCTION {
+            if (!args.empty()) {
+                switch (inlet) {
+                    // case 0: // NOLINT 
+                    // sr_.step();
+                    // handleOutputs();
+                    case 1: {
+                        auto value = static_cast<uint64_t>(args[0]);
+                        this->sr_.dataInput(value);
+                        break;
+                    }
+                    default:
+                        std::cout << "Some other integer: " << args[0] << " Inlet: " << inlet << "\n";
+                }
+            }
+            return {};
+        }
+    };
 
 private:
     ShiftRegister sr_ = ShiftRegister(BIT_COUNT);
-    bool everyOutput = TRUE;
-    bool sendBangs = FALSE;
-    int lastValue_= NULL;
+    bool everyOutput = true;
+    bool sendBangs = false;
+    int lastValue_ = 0;
 };

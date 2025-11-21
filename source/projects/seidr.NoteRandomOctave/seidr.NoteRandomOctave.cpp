@@ -1,4 +1,4 @@
-#include "../Utils/MIDI.hpp"
+#include "Utils/MIDI.hpp"
 #include "seidr.NoteRandomOctave.hpp"
 
 #include <iostream>

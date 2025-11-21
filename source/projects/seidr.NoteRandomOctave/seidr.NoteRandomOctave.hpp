@@ -51,7 +51,7 @@ return {};
 ;
 
 c74::min::message<> range{this, "range", "Set range",
-                          MIN_FUNCTION{if (args.size() >= 2){int low = args[0];
+                          MIN_FUNCTION{if (!args.empty() && args.size() >= 2){int low = args[0];
 int high = args[1];
 setRangeMessage(low, high);
 }
