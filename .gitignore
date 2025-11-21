@@ -64,6 +64,7 @@ __pycache__/
 # Other
 tmp/
 temp/
+tests/
 Testing/
 externals/
 package-info.json
