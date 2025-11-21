@@ -5,8 +5,8 @@
 /// found in the License.md file.
 
 #include "c74_min_unittest.h"
-//#include "seidr.NCounter.hpp"
-#include "seidr.NCounter.cpp"
+#include "seidr.NCounter.hpp"
+#include "seidr.NCounter.cpp" // NOLINT
 
 using namespace c74::max;
 
@@ -45,9 +45,9 @@ SCENARIO("NCounterMax object produces correct output") { // NOLINT
                     // Check current outputs
                     for (int output_index = 0; output_index < 10; output_index++) {
                         auto &out = *object_getoutput(myObject, output_index);
-                        REQUIRE(out[step].size() >= 1);
+                        REQUIRE(!out[step].empty());
 
-                        if (out[0].size() >= 1) {
+                        if (!out[0].empty()) {
                             REQUIRE(out[step][1] == expected[step][output_index]);
                         }
                     }
@@ -63,9 +63,9 @@ SCENARIO("NCounterMax object produces correct output") { // NOLINT
                 // // Verify outputs after reset
                 for (int output_index = 0; output_index < 10; output_index++) {
                     auto &out = *object_getoutput(myObject, output_index);
-                    REQUIRE(out.size() >= 1);
+                    REQUIRE(!out.empty());
 
-                    if (out[0].size() > 0) {
+                    if (!out[0].empty()) {
                         REQUIRE(out[0][1] == expected[0][output_index]);
                     }
                 }
@@ -115,9 +115,9 @@ SCENARIO("NCounterMax object produces correct output") { // NOLINT
 
                 for (int output_index = 0; output_index < 10; output_index++) {
                     auto &out = *object_getoutput(myObject, output_index);
-                    REQUIRE(out.size() >= 1);
+                    REQUIRE(!out.empty());
 
-                    if (out[0].size() > 0) {
+                    if (!out[0].empty()) {
                         REQUIRE(out[step][1] == expected[step][output_index]);
                     }
                 }
@@ -140,16 +140,16 @@ SCENARIO("NCounterMax object produces correct output") { // NOLINT
 
                 // Verify output 0 is active after wrap
                 auto &out0 = *object_getoutput(myObject, 0);
-                REQUIRE(out0.size() >= 1);
+                REQUIRE(!out0.empty());
 
-                if (out0[0].size() > 0) {
+                if (!out0[0].empty()) {
                     REQUIRE(out0[0][1] == 1); // Output 0 should be active
                 }
 
                 auto &out9 = *object_getoutput(myObject, 9);
-                REQUIRE(out9.size() >= 1);
+                REQUIRE(!out9.empty());
 
-                if (out9[0].size() > 0) {
+                if (!out9[0].empty()) {
                     REQUIRE(out9[0][1] == 0); // Output 9 should be inactive
                 }
             }

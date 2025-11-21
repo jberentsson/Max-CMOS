@@ -16,7 +16,7 @@ BinaryCounterMax::BinaryCounterMax(const atoms &args) {
     updateOutputs();
 }
 
-unsigned int BinaryCounterMax::getBit(int output) {
+auto BinaryCounterMax::getBit(int output) -> unsigned int {
     return ((this->counter_.value()) >> output) & 0x1;
 }
 
@@ -45,21 +45,21 @@ void BinaryCounterMax::disableBangs() {
     this->updateOutputs();
 }
 
-unsigned int BinaryCounterMax::counterValue() {
+auto BinaryCounterMax::counterValue() -> unsigned int {
     return this->counter_.value();
 }
 
-unsigned int BinaryCounterMax::setPreset(unsigned int p) {
-    unsigned int result = this->counter_.setPreset(p);
+auto BinaryCounterMax::setPreset(unsigned int presetValue) -> unsigned int {
+    unsigned int result = this->counter_.setPreset(presetValue);
     this->updateOutputs();
     return result;
 }
 
-unsigned int BinaryCounterMax::preset() {
+auto BinaryCounterMax::preset() -> unsigned int {
     return this->counter_.preset();
 }
 
-unsigned int BinaryCounterMax::maxValue() {
+auto BinaryCounterMax::maxValue() -> unsigned int {
     return this->counter_.getMaxValue();
 }
 

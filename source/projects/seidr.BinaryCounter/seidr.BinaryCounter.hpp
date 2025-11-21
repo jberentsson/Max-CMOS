@@ -30,17 +30,16 @@ public:
     };
 
     explicit BinaryCounterMax(const atoms &args = {});
-    ~BinaryCounterMax() = default;
 
     void enableBangs();
     void disableBangs();
     void updateOutputs();
-    unsigned int getBit(int output);
+    auto getBit(int output) -> unsigned int;
 
-    unsigned int counterValue();
-    unsigned int setPreset(unsigned int p);
-    unsigned int preset();
-    unsigned int maxValue();
+    auto counterValue() -> unsigned int;
+    auto setPreset(unsigned int presetValue) -> unsigned int;
+    auto preset() -> unsigned int;
+    auto maxValue() -> unsigned int;
 
     inlet<> input0 {this, "(bang | list | reset) input pulse"};
     inlet<> input1 {this, "(reset) reset pulse"};
@@ -75,7 +74,7 @@ public:
     //message<threadsafe::yes> preset_msg{
     //    this, "preset", "Set preset value.",
     //    MIN_FUNCTION{
-    //        if (args.size() > 0) {
+    //        if (!args.empty()) {
     //            int preset_value = args[0];
     //            this->counter_.setPreset(preset_value);
     //            this->updateOutputs();  // Update outputs after preset change
@@ -88,7 +87,7 @@ public:
     message<threadsafe::yes> set{
         this, "set", "Set counter value.",
         MIN_FUNCTION{
-            if (args.size() > 0) {
+            if (!args.empty()) {
                 int value = args[0];
                 // You'll need to implement a setValue method in BinaryCounter
                 //this->counter_.setValue(value);

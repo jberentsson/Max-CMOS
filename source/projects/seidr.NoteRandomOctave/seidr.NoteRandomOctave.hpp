@@ -12,7 +12,6 @@ class NoteRandomOctaveMax : public c74::min::object<NoteRandomOctaveMax> {
 
   public:
     explicit NoteRandomOctaveMax(const c74::min::atoms &args = {});
-    ~NoteRandomOctaveMax() = default;
 
     void processNoteMessage(int note, int velocity);
     void clearNoteMessage(int note);
@@ -36,7 +35,7 @@ class NoteRandomOctaveMax : public c74::min::object<NoteRandomOctaveMax> {
 ;
 
 c74::min::message<> clear{this, "clear", "Clear specific note",
-                          MIN_FUNCTION{if (args.size() >= 1){int note = args[0];
+                          MIN_FUNCTION{if (!args.empty()){int note = args[0];
 clearNoteMessage(note);
 }
 return {};

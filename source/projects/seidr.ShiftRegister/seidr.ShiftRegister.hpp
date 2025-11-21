@@ -1,5 +1,5 @@
 /// @file       seidr.BinaryCounter.hpp
-///	@ingroup 	jb
+///	@ingroup 	seidr
 ///	@copyright	Copyright 2025 - Jóhann Berentsson. All rights reserved.
 ///	@license	Use of this source code is governed by the MIT License
 /// found in the License.md file.
@@ -21,15 +21,15 @@ class LastNote {
   	uint64_t pitch_ = NULL;
 
   public:
-    bool dirty = FALSE;
+    bool dirty = false;
 
-    [[nodiscard]] uint64_t get() const { return this->pitch_; }
+    [[nodiscard]] auto get() const -> uint64_t { return this->pitch_; }
 
-    uint64_t set(uint64_t n) {
-        this->pitch_ = n;
+    auto set(uint64_t noteValue) -> uint64_t {
+        this->pitch_ = noteValue;
 
-        if (this->dirty == FALSE) {
-            this->dirty = TRUE;
+        if (this->dirty == false) {
+            this->dirty = true;
         }
 
         return this->pitch_;
@@ -54,11 +54,11 @@ class ShiftRegisterMax : public object<ShiftRegisterMax> {
 
     void handleOutputs();
     void handleThrough();
-    int size();
-    int step();
-    uint64_t get(int i);
-    int dataInput(int v);
-    int dataThrough();
+    auto size() -> int;
+    auto step() -> int;
+    auto get(int index) -> uint64_t;
+    auto dataInput(int value) -> int;
+    auto dataThrough() -> int;
 
     inlet<> input0{this, "(anything) input pulse"};
     inlet<> input1{this, "(int|bang) input pulse"};
@@ -112,7 +112,7 @@ c74::min::message<threadsafe::yes> integer{
                                                      case 1 : this->sr_.dataInput(args[0]);
 
 default:
-std::cout << "Some other integer: " << args[0] << " Inlet: " << inlet << std::endl;
+std::cout << "Some other integer: " << args[0] << " Inlet: " << inlet << "\n";
 }
 }
 
@@ -122,7 +122,7 @@ return {};
 ;
 
 private:
-ShiftRegister sr_= ShiftRegister(BIT_COUNT);
+ShiftRegister sr_ = ShiftRegister(BIT_COUNT);
 bool everyOutput = TRUE;
 bool sendBangs = FALSE;
 int lastValue_= NULL;

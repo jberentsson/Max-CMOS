@@ -15,7 +15,7 @@ void NoteRandomOctaveMax::clearNoteMessage(int note) {
 
 void NoteRandomOctaveMax::clearAllNotesMessage() {
     // Send all notes off as fallback.
-    for (int note = 0; note < 128; note++) {
+    for (int note = 0; note < MIDI::KEYBOARD_SIZE; note++) {
         output0.send(note);
         output1.send(0);
     }

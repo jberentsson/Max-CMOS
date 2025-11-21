@@ -5,8 +5,8 @@
 /// found in the License.md file.
 
 #include "c74_min_unittest.h"
-//#include "seidr.BinaryCounter.hpp"
-#include "seidr.BinaryCounter.cpp"
+#include "seidr.BinaryCounter.hpp"
+#include "seidr.BinaryCounter.cpp" // NOLINT
 
 using namespace c74::max;
 
@@ -60,9 +60,9 @@ SCENARIO("object produces correct output") { // NOLINT
                 REQUIRE(myObject.counterValue() == 1);
 
                 for (int i = 0; i < 5; i++) {
-                    for (int j = 0; j < myObject.OUTPUT_COUNT; j++) {
+                    for (int j = 0; j < BinaryCounterMax::OUTPUT_COUNT; j++) {
                         auto &out = *object_getoutput(myObject, j);
-                        REQUIRE(out.size() > 0);
+                        REQUIRE(!out.empty());
                         //REQUIRE(out[0].size() == 2);
                         //REQUIRE(out[i][1] == expected[i][j]);
                     }
@@ -112,9 +112,9 @@ SCENARIO("object produces correct output") { // NOLINT
                 REQUIRE(myObject.counterValue() == 2);
 
                 for (int i = 0; i < 6; i++) {
-                    for (int j = 0; j < myObject.OUTPUT_COUNT; j++) {
+                    for (int j = 0; j < BinaryCounterMax::OUTPUT_COUNT; j++) {
                         auto &out = *object_getoutput(myObject, j);
-                        REQUIRE(out.size() > 0);
+                        REQUIRE(!out.empty());
                         //REQUIRE(out[0].size() == 0);
                         //REQUIRE(out[i][1] == expected[i][j]);
                     }

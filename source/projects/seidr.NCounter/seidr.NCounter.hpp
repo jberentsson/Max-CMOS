@@ -1,8 +1,7 @@
 /// @file       seidr.NCounter.hpp
-///	@ingroup 	jb
+///	@ingroup 	seidr
 ///	@copyright	Copyright 2025 - Jóhann Berentsson. All rights reserved.
-///	@license	Use of this source code is governed by the MIT License
-/// found in the License.md file.
+///	@license	Use of this source code is governed by the MIT License found in the License.md file.
 
 #pragma once
 
@@ -30,13 +29,12 @@ public:
     MIN_RELATED{"seidr.*"};          // NOLINT 
 
     explicit NCounterMax(const atoms &args = {}) {};
-    ~NCounterMax() = default;
 
     void handleOutputs();
-    unsigned int counterValue();
-    unsigned int preset();
-    unsigned int step();
-    unsigned int setPreset(int p);
+    auto counterValue() -> unsigned int;
+    auto preset() -> unsigned int;
+    auto step() -> unsigned int;
+    auto setPreset(int presetValue) -> unsigned int;
 
     inlet<> input0{this, "(bang) input pulse"};
     inlet<> input1{this, "(reset) reset pulse"};
@@ -52,7 +50,7 @@ public:
     outlet<> output8{this, "(anything) output bit 8"};
     outlet<> output9{this, "(anything) output bit 9"};
 
-    std::array<outlet<>*, 10> outputs = {&output0, &output1, &output2, &output3, &output4,
+    std::array<outlet<>*, OUTPUT_COUNT> outputs = {&output0, &output1, &output2, &output3, &output4,
                                      &output5, &output6, &output7, &output8, &output9};
     
     argument<symbol> bangArg{this, "bang_on", "Initial value for the bang attribute.",
@@ -88,7 +86,7 @@ public:
     };
 
 private:
-    NCounter counter = NCounter(this->OUTPUT_COUNT);
+    NCounter counter = NCounter(NCounterMax::OUTPUT_COUNT);
     std::vector<int> outputStates_;
     bool bangEnabled = FALSE;
     bool alreadyBanged = FALSE;

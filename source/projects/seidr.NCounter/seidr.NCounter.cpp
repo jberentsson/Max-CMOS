@@ -4,28 +4,28 @@
 ///	@license	Use of this source code is governed by the MIT License
 /// found in the License.md file.
 
-#include "seidr.NCounter.hpp"
+#include "seidr.NCounter.hpp" // NOLINT
 
 void NCounterMax::handleOutputs() {
     // Send data to the outputs.
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < NCounterMax::OUTPUT_COUNT; i++) {
         this->outputs[i]->send(i == this->counter.value());
     }
 }
 
-unsigned int NCounterMax::counterValue() {
+auto NCounterMax::counterValue() -> unsigned int {
     return this->counter.value();
 }
 
-unsigned int NCounterMax::setPreset(int p) {
-    return this->counter.setPreset(p);
+auto NCounterMax::setPreset(int presetValue) -> unsigned int {
+    return this->counter.setPreset(presetValue);
 }
 
-unsigned  NCounterMax::preset() {
+auto  NCounterMax::preset() -> unsigned int {
     return this->counter.preset();
 }
 
-unsigned int NCounterMax::step() {
+auto NCounterMax::step() -> unsigned int {
     return this->counter.step();
 }
 

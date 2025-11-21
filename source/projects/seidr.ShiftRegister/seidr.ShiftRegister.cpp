@@ -1,5 +1,5 @@
 /// @file       seidr.ShiftRegister.cpp
-///	@ingroup 	jb
+///	@ingroup 	seidr
 ///	@copyright	Copyright 2018 - Jóhann Berentsson. All rights reserved.
 ///	@license	Use of this source code is governed by the MIT License
 /// found in the License.md file.
@@ -14,7 +14,7 @@ using namespace c74::min;
 ShiftRegisterMax::ShiftRegisterMax(const atoms &args) {
     int numberOfOutputs = 0;
 
-    if (args.size() > 0) {
+    if (!args.empty()) {
         numberOfOutputs = args[0];
     } else {
         numberOfOutputs = OUTPUT_COUNT;
@@ -53,23 +53,23 @@ void ShiftRegisterMax::handleThrough() {
     this->lastOutput[8] = x;
 }
 
-int ShiftRegisterMax::size() {
+auto ShiftRegisterMax::size() -> int {
     return this->sr_.size();
 }
 
-int ShiftRegisterMax::step() {
+auto ShiftRegisterMax::step() -> int {
     return this->sr_.step();
 }
 
-uint64_t ShiftRegisterMax::get(int i) {
-    return this->sr_.get(i);
+auto ShiftRegisterMax::get(int index) -> uint64_t{
+    return this->sr_.get(index);
 }
 
-int ShiftRegisterMax::dataInput(int v) {
-    return this->sr_.dataInput(v);
+auto ShiftRegisterMax::dataInput(int value) -> int{
+    return this->sr_.dataInput(value);
 }
 
-int ShiftRegisterMax::dataThrough() {
+auto ShiftRegisterMax::dataThrough() -> int{
     return this->sr_.dataThrough();
 }
 
