@@ -33,7 +33,7 @@ ShiftRegisterMax::ShiftRegisterMax(const atoms &args) {
 void ShiftRegisterMax::handleOutputs() {
     // Bit outputs from 0 to (N-1).
     for (int i = 0; i < outputs.size() - 1; i++) {
-        this->outputs[i]->send(this->sendBangs ? bang() : atoms({(uint64_t)this->sr_.get(i)})); // NOLINT 
+        this->outputs[i]->send(this->sendBangs ? bang() : atoms({this->sr_.get(i)})); // NOLINT 
     }
 }
 
@@ -61,15 +61,15 @@ auto ShiftRegisterMax::step() -> int {
     return this->sr_.step();
 }
 
-auto ShiftRegisterMax::get(int index) -> uint64_t {
+auto ShiftRegisterMax::get(int index) -> int {
     return this->sr_.get(index);
 }
 
-auto ShiftRegisterMax::dataInput(uint64_t value) -> uint64_t {
+auto ShiftRegisterMax::dataInput(int value) -> int {
     return this->sr_.dataInput(value);
 }
 
-auto ShiftRegisterMax::dataThrough() ->  uint64_t {
+auto ShiftRegisterMax::dataThrough() ->  int {
     return this->sr_.dataThrough();
 }
 

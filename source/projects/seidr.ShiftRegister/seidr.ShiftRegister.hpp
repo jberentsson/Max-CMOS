@@ -6,26 +6,26 @@
 
 #pragma once
 
-#include "c74_min.h"
-#include "ShiftRegister/ShiftRegister.hpp"
-
 #include <iostream>
 #include <string>
 #include <vector>
 #include <cstdint>
 
+#include "c74_min.h"
+#include "ShiftRegister/ShiftRegister.hpp"
+
 using namespace c74::min;
 
 class LastNote {
 private:
-    uint64_t pitch_ = 0;  // Changed from NULL to 0
+    int pitch_ = 0;  // Changed from NULL to 0
 
 public:
     bool dirty = false;
 
-    [[nodiscard]] auto get() const -> uint64_t { return this->pitch_; }
+    [[nodiscard]] auto get() const -> int { return this->pitch_; }
 
-    auto set(uint64_t noteValue) -> uint64_t {
+    auto set(int noteValue) -> int {
         this->pitch_ = noteValue;
 
         if (!this->dirty) {
@@ -55,9 +55,9 @@ public:
     void handleThrough();
     auto size() -> int;
     auto step() -> int;
-    auto get(int index) -> uint64_t;
-    auto dataInput(uint64_t value) -> uint64_t;
-    auto dataThrough() -> uint64_t;
+    auto get(int index) -> int;
+    auto dataInput(int value) -> int;
+    auto dataThrough() -> int;
 
     inlet<> input0{this, "(anything) input pulse"};
     inlet<> input1{this, "(int|bang) input pulse"};
