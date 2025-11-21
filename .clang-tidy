@@ -10,10 +10,9 @@ Checks: >
   -llvmlibc-restrict-system-libc-headers,
   -cppcoreguidelines-use-enum-class
 WarningsAsErrors: ''
-HeaderFilterRegex: ''
-#FormatStyle: none
-#AnalyzeTemporaryDtors: false
-FormatStyle: file
+HeaderFilterRegex: 'source/(projects|thulr)/(seidr|source)'
+SystemHeaders: false
+FormatStyle: none
 CheckOptions:
   - key: modernize-use-using.CheckTemplateTypedefs
     value: '1'
