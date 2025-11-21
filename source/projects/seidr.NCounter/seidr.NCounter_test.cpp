@@ -5,12 +5,12 @@
 /// found in the License.md file.
 
 #include "c74_min_unittest.h"
-#include "seidr.NCounter.hpp"
 #include "seidr.NCounter.cpp" // NOLINT
+#include "seidr.NCounter.hpp"
 
 using namespace c74::max;
 
-SCENARIO("NCounterMax object produces correct output") { // NOLINT 
+SCENARIO("NCounterMax object produces correct output") { // NOLINT
     ext_main(nullptr);
 
     GIVEN("An instance of our object") {
@@ -20,7 +20,8 @@ SCENARIO("NCounterMax object produces correct output") { // NOLINT
         WHEN("test the rollover") {
             THEN("check counter value and outputs") {
                 // Expected outputs for each step (which output is active)
-                int expected[12][10] = { // NOLINT 
+                int expected[12][10] = {
+                    // NOLINT
                     {1, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Step 0
                     {0, 1, 0, 0, 0, 0, 0, 0, 0, 0}, // Step 1
                     {0, 0, 1, 0, 0, 0, 0, 0, 0, 0}, // Step 2
@@ -41,9 +42,9 @@ SCENARIO("NCounterMax object produces correct output") { // NOLINT
                 myObject.bang();
 
                 // Test stepping through values
-                for (int step = 0; step < 10; step++) {  // NOLINT 
+                for (int step = 0; step < 10; step++) { // NOLINT
                     // Check current outputs
-                    for (int output_index = 0; output_index < 10; output_index++) {  // NOLINT 
+                    for (int output_index = 0; output_index < 10; output_index++) { // NOLINT
                         auto &out = *object_getoutput(myObject, output_index);
                         REQUIRE(!out[step].empty());
 
@@ -61,7 +62,7 @@ SCENARIO("NCounterMax object produces correct output") { // NOLINT
                 REQUIRE(myObject.counterValue() == 0);
 
                 // // Verify outputs after reset
-                for (int output_index = 0; output_index < 10; output_index++) { // NOLINT 
+                for (int output_index = 0; output_index < 10; output_index++) { // NOLINT
                     auto &out = *object_getoutput(myObject, output_index);
                     REQUIRE(!out.empty());
 
@@ -75,7 +76,8 @@ SCENARIO("NCounterMax object produces correct output") { // NOLINT
         WHEN("test the preset function") {
             THEN("check preset behavior") {
                 // Expected outputs after preset operations
-                int expected[6][10] = { // NOLINT 
+                int expected[6][10] = {
+                    // NOLINT
                     {1, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Initial
                     {0, 1, 0, 0, 0, 0, 0, 0, 0, 0}, // After 1 bang
                     {0, 0, 0, 0, 0, 0, 1, 0, 0, 0}, // After preset to 6
@@ -94,7 +96,7 @@ SCENARIO("NCounterMax object produces correct output") { // NOLINT
                 REQUIRE(myObject.counterValue() == 1);
 
                 // Set preset and activate it
-                myObject.setPreset(6); // NOLINT 
+                myObject.setPreset(6); // NOLINT
                 myObject.preset();
                 myObject.step();
                 REQUIRE(myObject.counterValue() == 6);
@@ -113,7 +115,7 @@ SCENARIO("NCounterMax object produces correct output") { // NOLINT
                 // Verify all outputs match expected
                 int step = 0;
 
-                for (int output_index = 0; output_index < 10; output_index++) { // NOLINT 
+                for (int output_index = 0; output_index < 10; output_index++) { // NOLINT
                     auto &out = *object_getoutput(myObject, output_index);
                     REQUIRE(!out.empty());
 
@@ -127,7 +129,7 @@ SCENARIO("NCounterMax object produces correct output") { // NOLINT
         WHEN("test maximum value rollover") {
             THEN("counter should wrap around correctly") {
                 // Go to maximum value
-                for (int i = 0; i < 10; i++) { // NOLINT 
+                for (int i = 0; i < 10; i++) { // NOLINT
                     myObject.bang();
                 }
 
@@ -146,7 +148,7 @@ SCENARIO("NCounterMax object produces correct output") { // NOLINT
                     REQUIRE(out0[0][1] == 1); // Output 0 should be active
                 }
 
-                auto &out9 = *object_getoutput(myObject, 9); // NOLINT 
+                auto &out9 = *object_getoutput(myObject, 9); // NOLINT
                 REQUIRE(!out9.empty());
 
                 if (!out9[0].empty()) {

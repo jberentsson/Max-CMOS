@@ -5,12 +5,12 @@
 /// found in the License.md file.
 
 #include "c74_min_unittest.h"
-#include "seidr.ShiftRegister.hpp"
 #include "seidr.ShiftRegister.cpp" // NOLINT
+#include "seidr.ShiftRegister.hpp"
 
 using namespace c74::max;
 
-SCENARIO("create an instance") { // NOLINT 
+SCENARIO("create an instance") { // NOLINT
     ShiftRegisterMax shiftRegister = ShiftRegisterMax();
 
     REQUIRE(true);
@@ -26,7 +26,7 @@ SCENARIO("create an instance") { // NOLINT
 
         for (int i = 0; i < shiftRegister.size(); i++) {
             shiftRegister.dataInput(answer);
-            answer = (int) !(bool) answer;
+            answer = (int)!(bool)answer;
             shiftRegister.step();
             REQUIRE(shiftRegister.dataThrough() == 0);
         }

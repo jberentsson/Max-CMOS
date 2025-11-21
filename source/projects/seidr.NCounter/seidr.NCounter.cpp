@@ -21,7 +21,7 @@ auto NCounterMax::setPreset(int presetValue) -> unsigned int {
     return this->counter.setPreset(presetValue);
 }
 
-auto  NCounterMax::preset() -> unsigned int {
+auto NCounterMax::preset() -> unsigned int {
     return this->counter.preset();
 }
 

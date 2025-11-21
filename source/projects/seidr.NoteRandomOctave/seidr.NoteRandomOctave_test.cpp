@@ -4,16 +4,16 @@
 ///	@license	Use of this source code is governed by the MIT License
 /// found in the License.md file.
 
-#include "c74_min_unittest.h"
 #include "Utils/Constants.hpp"
 #include "Utils/MIDI.hpp"
-#include "seidr.NoteRandomOctave.hpp"
+#include "c74_min_unittest.h"
 #include "seidr.NoteRandomOctave.cpp" // NOLINT
+#include "seidr.NoteRandomOctave.hpp"
 
 using namespace MIDI;
 using namespace MIDI::Notes;
 
-SCENARIO("seidr.NoteRandomOctaveMax object basic functionality") { // NOLINT 
+SCENARIO("seidr.NoteRandomOctaveMax object basic functionality") { // NOLINT
     ext_main(nullptr);
 
     GIVEN("An instance of NoteRandomOctaveMax") {
@@ -26,7 +26,7 @@ SCENARIO("seidr.NoteRandomOctaveMax object basic functionality") { // NOLINT
 
             THEN("it has the correct number of inlets and outlets") {
                 // Test basic object structure
-                c74::min::atoms args = {NoteC5, 100}; // NOLINT 
+                c74::min::atoms args = {NoteC5, 100}; // NOLINT
                 REQUIRE_NOTHROW(myObject.anything(args));
                 auto &out0 = *c74::max::object_getoutput(myObject, 0);
                 const auto &out1 = *c74::max::object_getoutput(myObject, 1);
@@ -36,26 +36,26 @@ SCENARIO("seidr.NoteRandomOctaveMax object basic functionality") { // NOLINT
 
         WHEN("basic MIDI note messages are processed") {
             THEN("note-on messages are handled") {
-                c74::min::atoms args1 = {NoteC5, 100}; // NOLINT 
-                c74::min::atoms args2 = {NoteG5, 80}; // NOLINT 
-                c74::min::atoms args3 = {NoteC6, 100}; // NOLINT 
+                c74::min::atoms args1 = {NoteC5, 100}; // NOLINT
+                c74::min::atoms args2 = {NoteG5, 80};  // NOLINT
+                c74::min::atoms args3 = {NoteC6, 100}; // NOLINT
                 REQUIRE_NOTHROW(myObject.anything(args1));
                 REQUIRE_NOTHROW(myObject.anything(args2));
                 REQUIRE_NOTHROW(myObject.anything(args3));
             }
 
             THEN("note-off messages are handled") {
-                c74::min::atoms args1 = {NoteC5, 0}; // C4 off  // NOLINT 
-                c74::min::atoms args2 = {NoteG5, 0}; // G4 off  // NOLINT 
+                c74::min::atoms args1 = {NoteC5, 0}; // C4 off  // NOLINT
+                c74::min::atoms args2 = {NoteG5, 0}; // G4 off  // NOLINT
                 REQUIRE_NOTHROW(myObject.anything(args1));
                 REQUIRE_NOTHROW(myObject.anything(args2));
             }
 
             THEN("velocity values are processed correctly") {
-                c74::min::atoms args1 = {NoteC5, 127}; // max velocity // NOLINT 
-                c74::min::atoms args2 = {NoteC5, 64};  // medium velocity // NOLINT 
-                c74::min::atoms args3 = {NoteC5, 1};   // min non-zero velocity // NOLINT 
-                c74::min::atoms args4 = {NoteC5, 0};   // note off // NOLINT 
+                c74::min::atoms args1 = {NoteC5, 127}; // max velocity // NOLINT
+                c74::min::atoms args2 = {NoteC5, 64};  // medium velocity // NOLINT
+                c74::min::atoms args3 = {NoteC5, 1};   // min non-zero velocity // NOLINT
+                c74::min::atoms args4 = {NoteC5, 0};   // note off // NOLINT
                 REQUIRE_NOTHROW(myObject.anything(args1));
                 REQUIRE_NOTHROW(myObject.anything(args2));
                 REQUIRE_NOTHROW(myObject.anything(args3));
@@ -65,39 +65,39 @@ SCENARIO("seidr.NoteRandomOctaveMax object basic functionality") { // NOLINT
 
         WHEN("edge case MIDI notes are processed") {
             THEN("lowest MIDI note (C0) is handled") {
-                c74::min::atoms args = {NoteC0, 100}; // NOLINT 
+                c74::min::atoms args = {NoteC0, 100}; // NOLINT
                 REQUIRE_NOTHROW(myObject.anything(args));
             }
 
             THEN("highest MIDI note (G10) is handled") {
-                c74::min::atoms args = {NoteG10, 100}; // NOLINT 
+                c74::min::atoms args = {NoteG10, 100}; // NOLINT
                 REQUIRE_NOTHROW(myObject.anything(args));
             }
 
             THEN("middle C (C5) is handled") {
-                c74::min::atoms args = {NoteC5, 100}; // NOLINT 
+                c74::min::atoms args = {NoteC5, 100}; // NOLINT
                 REQUIRE_NOTHROW(myObject.anything(args));
             }
         }
 
         WHEN("range messages are sent") {
             THEN("valid ranges are accepted") {
-                c74::min::atoms args1 = {0, 10}; // Full range // NOLINT 
-                c74::min::atoms args2 = {3, 5};  // Normal range // NOLINT 
-                c74::min::atoms args3 = {4, 4};  // Single octave // NOLINT 
+                c74::min::atoms args1 = {0, 10}; // Full range // NOLINT
+                c74::min::atoms args2 = {3, 5};  // Normal range // NOLINT
+                c74::min::atoms args3 = {4, 4};  // Single octave // NOLINT
                 REQUIRE_NOTHROW(myObject.range(args1));
                 REQUIRE_NOTHROW(myObject.range(args2));
                 REQUIRE_NOTHROW(myObject.range(args3));
             }
 
             THEN("range changes don't crash subsequent note processing") {
-                c74::min::atoms range_args = {2, 6}; // NOLINT 
-                c74::min::atoms note_args = {NoteC5, 100}; // NOLINT 
+                c74::min::atoms range_args = {2, 6};       // NOLINT
+                c74::min::atoms note_args = {NoteC5, 100}; // NOLINT
                 myObject.range(range_args);
                 REQUIRE_NOTHROW(myObject.anything(note_args));
 
                 c74::min::atoms range_args2 = {4, 4};
-                c74::min::atoms note_args2 = {NoteG5, 80}; // NOLINT 
+                c74::min::atoms note_args2 = {NoteG5, 80}; // NOLINT
                 myObject.range(range_args2);
                 REQUIRE_NOTHROW(myObject.anything(note_args2));
             }
@@ -106,13 +106,13 @@ SCENARIO("seidr.NoteRandomOctaveMax object basic functionality") { // NOLINT
         WHEN("multiple operations are performed in sequence") {
             THEN("complex sequences don't crash") {
                 // Test a realistic usage pattern
-                c74::min::atoms range1 = {3, 5}; // NOLINT 
-                c74::min::atoms note1 = {NoteC5, 100}; // NOLINT 
-                c74::min::atoms note2 = {NoteG5, 80}; // NOLINT 
+                c74::min::atoms range1 = {3, 5};       // NOLINT
+                c74::min::atoms note1 = {NoteC5, 100}; // NOLINT
+                c74::min::atoms note2 = {NoteG5, 80};  // NOLINT
                 c74::min::atoms note3 = {NoteC5, 0};
-                c74::min::atoms note4 = {NoteG5, 100}; // NOLINT 
-                c74::min::atoms range2 = {2, 6}; // NOLINT 
-                c74::min::atoms note5 = {NoteC6, 100}; // NOLINT 
+                c74::min::atoms note4 = {NoteG5, 100}; // NOLINT
+                c74::min::atoms range2 = {2, 6};       // NOLINT
+                c74::min::atoms note5 = {NoteC6, 100}; // NOLINT
                 c74::min::atoms notNoteE6 = {NoteC6, 0};
 
                 myObject.range(range1);
@@ -130,7 +130,7 @@ SCENARIO("seidr.NoteRandomOctaveMax object basic functionality") { // NOLINT
     }
 }
 
-SCENARIO("seidr.NoteRandomOctaveMax stress and performance tests") { // NOLINT 
+SCENARIO("seidr.NoteRandomOctaveMax stress and performance tests") { // NOLINT
     ext_main(nullptr);
 
     GIVEN("An instance under stress conditions") {
@@ -139,22 +139,22 @@ SCENARIO("seidr.NoteRandomOctaveMax stress and performance tests") { // NOLINT
 
         WHEN("many rapid note messages are sent") {
             THEN("it handles rapid note-ons without crashing") {
-                for (int i = 0; i < 50; i++) { // NOLINT 
-                    c74::min::atoms args = {NoteC5 + (i % OCTAVE), 100}; // NOLINT 
+                for (int i = 0; i < 50; i++) {                           // NOLINT
+                    c74::min::atoms args = {NoteC5 + (i % OCTAVE), 100}; // NOLINT
                     REQUIRE_NOTHROW(myObject.anything(args));
                 }
             }
 
             THEN("it handles rapid note-offs without crashing") {
-                for (int i = 0; i < 50; i++) { // NOLINT 
+                for (int i = 0; i < 50; i++) { // NOLINT
                     c74::min::atoms args = {NoteC5 + (i % OCTAVE), 0};
                     REQUIRE_NOTHROW(myObject.anything(args));
                 }
             }
 
             THEN("it handles mixed rapid messages without crashing") {
-                for (int i = 0; i < 100; i++) { // NOLINT 
-                    c74::min::atoms args = {NoteC5 + (i % OCTAVE), (i % 2 == 0) ? 100 : 0}; // NOLINT 
+                for (int i = 0; i < 100; i++) {                                             // NOLINT
+                    c74::min::atoms args = {NoteC5 + (i % OCTAVE), (i % 2 == 0) ? 100 : 0}; // NOLINT
                     REQUIRE_NOTHROW(myObject.anything(args));
                 }
             }
@@ -162,13 +162,13 @@ SCENARIO("seidr.NoteRandomOctaveMax stress and performance tests") { // NOLINT
 
         WHEN("range changes are interspersed with notes") {
             THEN("it handles the pattern without crashing") {
-                for (int i = 0; i < 20; i++) { // NOLINT 
+                for (int i = 0; i < 20; i++) { // NOLINT
                     if (i % 4 == 0) {
-                        c74::min::atoms range_args = {i % 5, (i % 5) + 2}; // NOLINT 
+                        c74::min::atoms range_args = {i % 5, (i % 5) + 2}; // NOLINT
                         myObject.range(range_args);
                     }
 
-                    c74::min::atoms note_args = {NoteC4 + (i % 24), 100}; // NOLINT 
+                    c74::min::atoms note_args = {NoteC4 + (i % 24), 100}; // NOLINT
                     REQUIRE_NOTHROW(myObject.anything(note_args));
                 }
             }
@@ -176,13 +176,13 @@ SCENARIO("seidr.NoteRandomOctaveMax stress and performance tests") { // NOLINT
 
         WHEN("range changes are interspersed with notes") {
             THEN("it handles the pattern without crashing") {
-                for (int i = 0; i < 20; i++) { // NOLINT 
+                for (int i = 0; i < 20; i++) { // NOLINT
                     if (i % 4 == 0) {
-                        c74::min::atoms range_args = {i % 5, (i % 5) + 2}; // NOLINT 
+                        c74::min::atoms range_args = {i % 5, (i % 5) + 2}; // NOLINT
                         myObject.range(range_args);
                     }
 
-                    c74::min::atoms note_args = {48 + (i % 24), 100}; // NOLINT 
+                    c74::min::atoms note_args = {48 + (i % 24), 100}; // NOLINT
                     REQUIRE_NOTHROW(myObject.anything(note_args));
                 }
             }
@@ -190,7 +190,7 @@ SCENARIO("seidr.NoteRandomOctaveMax stress and performance tests") { // NOLINT
     }
 }
 
-SCENARIO("seidr.NoteRandomOctaveMax error handling tests") { // NOLINT 
+SCENARIO("seidr.NoteRandomOctaveMax error handling tests") { // NOLINT
     ext_main(nullptr);
 
     GIVEN("An instance handling invalid input") {
@@ -209,19 +209,19 @@ SCENARIO("seidr.NoteRandomOctaveMax error handling tests") { // NOLINT
             }
 
             THEN("too many elements are handled") {
-                c74::min::atoms many_args = {NoteC5, 100, 123, 456}; // NOLINT 
+                c74::min::atoms many_args = {NoteC5, 100, 123, 456}; // NOLINT
                 REQUIRE_NOTHROW(myObject.anything(many_args));
             }
         }
 
         WHEN("out-of-range MIDI values are sent") {
             THEN("negative pitch is handled") {
-                c74::min::atoms args = {-1, 100}; // NOLINT 
+                c74::min::atoms args = {-1, 100}; // NOLINT
                 REQUIRE_NOTHROW(myObject.anything(args));
             }
 
             THEN("excessive pitch is handled") {
-                c74::min::atoms args = {NoteG10 + 1, 100}; // NOLINT 
+                c74::min::atoms args = {NoteG10 + 1, 100}; // NOLINT
                 REQUIRE_NOTHROW(myObject.anything(args));
             }
 
@@ -231,24 +231,24 @@ SCENARIO("seidr.NoteRandomOctaveMax error handling tests") { // NOLINT
             }
 
             THEN("excessive velocity is handled") {
-                c74::min::atoms args = {NoteC5, 128}; // NOLINT 
+                c74::min::atoms args = {NoteC5, 128}; // NOLINT
                 REQUIRE_NOTHROW(myObject.anything(args));
             }
         }
 
         WHEN("invalid range values are sent") {
             THEN("negative octaves are handled") {
-                c74::min::atoms args = {-1, 5}; // NOLINT 
+                c74::min::atoms args = {-1, 5}; // NOLINT
                 REQUIRE_NOTHROW(myObject.range(args));
             }
 
             THEN("excessive octaves are handled") {
-                c74::min::atoms args = {3, 11}; // NOLINT 
+                c74::min::atoms args = {3, 11}; // NOLINT
                 REQUIRE_NOTHROW(myObject.range(args));
             }
 
             THEN("swapped min/max are handled") {
-                c74::min::atoms args = {5, 3}; // NOLINT 
+                c74::min::atoms args = {5, 3}; // NOLINT
                 REQUIRE_NOTHROW(myObject.range(args));
             }
 
@@ -265,7 +265,7 @@ SCENARIO("seidr.NoteRandomOctaveMax error handling tests") { // NOLINT
     }
 }
 
-SCENARIO("seidr.NoteRandomOctaveMax musical scale tests") { // NOLINT 
+SCENARIO("seidr.NoteRandomOctaveMax musical scale tests") { // NOLINT
     ext_main(nullptr);
 
     GIVEN("An instance processing musical scales") {
@@ -278,7 +278,7 @@ SCENARIO("seidr.NoteRandomOctaveMax musical scale tests") { // NOLINT
                 int c_major[] = {NoteC5, NoteD5, NoteE5, NoteF5, NoteG5, NoteA5, NoteB5, NoteC6};
 
                 for (int note : c_major) {
-                    c74::min::atoms on_args = {note, 100}; // NOLINT 
+                    c74::min::atoms on_args = {note, 100}; // NOLINT
                     c74::min::atoms off_args = {note, 0};
                     REQUIRE_NOTHROW(myObject.anything(on_args));
                     REQUIRE_NOTHROW(myObject.anything(off_args));
@@ -289,7 +289,7 @@ SCENARIO("seidr.NoteRandomOctaveMax musical scale tests") { // NOLINT
         WHEN("a chromatic scale is played") {
             THEN("all chromatic notes are processed without crashing") {
                 for (int note = NoteC5; note <= NoteC6; note++) {
-                    c74::min::atoms on_args = {note, 100}; // NOLINT 
+                    c74::min::atoms on_args = {note, 100}; // NOLINT
                     REQUIRE_NOTHROW(myObject.anything(on_args));
                 }
 
@@ -303,9 +303,9 @@ SCENARIO("seidr.NoteRandomOctaveMax musical scale tests") { // NOLINT
         WHEN("chords are played") {
             THEN("common chords are processed without crashing") {
                 // C major chord
-                c74::min::atoms c_args = {NoteC6, 100}; // NOLINT 
-                c74::min::atoms e_args = {NoteE6, 100}; // NOLINT 
-                c74::min::atoms g_args = {NoteG9, 100}; // NOLINT 
+                c74::min::atoms c_args = {NoteC6, 100}; // NOLINT
+                c74::min::atoms e_args = {NoteE6, 100}; // NOLINT
+                c74::min::atoms g_args = {NoteG9, 100}; // NOLINT
                 REQUIRE_NOTHROW(myObject.anything(c_args));
                 REQUIRE_NOTHROW(myObject.anything(e_args));
                 REQUIRE_NOTHROW(myObject.anything(g_args));
@@ -323,9 +323,9 @@ SCENARIO("seidr.NoteRandomOctaveMax musical scale tests") { // NOLINT
         WHEN("chords are played") {
             THEN("common chords are processed without crashing") {
                 // C major chord
-                c74::min::atoms c_args = {NoteC5, 100}; // NOLINT 
-                c74::min::atoms e_args = {NoteE5, 100}; // NOLINT 
-                c74::min::atoms g_args = {NoteG5, 100}; // NOLINT 
+                c74::min::atoms c_args = {NoteC5, 100}; // NOLINT
+                c74::min::atoms e_args = {NoteE5, 100}; // NOLINT
+                c74::min::atoms g_args = {NoteG5, 100}; // NOLINT
                 REQUIRE_NOTHROW(myObject.anything(c_args));
                 REQUIRE_NOTHROW(myObject.anything(e_args));
                 REQUIRE_NOTHROW(myObject.anything(g_args));

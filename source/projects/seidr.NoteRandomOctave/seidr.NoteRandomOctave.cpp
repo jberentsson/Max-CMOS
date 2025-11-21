@@ -1,5 +1,5 @@
-#include "Utils/MIDI.hpp"
 #include "seidr.NoteRandomOctave.hpp"
+#include "Utils/MIDI.hpp"
 
 #include <iostream>
 
@@ -30,8 +30,7 @@ NoteRandomOctaveMax::NoteRandomOctaveMax(const atoms &args) {
     // Nothing here.
 }
 
-
-void NoteRandomOctaveMax::processNoteMessage(int note, int velocity) { // NOLINT 
+void NoteRandomOctaveMax::processNoteMessage(int note, int velocity) { // NOLINT
     // Process the note.
     if (velocity > 0) {
         // Note ON

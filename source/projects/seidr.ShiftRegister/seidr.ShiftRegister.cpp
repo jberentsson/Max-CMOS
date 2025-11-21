@@ -4,8 +4,8 @@
 ///	@license	Use of this source code is governed by the MIT License
 /// found in the License.md file.
 
-#include "c74_min.h"
 #include "seidr.ShiftRegister.hpp"
+#include "c74_min.h"
 
 #include <iostream>
 
@@ -33,7 +33,7 @@ ShiftRegisterMax::ShiftRegisterMax(const atoms &args) {
 void ShiftRegisterMax::handleOutputs() {
     // Bit outputs from 0 to (N-1).
     for (int i = 0; i < outputs.size() - 1; i++) {
-        this->outputs[i]->send(this->sendBangs ? bang() : atoms({this->sr_.get(i)})); // NOLINT 
+        this->outputs[i]->send(this->sendBangs ? bang() : atoms({this->sr_.get(i)})); // NOLINT
     }
 }
 
@@ -42,15 +42,15 @@ void ShiftRegisterMax::handleThrough() {
     int currentDataThrough = this->sr_.dataThrough();
     unsigned int lastOutputIndex = outputs.size() - 1;
 
-    if (everyOutput || currentDataThrough != lastOutput[8].get()) { // NOLINT 
+    if (everyOutput || currentDataThrough != lastOutput[8].get()) { // NOLINT
         this->outputs[lastOutputIndex]->send(this->sendBangs ? bang() : c74::min::atoms({currentDataThrough}));
         this->lastOutput[lastOutputIndex].set(currentDataThrough);
     }
 
-    LastNote x = LastNote(); // NOLINT 
+    LastNote x = LastNote(); // NOLINT
     x.set(currentDataThrough);
 
-    this->lastOutput[8] = x; // NOLINT 
+    this->lastOutput[8] = x; // NOLINT
 }
 
 auto ShiftRegisterMax::size() -> int {
@@ -69,7 +69,7 @@ auto ShiftRegisterMax::dataInput(int value) -> int {
     return this->sr_.dataInput(value);
 }
 
-auto ShiftRegisterMax::dataThrough() ->  int {
+auto ShiftRegisterMax::dataThrough() -> int {
     return this->sr_.dataThrough();
 }
 
