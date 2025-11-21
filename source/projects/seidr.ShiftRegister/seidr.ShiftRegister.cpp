@@ -39,7 +39,7 @@ void ShiftRegisterMax::handleOutputs() {
 
 void ShiftRegisterMax::handleThrough() {
     // Output N data through.
-    uint64_t currentDataThrough = this->sr_.dataThrough();
+    int currentDataThrough = this->sr_.dataThrough();
     unsigned int lastOutputIndex = outputs.size() - 1;
 
     if (everyOutput || currentDataThrough != lastOutput[8].get()) { // NOLINT 
