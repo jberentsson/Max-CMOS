@@ -1,5 +1,5 @@
 /// @file       seidr.NoteRandomOctaveMax_test.cpp
-///	@ingroup 	jb
+///	@ingroup 	seidr
 ///	@copyright	Copyright 2025 - Jóhann Berentsson. All rights reserved.
 ///	@license	Use of this source code is governed by the MIT License
 /// found in the License.md file.
@@ -21,9 +21,6 @@ SCENARIO("seidr.NoteRandomOctaveMax object basic functionality") { // NOLINT
         NoteRandomOctaveMax &myObject = an_instance;
 
         WHEN("the object is created") {
-            // THEN("it initializes successfully") { REQUIRE(myObject !=
-            // nullptr); }
-
             THEN("it has the correct number of inlets and outlets") {
                 // Test basic object structure
                 c74::min::atoms args = {NoteC5, 100}; // NOLINT
@@ -123,8 +120,6 @@ SCENARIO("seidr.NoteRandomOctaveMax object basic functionality") { // NOLINT
                 myObject.range(range2);
                 myObject.anything(note5);
                 myObject.anything(notNoteE6);
-
-                // REQUIRE(&myObject != nullptr);
             }
         }
     }

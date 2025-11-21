@@ -1,5 +1,5 @@
 /// @file       seidr.BinaryCounter_test.cpp
-///	@ingroup 	jb
+///	@ingroup 	seidr
 ///	@copyright	Copyright 2025 - Jóhann Berentsson. All rights reserved.
 ///	@license	Use of this source code is governed by the MIT License
 /// found in the License.md file.
@@ -19,8 +19,6 @@ SCENARIO("object produces correct output") { // NOLINT
         WHEN("test the rollover") {
             myObject.bang();
             myObject.maxValue();
-
-            // THEN("a 'bang' is received") { REQUIRE(myObject != nullptr); }
 
             THEN("check counter value") {
                 REQUIRE(myObject.counterValue() == 1);

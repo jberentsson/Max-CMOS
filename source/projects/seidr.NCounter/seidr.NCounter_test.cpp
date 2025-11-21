@@ -1,5 +1,5 @@
 /// @file       seidr.NCounter_test.cpp
-///	@ingroup 	jb
+///	@ingroup 	seidr
 ///	@copyright	Copyright 2025 - Jóhann Berentsson. All rights reserved.
 ///	@license	Use of this source code is governed by the MIT License
 /// found in the License.md file.
@@ -20,8 +20,7 @@ SCENARIO("NCounterMax object produces correct output") { // NOLINT
         WHEN("test the rollover") {
             THEN("check counter value and outputs") {
                 // Expected outputs for each step (which output is active)
-                int expected[12][10] = {
-                    // NOLINT
+                int expected[12][10] = { // NOLINT
                     {1, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Step 0
                     {0, 1, 0, 0, 0, 0, 0, 0, 0, 0}, // Step 1
                     {0, 0, 1, 0, 0, 0, 0, 0, 0, 0}, // Step 2
@@ -76,8 +75,7 @@ SCENARIO("NCounterMax object produces correct output") { // NOLINT
         WHEN("test the preset function") {
             THEN("check preset behavior") {
                 // Expected outputs after preset operations
-                int expected[6][10] = {
-                    // NOLINT
+                int expected[6][10] = { // NOLINT
                     {1, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Initial
                     {0, 1, 0, 0, 0, 0, 0, 0, 0, 0}, // After 1 bang
                     {0, 0, 0, 0, 0, 0, 1, 0, 0, 0}, // After preset to 6
