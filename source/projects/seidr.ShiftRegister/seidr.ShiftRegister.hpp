@@ -112,8 +112,7 @@ public:
                     // sr_.step();
                     // handleOutputs();
                     case 1: {
-                        auto value = static_cast<uint64_t>(args[0]);
-                        this->sr_.dataInput(value);
+                        this->sr_.dataInput(args[0]);
                         break;
                     }
                     default:
