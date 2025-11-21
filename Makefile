@@ -43,3 +43,6 @@ check:
 
 clean:
 	rm -rf build
+
+line-count:
+	wc -l source/thulr/source/*/*.{cpp,hpp} source/projects/*/*.{cpp,hpp} | sort -n
