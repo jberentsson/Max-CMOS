@@ -19,14 +19,14 @@ using namespace c74::min;
 
 class LastNote {
 private:
-    int pitch_ = 0;  // Changed from NULL to 0
+    uint64_t pitch_ = 0;  // Changed from NULL to 0
 
 public:
     bool dirty = false;
 
-    [[nodiscard]] auto get() const -> int { return this->pitch_; }
+    [[nodiscard]] auto get() const -> uint64_t { return this->pitch_; }
 
-    auto set(int noteValue) -> int {
+    auto set(uint64_t noteValue) -> uint64_t {
         this->pitch_ = noteValue;
 
         if (!this->dirty) {
