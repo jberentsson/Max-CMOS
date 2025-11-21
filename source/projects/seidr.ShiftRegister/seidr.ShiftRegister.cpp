@@ -18,12 +18,14 @@ ShiftRegisterMax::ShiftRegisterMax(const atoms &args) {
         numberOfOutputs = OUTPUT_COUNT;
     }
 
-    for (int i = 0; i < numberOfOutputs; i++) {
-        outputs.push_back(
-            std::make_unique<outlet<>>(this, "( int | bang ) output " + std::to_string(i)));
+    if (numberOfOutputs > 0) {
+        for (int i = 0; i < numberOfOutputs; i++) {
+            outputs.push_back(
+                std::make_unique<outlet<>>(this, "( int | bang ) output " + std::to_string(i)));
+        }
     }
 
-    for (int i = 0; i < args.size(); i++) {
+    for (int i = 0; i < args.size(); i++) { // NOLINT
         cout << "arg[" << i << "]" << args[i] << endl;
     }
 };
