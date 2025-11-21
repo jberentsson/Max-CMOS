@@ -56,8 +56,8 @@ class ShiftRegisterMax : public object<ShiftRegisterMax> {
     auto size() -> int;
     auto step() -> int;
     auto get(int index) -> uint64_t;
-    auto dataInput(int value) -> int;
-    auto dataThrough() -> int;
+    auto dataInput(uint64_t value) -> uint64_t;
+    auto dataThrough() -> uint64_t;
 
     inlet<> input0{this, "(anything) input pulse"};
     inlet<> input1{this, "(int|bang) input pulse"};

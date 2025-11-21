@@ -61,15 +61,15 @@ auto ShiftRegisterMax::step() -> int {
     return this->sr_.step();
 }
 
-auto ShiftRegisterMax::get(int index) -> uint64_t{
+auto ShiftRegisterMax::get(int index) -> uint64_t {
     return this->sr_.get(index);
 }
 
-auto ShiftRegisterMax::dataInput(int value) -> int{
+auto ShiftRegisterMax::dataInput(uint64_t value) -> uint64_t {
     return this->sr_.dataInput(value);
 }
 
-auto ShiftRegisterMax::dataThrough() -> int{
+auto ShiftRegisterMax::dataThrough() ->  uint64_t {
     return this->sr_.dataThrough();
 }
 
