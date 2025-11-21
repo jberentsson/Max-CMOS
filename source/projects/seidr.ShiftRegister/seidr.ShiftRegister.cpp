@@ -39,11 +39,11 @@ void ShiftRegisterMax::handleOutputs() {
 
 void ShiftRegisterMax::handleThrough() {
     // Output N data through.
-    int currentDataThrough = this->sr_.dataThrough();
+    auto currentDataThrough = (uint64_t) this->sr_.dataThrough();
     unsigned int lastOutputIndex = outputs.size() - 1;
 
     if (everyOutput || currentDataThrough != lastOutput[8].get()) { // NOLINT 
-        this->outputs[lastOutputIndex]->send(this->sendBangs ? bang() : c74::min::atoms({(uint64_t) currentDataThrough}));
+        this->outputs[lastOutputIndex]->send(this->sendBangs ? bang() : c74::min::atoms({currentDataThrough}));
         this->lastOutput[lastOutputIndex].set(currentDataThrough);
     }
 
