@@ -7,8 +7,8 @@
 #include <c74_min_unittest.h>
 #include "Utils/Constants.hpp"
 #include "Utils/MIDI.hpp"
-#include "seidr.NoteRandomOctave.cpp" // NOLINT
 #include "seidr.NoteRandomOctave.hpp"
+#include "seidr.NoteRandomOctave.cpp" // NOLINT
 
 using namespace MIDI;
 using namespace MIDI::Notes;

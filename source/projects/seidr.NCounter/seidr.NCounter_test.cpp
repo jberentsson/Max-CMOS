@@ -5,8 +5,8 @@
 /// found in the License.md file.
 
 #include <c74_min_unittest.h>
-#include "seidr.NCounter.cpp" // NOLINT
 #include "seidr.NCounter.hpp"
+#include "seidr.NCounter.cpp" // NOLINT
 
 using namespace c74::max;
 
@@ -20,7 +20,7 @@ SCENARIO("NCounterMax object produces correct output") { // NOLINT
         WHEN("test the rollover") {
             THEN("check counter value and outputs") {
                 // Expected outputs for each step (which output is active)
-                int expected[12][10] = { // NOLINT
+                int expected[12][10] = {// NOLINT
                     {1, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Step 0
                     {0, 1, 0, 0, 0, 0, 0, 0, 0, 0}, // Step 1
                     {0, 0, 1, 0, 0, 0, 0, 0, 0, 0}, // Step 2
@@ -75,7 +75,7 @@ SCENARIO("NCounterMax object produces correct output") { // NOLINT
         WHEN("test the preset function") {
             THEN("check preset behavior") {
                 // Expected outputs after preset operations
-                int expected[6][10] = { // NOLINT
+                int expected[6][10] = {// NOLINT
                     {1, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Initial
                     {0, 1, 0, 0, 0, 0, 0, 0, 0, 0}, // After 1 bang
                     {0, 0, 0, 0, 0, 0, 1, 0, 0, 0}, // After preset to 6

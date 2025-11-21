@@ -4,8 +4,8 @@
 ///	@license	Use of this source code is governed by the MIT License
 /// found in the License.md file.
 
-#include <iostream>
 #include "seidr.ShiftRegister.hpp"
+#include <iostream>
 
 using namespace c74::min;
 
@@ -33,16 +33,16 @@ ShiftRegisterMax::ShiftRegisterMax(const atoms &args) {
 void ShiftRegisterMax::handleOutputs() {
     // Bit outputs from 0 to (N-1).
     for (int i = 0; i < outputs.size() - 1; i++) {
-        this->outputs[i]->send(this->sendBangs ? bang() : atoms{(uint64_t) this->sr_.get(i)}); // NOLINT 
+        this->outputs[i]->send(this->sendBangs ? bang() : atoms{(uint64_t)this->sr_.get(i)}); // NOLINT
     }
 }
 
 void ShiftRegisterMax::handleThrough() {
     // Output N data through.
-    auto currentDataThrough = (uint64_t) this->sr_.dataThrough();
+    auto currentDataThrough = (uint64_t)this->sr_.dataThrough();
     unsigned int lastOutputIndex = outputs.size() - 1;
 
-    if (everyOutput || currentDataThrough != lastOutput[8].get()) { // NOLINT 
+    if (everyOutput || currentDataThrough != lastOutput[8].get()) { // NOLINT
         this->outputs[lastOutputIndex]->send(this->sendBangs ? bang() : c74::min::atoms(currentDataThrough));
         this->lastOutput[lastOutputIndex].set(currentDataThrough);
     }
