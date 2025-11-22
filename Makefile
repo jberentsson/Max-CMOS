@@ -4,41 +4,30 @@ all:
 
 tidy:
 	@echo "Running clang-tidy (all checks)..."
-	@find source/projects source/thulr/source -name "*.cpp" -o -name "*.hpp" -exec clang-tidy {} \
-	    -- -std=c++17 \
-	    -I source/thulr/source \
-	    -isystem source/min-api \
-	    -isystem source/min-api/include \
-	    -isystem source/min-api/max-sdk-base/c74support \
-	    -isystem source/min-api/max-sdk-base/c74support/max-includes \
-	    -isystem build/_deps/catch2-src/single_include \
-	    -isystem source/min-api/test \
-	    -Wno-everything \;
+	clang-tidy source/{thulr,projects}/**/*.{cpp,hpp} \
+	           -- -std=c++17 \
+	           -I source/thulr/source \
+	           -isystem source/min-api \
+	           -isystem source/min-api/include \
+	           -isystem source/min-api/max-sdk-base/c74support \
+	           -isystem source/min-api/max-sdk-base/c74support/max-includes \
+	           -isystem build/_deps/catch2-src/single_include \
+	           -isystem source/min-api/test \
+	           -Wno-everything \;
 
 tidy-ci:
 	@echo "Running clang-tidy (CI checks only)..."
-	@find source/projects source/thulr/source -name "*.cpp" -o -name "*.hpp" -exec clang-tidy {} \
-	    -checks='readability-*,modernize-*,performance-*,bugprone-*,-modernize-avoid-c-arrays,-readability-identifier-naming,-bugprone-chained-comparison,-llvmlibc-restrict-system-libc-headers,-cppcoreguidelines-use-enum-class' \
-	    -- -std=c++17 \
-	    -I source/thulr/source \
-	    -isystem source/min-api \
-	    -isystem source/min-api/include \
-	    -isystem source/min-api/max-sdk-base/c74support \
-	    -isystem source/min-api/max-sdk-base/c74support/max-includes \
-	    -isystem build/_deps/catch2-src/single_include \
-	    -isystem source/min-api/test \
-	    -Wno-everything \;
-
-tidy-fast:
-	@echo "Running fast clang-tidy (your code only)..."
-	@find source/projects source/thulr/source -name "*.cpp" -o -name "*.hpp" -exec clang-tidy {} \
-	    -header-filter='source/(projects|thulr)' \
-	    -system-headers=0 \
-	    -- -std=c++17 \
-	    -I source/thulr/source \
-	    -isystem source/min-api \
-	    -isystem source/min-api/include \
-	    -Wno-everything \;
+	clang-tidy source/{thulr,projects}/**/*.{cpp,hpp} \
+	           -checks='readability-*,modernize-*,performance-*,bugprone-*,-modernize-avoid-c-arrays,-readability-identifier-naming,-bugprone-chained-comparison,-llvmlibc-restrict-system-libc-headers,-cppcoreguidelines-use-enum-class' \
+	           -- -std=c++17 \
+	           -I source/thulr/source \
+	           -isystem source/min-api \
+	           -isystem source/min-api/include \
+	           -isystem source/min-api/max-sdk-base/c74support \
+	           -isystem source/min-api/max-sdk-base/c74support/max-includes \
+	           -isystem build/_deps/catch2-src/single_include \
+	           -isystem source/min-api/test \
+	           -Wno-everything \;
 
 format:
 	@echo "Formatting C++ files..."
