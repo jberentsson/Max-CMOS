@@ -1,2 +1,2 @@
 set(PROJECT_LIBRARIES Keyboard)
-project_template()
+project_template(seidr.NoteRandmOctave)
