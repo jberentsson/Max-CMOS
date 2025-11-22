@@ -4,7 +4,7 @@ all:
 
 tidy:
 	@echo "Running clang-tidy (all checks)..."
-	clang-tidy source/{thulr,projects}/**/*.{cpp,hpp} \
+	clang-tidy source/{thulr/source/,projects/}**/*.{cpp,hpp} \
 	           -- -std=c++17 \
 	           -I source/thulr/source \
 	           -isystem source/min-api \
@@ -17,7 +17,7 @@ tidy:
 
 tidy-ci:
 	@echo "Running clang-tidy (CI checks only)..."
-	clang-tidy source/{thulr,projects}/**/*.{cpp,hpp} \
+	clang-tidy source/{thulr/source/,projects/}**/*.{cpp,hpp} \
 	           -checks='readability-*,modernize-*,performance-*,bugprone-*,-modernize-avoid-c-arrays,-readability-identifier-naming,-bugprone-chained-comparison,-llvmlibc-restrict-system-libc-headers,-cppcoreguidelines-use-enum-class' \
 	           -- -std=c++17 \
 	           -I source/thulr/source \
