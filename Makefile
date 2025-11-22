@@ -1,10 +1,13 @@
 all:
 	cmake -B build -G "Unix Makefiles" -DCMAKE_POLICY_VERSION_MINIMUM="3.5" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
-	cmake --build build --config Release -j8 --verbose
+	cmake --build build --config Release -j8
 
 tidy:
 	@echo "Running clang-tidy (all checks)..."
-	clang-tidy source/{thulr/source/,projects/}**/*.{cpp,hpp} \
+	clang-tidy source/projects/**/*.hpp \
+	           source/projects/**/*.cpp \
+			   source/thulr/source//**/*.hpp \
+			   source/thuldr/source/**/*.cpp \
 	           -- -std=c++17 \
 	           -I source/thulr/source \
 	           -isystem source/min-api \
@@ -17,7 +20,10 @@ tidy:
 
 tidy-ci:
 	@echo "Running clang-tidy (CI checks only)..."
-	clang-tidy source/{thulr/source/,projects/}**/*.{cpp,hpp} \
+	clang-tidy source/projects/**/*.hpp \
+	           source/projects/**/*.cpp \
+			   source/thulr/source//**/*.hpp \
+			   source/thuldr/source/**/*.cpp \
 	           -checks='readability-*,modernize-*,performance-*,bugprone-*,-modernize-avoid-c-arrays,-readability-identifier-naming,-bugprone-chained-comparison,-llvmlibc-restrict-system-libc-headers,-cppcoreguidelines-use-enum-class' \
 	           -- -std=c++17 \
 	           -I source/thulr/source \
