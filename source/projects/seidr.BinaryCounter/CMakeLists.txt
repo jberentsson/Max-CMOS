@@ -1,2 +1,2 @@
 set(PROJECT_LIBRARIES BinaryCounter Counter)
-project_template()
+project_template(seidr.BinaryCounter)
