@@ -6,7 +6,7 @@
 #pragma once
 
 #include <c74_min.h>
-#include "NCounter/NCounter.hpp"
+#include "Counter/Counter.hpp"
 
 #include <ext_mess.h>
 #include <fcntl.h>
@@ -86,7 +86,7 @@ public:
     };
 
 private:
-    NCounter counter = NCounter(NCounterMax::OUTPUT_COUNT);
+    Counter counter = Counter(NCounterMax::OUTPUT_COUNT);
     std::vector<int> outputStates_;
     bool bangEnabled = FALSE;
     bool alreadyBanged = FALSE;

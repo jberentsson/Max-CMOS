@@ -7,7 +7,7 @@
 #pragma once
 
 #include <c74_min.h>
-#include "BinaryCounter/BinaryCounter.hpp"
+#include "Counter/Counter.hpp"
 
 #include <ext_mess.h>
 #include <fcntl.h>
@@ -106,5 +106,5 @@ public:
     };
 
 private:
-    BinaryCounter counter_ = BinaryCounter(OUTPUT_COUNT);
+    Counter counter_ = Counter(OUTPUT_COUNT);
 };
