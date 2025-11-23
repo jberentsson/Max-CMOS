@@ -1,4 +1,4 @@
-/// @file       seidr.BinaryCounter.hpp
+/// @file       seidr.ShiftRegister.hpp
 ///	@ingroup 	seidr
 ///	@copyright	Copyright 2025 - Jóhann Berentsson. All rights reserved.
 ///	@license	Use of this source code is governed by the MIT License
@@ -19,7 +19,7 @@ using namespace c74::min;
 
 class LastNote {
 private:
-    uint64_t pitch_ = 0;  // Changed from NULL to 0
+    uint64_t pitch_ = 128;
 
 public:
     bool dirty = false;
