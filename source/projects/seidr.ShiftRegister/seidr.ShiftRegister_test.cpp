@@ -2,7 +2,7 @@
 ///	@ingroup 	seidr
 ///	@copyright	Copyright 2025 - Jóhann Berentsson. All rights reserved.
 ///	@license	Use of this source code is governed by the MIT License
-/// found in the License.md file.
+///             found in the License.md file.
 
 #include "seidr.ShiftRegister.cpp" // NOLINT
 #include "seidr.ShiftRegister.hpp"
@@ -11,6 +11,9 @@
 using namespace c74::max;
 
 SCENARIO("create an instance") { // NOLINT
+    ext_main(nullptr);
+    
+    test_wrapper<ShiftRegisterMax> an_instance;
     auto shiftRegister = ShiftRegisterMax();
 
     REQUIRE(true);
@@ -22,9 +25,8 @@ SCENARIO("create an instance") { // NOLINT
     }
 
     WHEN("set every other bit") {
-        int answer = 1;
-
         for (int i = 0; i < shiftRegister.size(); i++) {
+            int answer = i % 1 == 1 ? 1 : 0;
             shiftRegister.dataInput(answer);
             answer = (int)!(bool)answer;
             shiftRegister.step();
@@ -32,11 +34,11 @@ SCENARIO("create an instance") { // NOLINT
         }
     }
 
-    //   WHEN("every other bit is set") {
-    //     int answer = 0;
-    //     for (int i = 0; i < shiftRegister.size(); i++) {
-    //       REQUIRE(shiftRegister.get(i) == answer);
-    //       answer = !answer;
-    //     }
-    //   }
+    WHEN("every other bit is set") {
+        int answer = 0;
+        for (int i = 0; i < shiftRegister.size(); i++) {
+            REQUIRE(shiftRegister.get(i) == answer);
+            answer = i % 1;
+        }
+    }
 }

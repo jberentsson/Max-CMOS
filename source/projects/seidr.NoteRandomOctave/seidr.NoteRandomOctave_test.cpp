@@ -2,7 +2,7 @@
 ///	@ingroup 	seidr
 ///	@copyright	Copyright 2025 - Jóhann Berentsson. All rights reserved.
 ///	@license	Use of this source code is governed by the MIT License
-/// found in the License.md file.
+///             found in the License.md file.
 
 #include "Utils/Constants.hpp"
 #include "Utils/MIDI.hpp"

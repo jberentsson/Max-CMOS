@@ -2,23 +2,21 @@
 ///	@ingroup 	seidr
 ///	@copyright	Copyright 2025 - Jóhann Berentsson. All rights reserved.
 ///	@license	Use of this source code is governed by the MIT License
-/// found in the License.md file.
+///             found in the License.md file.
 
 #pragma once
 
 #include "Quantizer/Quantizer.hpp"
 
 #include <c74_min.h>
-
 #include <ext_mess.h>
 #include <fcntl.h>
-#include <string>
 
 using namespace c74::min;
 
 class QuantizerMax : public object<QuantizerMax> {
 public:
-    MIN_DESCRIPTION{"Quantizer"}; // NOLINT 
+    MIN_DESCRIPTION{"Quantizer"};      // NOLINT 
     MIN_TAGS{"seidr"};                 // NOLINT 
     MIN_AUTHOR{"Jóhann Berentsson"};   // NOLINT 
     MIN_RELATED{"seidr.*"};            // NOLINT 

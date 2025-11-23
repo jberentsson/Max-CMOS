@@ -1,8 +1,6 @@
 #include "seidr.NoteRandomOctave.hpp"
 #include "Utils/MIDI.hpp"
 
-#include <iostream>
-
 using namespace c74::min;
 
 void NoteRandomOctaveMax::clearNoteMessage(int note) {
