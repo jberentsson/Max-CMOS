@@ -20,6 +20,9 @@ install_manifest.txt
 C
 CMakeTestfile.cmake
 
+# Clang files
+.cache/
+
 # Build output binaries (not needed in repo)
 *.exe
 *.dll

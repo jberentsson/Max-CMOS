@@ -11,15 +11,12 @@ macro(project_template)
     
     # Debug info for GitHub Actions
     message(STATUS "=== Configuring ${PROJECT_NAME} ===")
-    message(STATUS "THULR_PATH: ${THULR_PATH}")
-    message(STATUS "Current source dir: ${CMAKE_CURRENT_SOURCE_DIR}")
 
     #############################################################
     # MAX EXTERNAL
     #############################################################
 
     include_directories( 
-        #${C74_INCLUDES}
         ${THULR_PATH}
         ${CMAKE_CURRENT_SOURCE_DIR}
     )
@@ -32,6 +29,12 @@ macro(project_template)
     add_library(
         ${PROJECT_NAME}
         MODULE
+        ${SOURCE_FILES}
+    )
+
+    add_library(
+        ${PROJECT_NAME}_static
+        STATIC
         ${SOURCE_FILES}
     )
 
@@ -49,11 +52,11 @@ macro(project_template)
 
     set(PROJECT_LIBRARIES_TARGETS
         ${PROJECT_NAME}
-        ${PROJECT_NAME}_test
+        ${PROJECT_NAME}_static
     )
 
     #############################################################
-    # Comprehensive include path setup for GitHub Actions
+    # Comprehensive include path setup
     #############################################################
     
     target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${C74_INCLUDES})
@@ -67,45 +70,68 @@ macro(project_template)
         ${THULR_PARENT_PATH}
         ${THULR_PATH}
         ${THULR_PATH}/Utils
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../thulr
-        ${CMAKE_CURRENT_SOURCE_DIR}/../thulr  
-        ${CMAKE_CURRENT_SOURCE_DIR}/thulr
-        ${CMAKE_CURRENT_SOURCE_DIR}../
     )
-
-    # Debug: Check if Utils directory exists
-    if(EXISTS ${THULR_PATH}/Utils)
-        message(STATUS "Utils directory found: ${THULR_PATH}/Utils")
-        file(GLOB UTILS_FILES ${THULR_PATH}/Utils/*.hpp)
-        message(STATUS "Utils header files:")
-        foreach(UTIL_FILE ${UTILS_FILES})
-            message(STATUS "  - ${UTIL_FILE}")
-        endforeach()
-    else()
-        message(WARNING "Utils directory NOT found: ${THULR_PATH}/Utils")
-    endif()
 
     # Apply to all targets
     foreach(TARGET ${PROJECT_LIBRARIES_TARGETS})
         target_include_directories(${TARGET} PRIVATE ${ALL_INCLUDE_PATHS})
-        message(STATUS "Include paths for ${TARGET}:")
-        foreach(INCLUDE_PATH ${ALL_INCLUDE_PATHS})
-            message(STATUS "  - ${INCLUDE_PATH}")
-        endforeach()
     endforeach()
 
     #############################################################
-    # Link the libraries to the targets.
+    # Link the libraries to the targets
     #############################################################
 
     foreach(PLT ${PROJECT_LIBRARIES_TARGETS})
         foreach(LIB ${PROJECT_LIBRARIES})
-            if(TARGET ${LIB})
+            if(TARGET ${LIB}_static)
+                target_link_libraries(${PLT} PRIVATE ${LIB}_static)
+                message(STATUS "Linked ${PLT} with ${LIB}_static")
+            elseif(TARGET ${LIB})
                 target_link_libraries(${PLT} PRIVATE ${LIB})
                 message(STATUS "Linked ${PLT} with ${LIB}")
+            else()
+                message(WARNING "Library target ${LIB} not found for linking with ${PLT}")
             endif()
         endforeach()
     endforeach()
+
+    #############################################################
+    # FIX TEST EXECUTABLE LINKING
+    #############################################################
+
+    if(TARGET ${PROJECT_NAME}_test)
+        # Link the test executable with the static library
+        target_link_libraries(${PROJECT_NAME}_test PRIVATE ${PROJECT_NAME}_static)
+        
+        # Also link with all base libraries
+        foreach(LIB ${PROJECT_LIBRARIES})
+            if(TARGET ${LIB}_static)
+                target_link_libraries(${PROJECT_NAME}_test PRIVATE ${LIB}_static)
+                message(STATUS "Linked ${PROJECT_NAME}_test with ${LIB}_static")
+            elseif(TARGET ${LIB})
+                target_link_libraries(${PROJECT_NAME}_test PRIVATE ${LIB})
+                message(STATUS "Linked ${PROJECT_NAME}_test with ${LIB}")
+            endif()
+        endforeach()
+        
+        # Add include directories for test executable
+        target_include_directories(${PROJECT_NAME}_test PRIVATE ${ALL_INCLUDE_PATHS})
+    endif()
+
+    #############################################################
+    # Fix compiler warnings - DON'T treat warnings as errors
+    #############################################################
+    
+    # Add compiler flags but DON'T use -Werror
+    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+        # Enable warnings but don't treat them as errors
+        target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wno-sign-compare -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function)
+        target_compile_options(${PROJECT_NAME}_static PRIVATE -Wall -Wextra -Wno-sign-compare -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function)
+
+        if(TARGET ${PROJECT_NAME}_test)
+            target_compile_options(${PROJECT_NAME}_test PRIVATE -Wall -Wextra -Wno-sign-compare -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function)
+        endif()
+    endif()
 
     #############################################################
     # Done!
