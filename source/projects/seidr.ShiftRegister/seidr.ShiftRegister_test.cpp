@@ -28,7 +28,6 @@ SCENARIO("create an instance") { // NOLINT
         for (int i = 0; i < shiftRegister.size(); i++) {
             int answer = i % 1 == 1 ? 1 : 0;
             shiftRegister.dataInput(answer);
-            answer = (int)!(bool)answer;
             shiftRegister.step();
             REQUIRE(shiftRegister.dataThrough() == 0);
         }
@@ -42,3 +41,4 @@ SCENARIO("create an instance") { // NOLINT
         }
     }
 }
+
