@@ -1,4 +1,5 @@
 all:
+	mkdir -p temp
 	cmake -B build --debug-output --trace-expand --trace-source=CMakeLists.txt -G "Unix Makefiles" -DCMAKE_POLICY_VERSION_MINIMUM="3.5" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON 2>&1> temp/CMakeSetup.log
 	cmake --build build --config Release -j8 --verbose 2>&1> temp/CMakeBuild.log
 
