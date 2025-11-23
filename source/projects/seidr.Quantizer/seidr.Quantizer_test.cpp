@@ -31,14 +31,20 @@ SCENARIO("asdasda1") {
         QuantizerMax &myObject = an_instance;
 
         c74::min::atoms args = {48}; // NOLINT
-        REQUIRE_NOTHROW(myObject.anything(args));
+        REQUIRE_NOTHROW(myObject.anything(48));
 
         auto &out = *c74::max::object_getoutput(myObject, 0);
+       
+        REQUIRE(out.empty());
+        REQUIRE(myObject.addNote(48) == 0);
+        
+        REQUIRE_NOTHROW(myObject.anything(48));
         REQUIRE(!out.empty());
+        REQUIRE(!out[0].empty());
+        REQUIRE(out[0][1] == 48);
 
         WHEN("asdad2") {
             REQUIRE(true);
         }
     }
 }
-

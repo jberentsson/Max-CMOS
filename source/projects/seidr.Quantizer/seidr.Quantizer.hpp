@@ -23,6 +23,8 @@ public:
 
     explicit QuantizerMax(const atoms &args = {});
 
+    auto addNote(int noteValue) -> int { return this->quantizer.addNote(noteValue); }
+
     c74::min::inlet<> input {this, "(int) input note"};
 
     c74::min::outlet<> output0 {this, "(int) output note"};
@@ -33,7 +35,10 @@ public:
         MIN_FUNCTION {
             if (!args.empty()){
                 int note = args[0];
-                output0.send(quantizer.quantize(note));
+
+                if (quantizer.noteCount() > 0){
+                    output0.send(quantizer.quantize(note));
+                }
             }
             return {};
         }
