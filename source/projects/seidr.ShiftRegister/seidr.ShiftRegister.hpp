@@ -1,4 +1,4 @@
-/// @file       seidr.ShiftRegister.hpp
+/// @file       seidr.BinaryCounter.hpp
 ///	@ingroup 	seidr
 ///	@copyright	Copyright 2025 - Jóhann Berentsson. All rights reserved.
 ///	@license	Use of this source code is governed by the MIT License
