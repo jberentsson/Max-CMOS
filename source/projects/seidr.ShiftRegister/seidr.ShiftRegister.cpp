@@ -6,7 +6,6 @@
 
 #include "seidr.ShiftRegister.hpp"
 
-
 using namespace c74::min;
 
 ShiftRegisterMax::ShiftRegisterMax(const atoms &args) {

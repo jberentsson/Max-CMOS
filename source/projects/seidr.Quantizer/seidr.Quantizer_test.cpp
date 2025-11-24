@@ -30,21 +30,21 @@ SCENARIO("adding notes to the quantizer") {
 
     test_wrapper<QuantizerMax> an_instance;
     QuantizerMax &myObject = an_instance;
+    myObject.setMode(Quantizer::QuantizeMode::ALL_NOTES);
     
     GIVEN("the notes"){
-
-        c74::min::atoms args = {MIDI::Notes::NoteC4}; // NOLINT
-        REQUIRE_NOTHROW(myObject.anything(48));
-
         auto &out = *c74::max::object_getoutput(myObject, 0);
-       
-        REQUIRE(out.empty());
+        
+        REQUIRE_NOTHROW(myObject.integer(MIDI::Notes::NoteB3));
+        REQUIRE(out[0][1] == MIDI::Notes::NoteB3);
+
+        REQUIRE(!out.empty());
         REQUIRE(myObject.addNote(MIDI::Notes::NoteC4) == 0);
         
-        REQUIRE_NOTHROW(myObject.anything(MIDI::Notes::NoteC4));
+        REQUIRE_NOTHROW(myObject.integer(MIDI::Notes::NoteC4));
         REQUIRE(!out.empty());
         REQUIRE(!out[0].empty());
-        REQUIRE(out[0][1] == 48);
+        REQUIRE(out[1][1] == 48);
 
         WHEN("first note is detected") {
             REQUIRE(myObject.noteCount() == 1);
@@ -61,33 +61,31 @@ SCENARIO("adding notes to the quantizer with velocity") {
     test_wrapper<QuantizerMax> an_instance;
     QuantizerMax &myObject = an_instance;
     
-    GIVEN("the notes"){
+    myObject.setMode(Quantizer::QuantizeMode::ALL_NOTES);
 
-        REQUIRE( myObject.getRoundDirection() == Quantizer::RoundDirection::UP );
+    GIVEN("the notes") {
+        REQUIRE(myObject.getRoundDirection() == Quantizer::RoundDirection::UP);
 
         auto &out0 = *c74::max::object_getoutput(myObject, 0);
         auto &out1 = *c74::max::object_getoutput(myObject, 1);
-       
-        c74::min::atoms args = {MIDI::Notes::NoteC4, 127}; // NOLINT
-        REQUIRE_NOTHROW(myObject.anything(args));
-       
-        REQUIRE(out0.empty());
-        REQUIRE(out1.empty());
-        REQUIRE(myObject.addNote(MIDI::Notes::NoteC4) == 0);
-        REQUIRE_NOTHROW(myObject.anything(args));
+
+        c74::min::atoms args = {MIDI::Notes::NoteB3, 127}; // NOLINT
+        REQUIRE_NOTHROW(myObject.list(args));
+
         REQUIRE(!out0.empty());
         REQUIRE(!out1.empty());
         REQUIRE(!out0[0].empty());
         REQUIRE(!out1[0].empty());
-        REQUIRE(out0[0][1] == 48);
+        REQUIRE(out0[0][1] == MIDI::Notes::NoteB3);
         REQUIRE(out1[0][1] == 127);
-        REQUIRE(myObject.noteCount() == 1);
-
-        REQUIRE(myObject.addNote(MIDI::Notes::NoteC5) == 0);
+        REQUIRE_NOTHROW(myObject.add({MIDI::Notes::NoteB3, 69}));
         REQUIRE(myObject.noteCount() == 2);
 
+        REQUIRE(myObject.addNote(MIDI::Notes::NoteC5) == 0);
+        REQUIRE(myObject.noteCount() == 3);
+
         c74::min::atoms args2 = {MIDI::Notes::NoteB4, 127}; // NOLINT
-        REQUIRE_NOTHROW(myObject.anything(args2));
+        REQUIRE_NOTHROW(myObject.list(args2));
 
         REQUIRE(!out0.empty());
         REQUIRE(!out1.empty());
@@ -97,12 +95,12 @@ SCENARIO("adding notes to the quantizer with velocity") {
         REQUIRE(out1[1][1] == 127);
 
         REQUIRE(myObject.addNote(MIDI::Notes::NoteG4) == 0);
-        REQUIRE(myObject.noteCount() == 3);
+        REQUIRE(myObject.noteCount() == 4);
     
         REQUIRE_NOTHROW(myObject.setRoundDirection(Quantizer::RoundDirection::DOWN));
 
         c74::min::atoms args3 = {MIDI::Notes::NoteB4, 127}; // NOLINT
-        REQUIRE_NOTHROW(myObject.anything(args3));
+        REQUIRE_NOTHROW(myObject.list(args3));
 
         REQUIRE(!out0.empty());
         REQUIRE(!out1.empty());
@@ -110,5 +108,48 @@ SCENARIO("adding notes to the quantizer with velocity") {
         REQUIRE(!out1[2].empty());
         REQUIRE(out0[2][1] == MIDI::Notes::NoteG4);
         REQUIRE(out1[2][1] == 127); // NOLINT
+    }
+}
+
+SCENARIO("clear the notes") { // NOLINT
+    ext_main(nullptr);
+    
+    GIVEN("OCTAVE MODE") {
+        test_wrapper<QuantizerMax> an_instance;
+        QuantizerMax &myObject = an_instance;
+        
+        myObject.setMode(Quantizer::QuantizeMode::TWELVE_NOTES);
+
+        WHEN("add and remove notes") {
+            REQUIRE_NOTHROW(myObject.add({0,1,2,3,4,5,6,7,8,9,10,11,12}));
+
+            for (int i = 0; i <= 11; i++) {
+                REQUIRE_NOTHROW(myObject.del({i, -1}));
+            }
+
+            REQUIRE(myObject.noteCount() == 0);            
+        }
+    }
+    
+    GIVEN("ALL KEYS MODE") {
+        test_wrapper<QuantizerMax> an_instance;
+        QuantizerMax &myObject = an_instance;
+
+        myObject.setMode(Quantizer::QuantizeMode::ALL_NOTES);
+        
+        WHEN("add and remove notes") {
+            REQUIRE(myObject.noteCount() == 0);
+
+            for (int i = 0; i < MIDI::KEYBOARD_SIZE; i++) {
+                REQUIRE_NOTHROW(myObject.add({i, -1}));
+                REQUIRE(myObject.noteCount() == i);
+            }
+
+            for (int i = 0; i < MIDI::KEYBOARD_SIZE; i++) {
+                REQUIRE_NOTHROW(myObject.del({i, -1}));
+            }
+
+            REQUIRE(myObject.noteCount() == 0);
+        }
     }
 }

@@ -11,11 +11,13 @@
 #include <c74_min.h>
 #include <ext_mess.h>
 #include <fcntl.h>
+#include <iostream>
 
 using namespace c74::min;
 
-class QuantizerMax : public object<QuantizerMax> {
-public:
+class QuantizerMax : public c74::min::object<QuantizerMax> {
+  public:
+
     MIN_DESCRIPTION{"Quantizer"};      // NOLINT 
     MIN_TAGS{"seidr"};                 // NOLINT 
     MIN_AUTHOR{"Jóhann Berentsson"};   // NOLINT 
@@ -27,34 +29,79 @@ public:
     auto noteCount() -> int { return this->quantizer.noteCount(); }
     auto getRoundDirection() -> Quantizer::RoundDirection { return this->quantizer.getRoundDirection(); }
     auto setRoundDirection(Quantizer::RoundDirection direction) -> Quantizer::RoundDirection { return this->quantizer.setRoundDirection(direction); }
+    auto setMode(Quantizer::QuantizeMode mode) -> Quantizer::QuantizeMode { return this->quantizer.setMode(mode); }
 
-    c74::min::inlet<> input {this, "(int) input note"};
+    c74::min::inlet<> input {this, "(anything) input note"};
 
-    c74::min::outlet<> output0 {this, "(int) output note"};
-    c74::min::outlet<> output1 {this, "(int) output velocity"};
+    c74::min::outlet<> output0 {this, "(anything) output note"};
+    c74::min::outlet<> output1 {this, "(anything) output velocity"};
 
     c74::min::message<> anything {
-        this, "int", "Process note messages",
+        this, "anything", "Process note messages",
         MIN_FUNCTION {
             if (!args.empty()){
-                switch (args.size()) {
-                    case 1: {
-                        int note = args[0];
-                        this->processNote(note, MIDI::RANGE_HIGH + 1);
-                        break;
-                    }
-                    default: {
-                        int note = args[0];
-                        int velocity = args[1];                        
-                        this->processNote(note, velocity);
-                        break;
+                cout << "ANYTHING: Arg.size(): " << args.size() << endl;
+            }
+            return {};
+        }
+    };
+    
+    c74::min::message<> integer {
+        this, "integer", "Process note messages",
+            MIN_FUNCTION {
+            if (!args.empty()) {
+                int note = args[0];
+                this->processNote(note, MIDI::RANGE_HIGH + 1);
+            }
+            return {};
+        }
+    };
+
+    c74::min::message<> list{
+        this, "list", "Process note messages",
+        MIN_FUNCTION{
+            if (!args.empty() && args.size() == 2){
+                int note = args[0];
+                int velocity = args[1];
+                this->processNote(note, velocity);
+            }
+            return {};
+        }
+    };
+
+    c74::min::message<> add{
+        this, "add", "Process note messages",
+        MIN_FUNCTION{
+            if (!args.empty()){
+                if (args.size() >= 1) {
+                    for (int i = 0; i < args.size(); i++) {
+                        int note = args[i];
+                        if(note >= MIDI::RANGE_LOW && note <= MIDI::RANGE_HIGH ) {
+                            this->quantizer.addNote(note);
+                        }
+                    }                
+                }
+            }
+            return {};
+        }
+    };
+
+    c74::min::message<> del{
+        this, "del", "Process note messages",
+        MIN_FUNCTION{
+            if (!args.empty()){
+                if (args.size() >= 1) {
+                    for (int i = 0; i < args.size(); i++) {
+                        this->quantizer.deleteNote(args[i]);
                     }
                 }
             }
             return {};
         }
     };
-    
+
 private:
     Quantizer quantizer;
 };
+
+MIN_EXTERNAL(QuantizerMax); // NOLINT
