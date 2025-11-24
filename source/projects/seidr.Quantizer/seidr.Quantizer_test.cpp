@@ -141,8 +141,9 @@ SCENARIO("clear the notes") { // NOLINT
             REQUIRE(myObject.noteCount() == 0);
 
             for (int i = 0; i < MIDI::KEYBOARD_SIZE; i++) {
-                REQUIRE_NOTHROW(myObject.add({i, -1}));
                 REQUIRE(myObject.noteCount() == i);
+                REQUIRE_NOTHROW(myObject.add({i, -1}));
+                REQUIRE(myObject.noteCount() == i + 1);
             }
 
             for (int i = 0; i < MIDI::KEYBOARD_SIZE; i++) {
