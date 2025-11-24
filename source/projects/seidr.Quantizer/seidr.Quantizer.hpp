@@ -22,8 +22,11 @@ public:
     MIN_RELATED{"seidr.*"};            // NOLINT 
 
     explicit QuantizerMax(const atoms &args = {});
-
+    auto processNote(int note, int velocity) -> void;
     auto addNote(int noteValue) -> int { return this->quantizer.addNote(noteValue); }
+    auto noteCount() -> int { return this->quantizer.noteCount(); }
+    auto getRoundDirection() -> Quantizer::RoundDirection { return this->quantizer.getRoundDirection(); }
+    auto setRoundDirection(Quantizer::RoundDirection direction) -> Quantizer::RoundDirection { return this->quantizer.setRoundDirection(direction); }
 
     c74::min::inlet<> input {this, "(int) input note"};
 
@@ -34,10 +37,18 @@ public:
         this, "int", "Process note messages",
         MIN_FUNCTION {
             if (!args.empty()){
-                int note = args[0];
-
-                if (quantizer.noteCount() > 0){
-                    output0.send(quantizer.quantize(note));
+                switch (args.size()) {
+                    case 1: {
+                        int note = args[0];
+                        this->processNote(note, MIDI::RANGE_HIGH + 1);
+                        break;
+                    }
+                    default: {
+                        int note = args[0];
+                        int velocity = args[1];                        
+                        this->processNote(note, velocity);
+                        break;
+                    }
                 }
             }
             return {};
