@@ -72,15 +72,13 @@ class QuantizerMax : public c74::min::object<QuantizerMax> {
     c74::min::message<> add{
         this, "add", "Process note messages",
         MIN_FUNCTION{
-            if (!args.empty()){
-                if (args.size() >= 1) {
-                    for (int i = 0; i < args.size(); i++) {
-                        int note = args[i];
-                        if(note >= MIDI::RANGE_LOW && note <= MIDI::RANGE_HIGH ) {
-                            this->quantizer.addNote(note);
-                        }
-                    }                
-                }
+            if (!args.empty()) {
+                for (const auto &arg : args) {
+                    int note = arg;
+                    if(note >= MIDI::RANGE_LOW && note <= MIDI::RANGE_HIGH ) {
+                        this->quantizer.addNote(note);
+                    }
+                }                
             }
             return {};
         }
@@ -90,10 +88,8 @@ class QuantizerMax : public c74::min::object<QuantizerMax> {
         this, "del", "Process note messages",
         MIN_FUNCTION{
             if (!args.empty()){
-                if (args.size() >= 1) {
-                    for (int i = 0; i < args.size(); i++) {
-                        this->quantizer.deleteNote(args[i]);
-                    }
+                for(const auto &arg: args){
+                    this->quantizer.deleteNote(arg);
                 }
             }
             return {};
