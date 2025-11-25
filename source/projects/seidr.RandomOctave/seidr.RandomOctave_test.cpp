@@ -4,7 +4,6 @@
 ///	@license	Use of this source code is governed by the MIT License
 ///             found in the License.md file.
 
-#include "Utils/Constants.hpp"
 #include "Utils/MIDI.hpp"
 #include "seidr.RandomOctave.cpp" // NOLINT
 #include "seidr.RandomOctave.hpp"
