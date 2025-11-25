@@ -21,7 +21,7 @@ void RandomOctaveMax::clearAllNotesMessage() {
 }
 
 void RandomOctaveMax::setRangeMessage(int low, int high) {
-    randomOctave_.setRandomRange(low, high);
+    randomOctave_.setRange(low, high);
 }
 
 RandomOctaveMax::RandomOctaveMax(const atoms &args) {
