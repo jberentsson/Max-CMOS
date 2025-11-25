@@ -2,10 +2,9 @@
 ///	@ingroup 	seidr
 ///	@copyright	Copyright 2018 - Jóhann Berentsson. All rights reserved.
 ///	@license	Use of this source code is governed by the MIT License
-/// found in the License.md file.
+///             found in the License.md file.
 
 #include "seidr.ShiftRegister.hpp"
-#include <iostream>
 
 using namespace c74::min;
 
@@ -23,10 +22,6 @@ ShiftRegisterMax::ShiftRegisterMax(const atoms &args) {
             outputs.push_back(
                 std::make_unique<outlet<>>(this, "( int | bang ) output " + std::to_string(i)));
         }
-    }
-
-    for (int i = 0; i < args.size(); i++) { // NOLINT
-        cout << "arg[" << i << "]" << args[i] << endl;
     }
 };
 

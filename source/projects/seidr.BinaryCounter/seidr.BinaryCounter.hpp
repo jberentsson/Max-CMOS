@@ -2,25 +2,19 @@
 ///	@ingroup 	seidr
 ///	@copyright	Copyright 2022 - Jóhann Berentsson. All rights reserved.
 ///	@license	Use of this source code is governed by the MIT License
-/// found in the License.md file.
+///             found in the License.md file.
 
 #pragma once
 
 #include <c74_min.h>
-#include "BinaryCounter/BinaryCounter.hpp"
-
-#include <ext_mess.h>
-#include <fcntl.h>
-#include <string>
-#include <vector>
-#include <cstdint>
+#include "Counter/Counter.hpp"
 
 using namespace c74::min;
 
 class BinaryCounterMax : public object<BinaryCounterMax> {
 public:
     MIN_DESCRIPTION{"Binary Counter"}; // NOLINT 
-    MIN_TAGS{"jb, counter"};           // NOLINT 
+    MIN_TAGS{"seidr"};                 // NOLINT 
     MIN_AUTHOR{"Jóhann Berentsson"};   // NOLINT 
     MIN_RELATED{"seidr.*"};            // NOLINT 
     
@@ -30,9 +24,9 @@ public:
 
     explicit BinaryCounterMax(const atoms &args = {});
 
-    void enableBangs();
-    void disableBangs();
-    void updateOutputs();
+    auto enableBangs() -> void;
+    auto disableBangs() -> void;
+    auto updateOutputs() -> void;
     auto getBit(int output) -> unsigned int;
 
     auto counterValue() -> unsigned int;
@@ -106,5 +100,5 @@ public:
     };
 
 private:
-    BinaryCounter counter_ = BinaryCounter(OUTPUT_COUNT);
+    Counter counter_ = Counter(OUTPUT_COUNT);
 };

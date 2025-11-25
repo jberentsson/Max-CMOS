@@ -1,14 +1,11 @@
-/// @file       seidr.BinaryCounter.hpp
+/// @file       seidr.ShiftRegister.hpp
 ///	@ingroup 	seidr
 ///	@copyright	Copyright 2025 - Jóhann Berentsson. All rights reserved.
 ///	@license	Use of this source code is governed by the MIT License
-/// found in the License.md file.
+///             found in the License.md file.
 
 #pragma once
 
-#include <iostream>
-#include <string>
-#include <vector>
 #include <cstdint>
 
 #include <c74_min.h>
@@ -70,7 +67,6 @@ public:
     c74::min::message<threadsafe::yes> anything{
         this, "anything", "Handle any message",
         MIN_FUNCTION {
-            cout << "anything args size: " << args.size() << endl;
             return {};
         }
     };
@@ -78,7 +74,6 @@ public:
     c74::min::message<threadsafe::yes> symbol{
         this, "symbol", "Handle any message",
         MIN_FUNCTION {
-            cout << "symbol args size: " << args.size() << endl;
             return {};
         }
     };
@@ -98,7 +93,7 @@ public:
                     handleOutputs();
                     break;
                 default:
-                    cout << "Some other inlet: " << inlet << endl;
+                    break;
             }
             return {};
         }
@@ -117,7 +112,7 @@ public:
                         break;
                     }
                     default:
-                        std::cout << "Some other integer: " << args[0] << " Inlet: " << inlet << "\n";
+                        break;
                 }
             }
             return {};

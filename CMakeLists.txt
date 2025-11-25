@@ -4,6 +4,8 @@ set(C74_MIN_API_DIR ${CMAKE_CURRENT_SOURCE_DIR}/source/min-api)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+
+
 # Extract package name from directory path.
 string(REGEX REPLACE ".*/([^/]+)" "\\1" 
        THIS_PACKAGE_NAME 

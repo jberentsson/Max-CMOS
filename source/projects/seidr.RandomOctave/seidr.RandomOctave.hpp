@@ -2,22 +2,21 @@
 ///	@ingroup 	seidr
 ///	@copyright	Copyright 2025 - Jóhann Berentsson. All rights reserved.
 ///	@license	Use of this source code is governed by the MIT License
-/// found in the License.md file.
+///             found in the License.md file.
 
 #pragma once
 
 #include <c74_min.h>
-#include "Keyboard/Keyboard.hpp"
+#include "RandomOctave/RandomOctave.hpp"
 
-// Forward declaration
-class Keyboard;
+using namespace c74::min;
 
-class NoteRandomOctaveMax : public c74::min::object<NoteRandomOctaveMax> {
+class RandomOctaveMax : public object<RandomOctaveMax> {
 private:
-    Keyboard keyboard_;
+    RandomOctave randomOctave_;
 
 public:
-    explicit NoteRandomOctaveMax(const c74::min::atoms &args = {});
+    explicit RandomOctaveMax(const c74::min::atoms &args = {});
 
     void processNoteMessage(int note, int velocity);
     void clearNoteMessage(int note);
@@ -25,13 +24,36 @@ public:
     void setRangeMessage(int low, int high);
 
     // Inlets and outlets
-    c74::min::inlet<> input0{this, "(int) note, (int) velocity"};
-    c74::min::outlet<> output0{this, "(int) pitch"};
-    c74::min::outlet<> output1{this, "(int) velocity"};
+    inlet<> input_note_velcoty {this, "(int) note, (int) velocity"};
+    outlet<> output_note       {this, "(int) pitch"};
+    outlet<> output_velocity   {this, "(int) velocity"};
 
-    // Messages with handlers defined inline
-    c74::min::message<> anything{
+    message<> anything{
         this, "anything", "Process note messages",
+        MIN_FUNCTION {
+            if (args.size() >= 2) {
+                int note = args[0];
+                int velocity = args[1];
+                processNoteMessage(note, velocity);
+            }
+            return {};
+        }
+    };
+    
+    message<> int_message {
+        this, "int", "Process note messages",
+        MIN_FUNCTION {
+            if (args.size() >= 2) {
+                int note = args[0];
+                int velocity = args[1];
+                processNoteMessage(note, velocity);
+            }
+            return {};
+        }
+    };
+    
+    c74::min::message<> list_message {
+        this, "list", "Process note messages",
         MIN_FUNCTION {
             if (args.size() >= 2) {
                 int note = args[0];
