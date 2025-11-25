@@ -6,7 +6,7 @@
 
 #include <c74_min_unittest.h>
 #include "seidr.Quantizer.hpp"
-#include "seidr.Quantizer.cpp"
+#include "seidr.Quantizer.cpp" // NOLINT
 
 using namespace c74::min;
 using namespace MIDI::Notes;
@@ -74,7 +74,7 @@ SCENARIO("quantizer processes notes correctly") {
         }
         
         WHEN("processing a note with list message") {
-            atoms args = {NoteDS5, 100};
+            atoms args = {NoteDS5, 100}; // NOLINT
             REQUIRE_NOTHROW(myObject.list(args));
             
             THEN("both note and velocity outputs should be sent") {

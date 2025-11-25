@@ -28,7 +28,7 @@ QuantizerMax::QuantizerMax(const atoms &args) {
 }
 
 // Process note implementation
-auto QuantizerMax::processNote(int note, int velocity) -> void {
+auto QuantizerMax::processNote(int note, int velocity) -> void { // NOLINT
     // Validate input
     if (note < MIDI::RANGE_LOW || note > MIDI::RANGE_HIGH) {
         //cout << "Note out of range: " << note << endl;

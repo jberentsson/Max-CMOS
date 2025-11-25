@@ -119,12 +119,16 @@ public:
         MIN_FUNCTION {
             if (!args.empty()) {
                 for (const auto &arg : args) {
-                    switch(static_cast<int>(arg)){
+                    int mode = static_cast<int>(arg);
+                    
+                    switch(mode){
                         case 0:
                             this->quantizer.setMode(Quantizer::QuantizeMode::TWELVE_NOTES);
                             break; 
                         case 1:
                             this->quantizer.setMode(Quantizer::QuantizeMode::ALL_NOTES);
+                            break;
+                        default:
                             break;
                     }
                 }                
