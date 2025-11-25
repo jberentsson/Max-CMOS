@@ -22,11 +22,8 @@ public:
     explicit QuantizerMax(const atoms &args = {});
 
     auto processNote(int note, int velocity) -> void;
-    //auto addNote(int noteValue) -> int { return this->quantizer.addNote(noteValue); }
     auto noteCount() -> int { return this->quantizer.noteCount(); }
     auto getRoundDirection() -> Quantizer::RoundDirection { return this->quantizer.getRoundDirection(); }
-    auto setRoundDirection(Quantizer::RoundDirection direction) -> Quantizer::RoundDirection { return this->quantizer.setRoundDirection(direction); }
-    auto setMode(Quantizer::QuantizeMode mode) -> Quantizer::QuantizeMode { return this->quantizer.setMode(mode); }
 
     inlet<> input_note {this, "(anything | list | reset) input note"};
 
@@ -131,6 +128,29 @@ public:
                             break; 
                         case 1:
                             this->quantizer.setMode(Quantizer::QuantizeMode::ALL_NOTES);
+                            break;
+                        default:
+                            break;
+                    }
+                }                
+            }
+            return {};
+        }
+    };
+
+    message<threadsafe::yes> quantizerRound {
+        this, "round", "Set quantizer mode.",
+        MIN_FUNCTION {
+            if (!args.empty()) {
+                for (const auto &arg : args) {
+                    int modeFlag = static_cast<int>(arg);
+
+                    switch(modeFlag){
+                        case 0:
+                            this->quantizer.setRoundDirection(Quantizer::RoundDirection::UP);
+                            break; 
+                        case 1:
+                            this->quantizer.setRoundDirection(Quantizer::RoundDirection::DOWN);
                             break;
                         default:
                             break;

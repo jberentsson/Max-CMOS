@@ -30,7 +30,7 @@ SCENARIO("quantizer can add notes") {
     GIVEN("A QuantizerMax instance") {
         test_wrapper<QuantizerMax> an_instance;
         QuantizerMax& myObject = an_instance;
-        myObject.setMode(Quantizer::QuantizeMode::ALL_NOTES);
+        myObject.quantizerMode(Quantizer::QuantizeMode::ALL_NOTES);
         
         WHEN("adding notes via addNote method") {
             // FIXED: Use the actual method names
@@ -55,7 +55,7 @@ SCENARIO("quantizer processes notes correctly") {
     GIVEN("A QuantizerMax with C major scale") {
         test_wrapper<QuantizerMax> an_instance;
         QuantizerMax& myObject = an_instance;
-        myObject.setMode(Quantizer::QuantizeMode::ALL_NOTES);
+        myObject.quantizerMode(Quantizer::QuantizeMode::ALL_NOTES);
         
         // Add C major notes
         atoms scale = {NoteC5, NoteD5, NoteE5, NoteF5, NoteG5, NoteA5, NoteB5};
@@ -119,10 +119,10 @@ SCENARIO("quantizer handles round directions") {
         myObject.quantizerAddNote(notes);
         
         WHEN("setting round direction") {
-            REQUIRE_NOTHROW(myObject.setRoundDirection(Quantizer::RoundDirection::UP));
+            REQUIRE_NOTHROW(myObject.quantizerRound(Quantizer::RoundDirection::UP));
             REQUIRE(myObject.getRoundDirection() == Quantizer::RoundDirection::UP);
             
-            REQUIRE_NOTHROW(myObject.setRoundDirection(Quantizer::RoundDirection::DOWN));
+            REQUIRE_NOTHROW(myObject.quantizerRound(Quantizer::RoundDirection::DOWN));
             REQUIRE(myObject.getRoundDirection() == Quantizer::RoundDirection::DOWN);
         }
     }
@@ -163,7 +163,7 @@ SCENARIO("adding notes to the quantizer") {
 
     test_wrapper<QuantizerMax> an_instance;
     QuantizerMax &myObject = an_instance;
-    myObject.setMode(Quantizer::QuantizeMode::ALL_NOTES);
+    myObject.quantizerMode(Quantizer::QuantizeMode::ALL_NOTES);
     
     GIVEN("the notes"){
         auto &out = *c74::max::object_getoutput(myObject, 0);
@@ -194,7 +194,7 @@ SCENARIO("adding notes to the quantizer with velocity") {
     test_wrapper<QuantizerMax> an_instance;
     QuantizerMax &myObject = an_instance;
     
-    myObject.setMode(Quantizer::QuantizeMode::ALL_NOTES);
+    myObject.quantizerMode(Quantizer::QuantizeMode::ALL_NOTES);
 
     GIVEN("the notes") {
         REQUIRE(myObject.getRoundDirection() == Quantizer::RoundDirection::UP);
@@ -230,7 +230,7 @@ SCENARIO("adding notes to the quantizer with velocity") {
         REQUIRE_NOTHROW(myObject.quantizerAddNote(NoteG4));
         REQUIRE(myObject.noteCount() == 4);
     
-        REQUIRE_NOTHROW(myObject.setRoundDirection(Quantizer::RoundDirection::DOWN));
+        REQUIRE_NOTHROW(myObject.quantizerRound(Quantizer::RoundDirection::DOWN));
 
         c74::min::atoms args3 = {MIDI::Notes::NoteB4, 127}; // NOLINT
         REQUIRE_NOTHROW(myObject.list(args3));
@@ -251,7 +251,7 @@ SCENARIO("clear the notes") { // NOLINT
         test_wrapper<QuantizerMax> an_instance;
         QuantizerMax &myObject = an_instance;
         
-        myObject.setMode(Quantizer::QuantizeMode::TWELVE_NOTES);
+        myObject.quantizerMode(Quantizer::QuantizeMode::TWELVE_NOTES);
 
         WHEN("add and remove notes") {
             REQUIRE_NOTHROW(myObject.quantizerAddNote({0,1,2,3,4,5,6,7,8,9,10,11,12}));
@@ -268,7 +268,7 @@ SCENARIO("clear the notes") { // NOLINT
         test_wrapper<QuantizerMax> an_instance;
         QuantizerMax &myObject = an_instance;
 
-        myObject.setMode(Quantizer::QuantizeMode::ALL_NOTES);
+        myObject.quantizerMode(Quantizer::QuantizeMode::ALL_NOTES);
         
         WHEN("add and remove notes") {
             REQUIRE(myObject.noteCount() == 0);
