@@ -91,12 +91,16 @@ public:
         this, "through", "Disable note through.",
         MIN_FUNCTION {
             if (!args.empty()) {
-                switch(static_cast<int>(args[0])){
+                int quantizeFlag = static_cast<int>(args[0]);
+
+                switch(quantizeFlag){
                     case 0:
                         this->quantizer.disableThrough();
                         break;
                     case 1:
                         this->quantizer.enableThrough();
+                        break;
+                    default:
                         break;
                 }
             }
@@ -119,9 +123,9 @@ public:
         MIN_FUNCTION {
             if (!args.empty()) {
                 for (const auto &arg : args) {
-                    int mode = static_cast<int>(arg);
-                    
-                    switch(mode){
+                    int modeFlag = static_cast<int>(arg);
+
+                    switch(modeFlag){
                         case 0:
                             this->quantizer.setMode(Quantizer::QuantizeMode::TWELVE_NOTES);
                             break; 
