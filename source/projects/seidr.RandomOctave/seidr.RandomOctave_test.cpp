@@ -1,4 +1,4 @@
-/// @file       seidr.NoteRandomOctaveMax_test.cpp
+/// @file       seidr.RandomOctaveMax_test.cpp
 ///	@ingroup 	seidr
 ///	@copyright	Copyright 2025 - Jóhann Berentsson. All rights reserved.
 ///	@license	Use of this source code is governed by the MIT License
@@ -6,19 +6,19 @@
 
 #include "Utils/Constants.hpp"
 #include "Utils/MIDI.hpp"
-#include "seidr.NoteRandomOctave.cpp" // NOLINT
-#include "seidr.NoteRandomOctave.hpp"
+#include "seidr.RandomOctave.cpp" // NOLINT
+#include "seidr.RandomOctave.hpp"
 #include <c74_min_unittest.h>
 
 using namespace MIDI;
 using namespace MIDI::Notes;
 
-SCENARIO("seidr.NoteRandomOctaveMax object basic functionality") { // NOLINT
+SCENARIO("seidr.RandomOctaveMax object basic functionality") { // NOLINT
     ext_main(nullptr);
 
-    GIVEN("An instance of NoteRandomOctaveMax") {
-        test_wrapper<NoteRandomOctaveMax> an_instance;
-        NoteRandomOctaveMax &myObject = an_instance;
+    GIVEN("An instance of RandomOctaveMax") {
+        test_wrapper<RandomOctaveMax> an_instance;
+        RandomOctaveMax &myObject = an_instance;
 
         WHEN("the object is created") {
             THEN("it has the correct number of inlets and outlets") {
@@ -125,12 +125,12 @@ SCENARIO("seidr.NoteRandomOctaveMax object basic functionality") { // NOLINT
     }
 }
 
-SCENARIO("seidr.NoteRandomOctaveMax stress and performance tests") { // NOLINT
+SCENARIO("seidr.RandomOctaveMax stress and performance tests") { // NOLINT
     ext_main(nullptr);
 
     GIVEN("An instance under stress conditions") {
-        test_wrapper<NoteRandomOctaveMax> an_instance;
-        NoteRandomOctaveMax &myObject = an_instance;
+        test_wrapper<RandomOctaveMax> an_instance;
+        RandomOctaveMax &myObject = an_instance;
 
         WHEN("many rapid note messages are sent") {
             THEN("it handles rapid note-ons without crashing") {
@@ -185,12 +185,12 @@ SCENARIO("seidr.NoteRandomOctaveMax stress and performance tests") { // NOLINT
     }
 }
 
-SCENARIO("seidr.NoteRandomOctaveMax error handling tests") { // NOLINT
+SCENARIO("seidr.RandomOctaveMax error handling tests") { // NOLINT
     ext_main(nullptr);
 
     GIVEN("An instance handling invalid input") {
-        test_wrapper<NoteRandomOctaveMax> an_instance;
-        NoteRandomOctaveMax &myObject = an_instance;
+        test_wrapper<RandomOctaveMax> an_instance;
+        RandomOctaveMax &myObject = an_instance;
 
         WHEN("invalid list lengths are sent") {
             THEN("empty list is handled") {
@@ -260,12 +260,12 @@ SCENARIO("seidr.NoteRandomOctaveMax error handling tests") { // NOLINT
     }
 }
 
-SCENARIO("seidr.NoteRandomOctaveMax musical scale tests") { // NOLINT
+SCENARIO("seidr.RandomOctaveMax musical scale tests") { // NOLINT
     ext_main(nullptr);
 
     GIVEN("An instance processing musical scales") {
-        test_wrapper<NoteRandomOctaveMax> an_instance;
-        NoteRandomOctaveMax &myObject = an_instance;
+        test_wrapper<RandomOctaveMax> an_instance;
+        RandomOctaveMax &myObject = an_instance;
 
         WHEN("a C major scale is played") {
             THEN("all scale notes are processed without crashing") {

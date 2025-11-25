@@ -7,16 +7,16 @@
 #pragma once
 
 #include <c74_min.h>
-#include "Keyboard/Keyboard.hpp"
+#include "RandomOctave/RandomOctave.hpp"
 
 using namespace c74::min;
 
-class NoteRandomOctaveMax : public object<NoteRandomOctaveMax> {
+class RandomOctaveMax : public object<RandomOctaveMax> {
 private:
-    Keyboard keyboard_;
+    RandomOctave randomOctave_;
 
 public:
-    explicit NoteRandomOctaveMax(const c74::min::atoms &args = {});
+    explicit RandomOctaveMax(const c74::min::atoms &args = {});
 
     void processNoteMessage(int note, int velocity);
     void clearNoteMessage(int note);

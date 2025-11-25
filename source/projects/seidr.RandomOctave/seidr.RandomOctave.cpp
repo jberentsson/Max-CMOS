@@ -1,10 +1,10 @@
-#include "seidr.NoteRandomOctave.hpp"
+#include "seidr.RandomOctave.hpp"
 #include "Utils/MIDI.hpp"
 
 using namespace c74::min;
 
-void NoteRandomOctaveMax::clearNoteMessage(int note) {
-    int clearedCount = keyboard_.clearNotesByPitchClass(note);
+void RandomOctaveMax::clearNoteMessage(int note) {
+    int clearedCount = randomOctave_.clearNotesByPitchClass(note);
 
     if (clearedCount > 0) {
         output_note.send(note);
@@ -12,7 +12,7 @@ void NoteRandomOctaveMax::clearNoteMessage(int note) {
     }
 }
 
-void NoteRandomOctaveMax::clearAllNotesMessage() {
+void RandomOctaveMax::clearAllNotesMessage() {
     // Send all notes off as fallback.
     for (int note = 0; note < MIDI::KEYBOARD_SIZE; note++) {
         output_note.send(note);
@@ -20,19 +20,19 @@ void NoteRandomOctaveMax::clearAllNotesMessage() {
     }
 }
 
-void NoteRandomOctaveMax::setRangeMessage(int low, int high) {
-    keyboard_.setRandomRange(low, high);
+void RandomOctaveMax::setRangeMessage(int low, int high) {
+    randomOctave_.setRandomRange(low, high);
 }
 
-NoteRandomOctaveMax::NoteRandomOctaveMax(const atoms &args) {
+RandomOctaveMax::RandomOctaveMax(const atoms &args) {
     // Nothing here.
 }
 
-void NoteRandomOctaveMax::processNoteMessage(int note, int velocity) { // NOLINT
+void RandomOctaveMax::processNoteMessage(int note, int velocity) { // NOLINT
     // Process the note.
     if (velocity > 0) {
         // Note ON
-        const auto &activeNotes = keyboard_.getActiveNotes();
+        const auto &activeNotes = randomOctave_.getActiveNotes();
 
         if (activeNotes.empty()) {
             return;
@@ -51,4 +51,4 @@ void NoteRandomOctaveMax::processNoteMessage(int note, int velocity) { // NOLINT
     }
 }
 
-MIN_EXTERNAL(NoteRandomOctaveMax); // NOLINT
+MIN_EXTERNAL(RandomOctaveMax); // NOLINT
