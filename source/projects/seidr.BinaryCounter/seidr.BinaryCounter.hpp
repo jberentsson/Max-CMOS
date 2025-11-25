@@ -9,18 +9,12 @@
 #include <c74_min.h>
 #include "Counter/Counter.hpp"
 
-#include <ext_mess.h>
-#include <fcntl.h>
-#include <string>
-#include <vector>
-#include <cstdint>
-
 using namespace c74::min;
 
 class BinaryCounterMax : public object<BinaryCounterMax> {
 public:
     MIN_DESCRIPTION{"Binary Counter"}; // NOLINT 
-    MIN_TAGS{"jb, counter"};           // NOLINT 
+    MIN_TAGS{"seidr"};                 // NOLINT 
     MIN_AUTHOR{"Jóhann Berentsson"};   // NOLINT 
     MIN_RELATED{"seidr.*"};            // NOLINT 
     
@@ -30,9 +24,9 @@ public:
 
     explicit BinaryCounterMax(const atoms &args = {});
 
-    void enableBangs();
-    void disableBangs();
-    void updateOutputs();
+    auto enableBangs() -> void;
+    auto disableBangs() -> void;
+    auto updateOutputs() -> void;
     auto getBit(int output) -> unsigned int;
 
     auto counterValue() -> unsigned int;

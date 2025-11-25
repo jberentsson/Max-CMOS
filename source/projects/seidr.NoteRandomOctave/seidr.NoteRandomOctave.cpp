@@ -7,16 +7,16 @@ void NoteRandomOctaveMax::clearNoteMessage(int note) {
     int clearedCount = keyboard_.clearNotesByPitchClass(note);
 
     if (clearedCount > 0) {
-        output0.send(note);
-        output1.send(0);
+        output_note.send(note);
+        output_velocity.send(0);
     }
 }
 
 void NoteRandomOctaveMax::clearAllNotesMessage() {
     // Send all notes off as fallback.
     for (int note = 0; note < MIDI::KEYBOARD_SIZE; note++) {
-        output0.send(note);
-        output1.send(0);
+        output_note.send(note);
+        output_velocity.send(0);
     }
 }
 
@@ -42,12 +42,12 @@ void NoteRandomOctaveMax::processNoteMessage(int note, int velocity) { // NOLINT
         const auto &lastNote = activeNotes.back();
 
         // Send to outputs.
-        output0.send(lastNote->pitch());
-        output1.send(lastNote->velocity());
+        output_note.send(lastNote->pitch());
+        output_velocity.send(lastNote->velocity());
     } else {
         // Note OFF
-        output0.send(note);
-        output1.send(0);
+        output_note.send(note);
+        output_velocity.send(0);
     }
 }
 

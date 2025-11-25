@@ -7,36 +7,39 @@
 #pragma once
 
 #include "Quantizer/Quantizer.hpp"
-
 #include <c74_min.h>
-#include <ext_mess.h>
-#include <fcntl.h>
 #include <iostream>
 
 using namespace c74::min;
 
-class QuantizerMax : public c74::min::object<QuantizerMax> {
-  public:
-
+class QuantizerMax : public object<QuantizerMax> {
+public:
     MIN_DESCRIPTION{"Quantizer"};      // NOLINT 
     MIN_TAGS{"seidr"};                 // NOLINT 
     MIN_AUTHOR{"Jóhann Berentsson"};   // NOLINT 
     MIN_RELATED{"seidr.*"};            // NOLINT 
 
     explicit QuantizerMax(const atoms &args = {});
+
     auto processNote(int note, int velocity) -> void;
-    auto addNote(int noteValue) -> int { return this->quantizer.addNote(noteValue); }
+    //auto addNote(int noteValue) -> int { return this->quantizer.addNote(noteValue); }
     auto noteCount() -> int { return this->quantizer.noteCount(); }
     auto getRoundDirection() -> Quantizer::RoundDirection { return this->quantizer.getRoundDirection(); }
     auto setRoundDirection(Quantizer::RoundDirection direction) -> Quantizer::RoundDirection { return this->quantizer.setRoundDirection(direction); }
     auto setMode(Quantizer::QuantizeMode mode) -> Quantizer::QuantizeMode { return this->quantizer.setMode(mode); }
 
-    c74::min::inlet<> input {this, "(anything) input note"};
+    inlet<> input_note {this, "(anything | list | reset) input note"};
 
-    c74::min::outlet<> output0 {this, "(anything) output note"};
-    c74::min::outlet<> output1 {this, "(anything) output velocity"};
+    outlet<> output_note     {this, "(int) output note"};
+    outlet<> output_velocity {this, "(int) output velocity"};
 
-    c74::min::message<> anything {
+    message<threadsafe::yes> int_message { this, "int", "Post something to the Max console.",
+        MIN_FUNCTION {
+            return {};
+        }
+    };
+
+    message<threadsafe::yes> anything {
         this, "anything", "Process note messages",
         MIN_FUNCTION {
             if (!args.empty()){
@@ -46,35 +49,35 @@ class QuantizerMax : public c74::min::object<QuantizerMax> {
         }
     };
     
-    c74::min::message<> integer {
-        this, "integer", "Process note messages",
-            MIN_FUNCTION {
+    message<threadsafe::yes> note_int {
+        this, "int", "Process note messages",
+        MIN_FUNCTION {
             if (!args.empty()) {
-                int note = args[0];
+                int note = static_cast<int>(args[0]);
                 this->processNote(note, MIDI::RANGE_HIGH + 1);
             }
             return {};
         }
     };
 
-    c74::min::message<> list{
+    message<threadsafe::yes> list {
         this, "list", "Process note messages",
-        MIN_FUNCTION{
+        MIN_FUNCTION {
             if (!args.empty() && args.size() == 2){
-                int note = args[0];
-                int velocity = args[1];
+                int note = static_cast<int>(args[0]);
+                int velocity = static_cast<int>(args[1]);
                 this->processNote(note, velocity);
             }
             return {};
         }
     };
 
-    c74::min::message<> add{
-        this, "add", "Process note messages",
-        MIN_FUNCTION{
+    message<threadsafe::yes> quantizerAddNote {
+        this, "add", "Add notes to quantizer",
+        MIN_FUNCTION {
             if (!args.empty()) {
                 for (const auto &arg : args) {
-                    int note = arg;
+                    int note = static_cast<int>(arg);
                     if(note >= MIDI::RANGE_LOW && note <= MIDI::RANGE_HIGH ) {
                         this->quantizer.addNote(note);
                     }
@@ -84,12 +87,70 @@ class QuantizerMax : public c74::min::object<QuantizerMax> {
         }
     };
 
-    c74::min::message<> del{
-        this, "del", "Process note messages",
-        MIN_FUNCTION{
+    message<threadsafe::yes> quantizerThrough {
+        this, "through", "Disable note through.",
+        MIN_FUNCTION {
+            if (!args.empty()) {
+                switch(static_cast<int>(args[0])){
+                    case 0:
+                        this->quantizer.disableThrough();
+                        break;
+                    case 1:
+                        this->quantizer.enableThrough();
+                        break;
+                }
+            }
+            return {};
+        }
+    };
+
+    message<threadsafe::yes> quantizerClear {
+        this, "clear", "Clear notes from the quantizer.",
+        MIN_FUNCTION {
+            if (!args.empty()) {
+                    this->quantizer.clear();
+            }
+            return {};
+        }
+    };
+
+    message<threadsafe::yes> quantizerMode {
+        this, "mode", "Set quantizer mode.",
+        MIN_FUNCTION {
+            if (!args.empty()) {
+                for (const auto &arg : args) {
+                    switch(static_cast<int>(arg)){
+                        case 0:
+                            this->quantizer.setMode(Quantizer::QuantizeMode::TWELVE_NOTES);
+                            break; 
+                        case 1:
+                            this->quantizer.setMode(Quantizer::QuantizeMode::ALL_NOTES);
+                            break;
+                    }
+                }                
+            }
+            return {};
+        }
+    };
+
+    message<threadsafe::yes> quantizerRange {
+        this, "range", "Set quantizer range.",
+        MIN_FUNCTION {
+            if (!args.empty() && args.size() >= 2) {
+                int low = static_cast<int>(args[0]);
+                int high = static_cast<int>(args[1]);
+                this->quantizer.setRange(low, high);
+            }
+            return {};
+        }
+    };
+
+    message<threadsafe::yes> quantizerDeleteNote {
+        this, "delete", "Delete notes from quantizer",
+        MIN_FUNCTION {
             if (!args.empty()){
                 for(const auto &arg: args){
-                    this->quantizer.deleteNote(arg);
+                    this->quantizer.deleteNote(static_cast<int>(arg));
                 }
             }
             return {};
@@ -99,5 +160,3 @@ class QuantizerMax : public c74::min::object<QuantizerMax> {
 private:
     Quantizer quantizer;
 };
-
-MIN_EXTERNAL(QuantizerMax); // NOLINT
