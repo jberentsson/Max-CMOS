@@ -21,7 +21,7 @@ void RandomOctaveMax::clearAllNotesMessage() {
 }
 
 void RandomOctaveMax::setRangeMessage(int low, int high) {
-    randomOctave_.setRandomRange(low, high);
+    randomOctave_.setRange(low, high);
 }
 
 RandomOctaveMax::RandomOctaveMax(const atoms &args) {
@@ -30,25 +30,21 @@ RandomOctaveMax::RandomOctaveMax(const atoms &args) {
 
 void RandomOctaveMax::processNoteMessage(int note, int velocity) { // NOLINT
     // Process the note.
-    if (velocity > 0) {
-        // Note ON
-        const auto &activeNotes = randomOctave_.getActiveNotes();
+    randomOctave_.note(note, velocity);
 
-        if (activeNotes.empty()) {
-            return;
-        }
+    // Note ON
+    const auto &activeNotes = randomOctave_.getActiveNotes();
 
-        // Get the most recently added note.
-        const auto &lastNote = activeNotes.back();
-
-        // Send to outputs.
-        output_note.send(lastNote->pitch());
-        output_velocity.send(lastNote->velocity());
-    } else {
-        // Note OFF
-        output_note.send(note);
-        output_velocity.send(0);
+    if (activeNotes.empty()) {
+        return;
     }
+
+    // Get the most recently added note.
+    const auto &lastNote = activeNotes.back();
+
+    // Send to outputs.
+    output_note.send(lastNote->pitch());
+    output_velocity.send(lastNote->velocity());
 }
 
 MIN_EXTERNAL(RandomOctaveMax); // NOLINT
