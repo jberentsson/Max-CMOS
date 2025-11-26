@@ -30,7 +30,7 @@ SCENARIO("quantizer can add notes") {
     GIVEN("A QuantizerMax instance") {
         test_wrapper<QuantizerMax> an_instance;
         QuantizerMax& quantizerTestObject = an_instance;
-        quantizerTestObject.quantizerMode(Quantizer::QuantizeMode::ALL_NOTES);
+        REQUIRE_NOTHROW(quantizerTestObject.quantizerMode(Quantizer::QuantizeMode::ALL_NOTES));
         
         WHEN("adding notes via addNote method") {
             // FIXED: Use the actual method names
@@ -42,9 +42,8 @@ SCENARIO("quantizer can add notes") {
         }
         
         WHEN("adding notes via add message") {
-            atoms args = { NoteC4, NoteE4, NoteG4 };
             // FIXED: Use the correct message handler name
-            REQUIRE_NOTHROW(quantizerTestObject.quantizerAddNote(args));
+            REQUIRE_NOTHROW(quantizerTestObject.quantizerAddNote({ NoteC4, NoteE4, NoteG4 }));
             REQUIRE(quantizerTestObject.noteCount() == 3);
         }
     }
@@ -55,27 +54,17 @@ SCENARIO("quantizer processes notes correctly") {
     GIVEN("A QuantizerMax with C major scale") {
         test_wrapper<QuantizerMax> an_instance;
         QuantizerMax& quantizerTestObject = an_instance;
-        quantizerTestObject.quantizerMode(Quantizer::QuantizeMode::ALL_NOTES);
+        REQUIRE_NOTHROW(quantizerTestObject.quantizerMode(Quantizer::QuantizeMode::ALL_NOTES));
         
         // Add C major notes
-        atoms scale = {
-            NoteC5,
-            NoteD5,
-            NoteE5,
-            NoteF5,
-            NoteG5,
-            NoteA5,
-            NoteB5
-        };
-
-        quantizerTestObject.quantizerAddNote(scale);
+        REQUIRE_NOTHROW(quantizerTestObject.quantizerAddNote({ NoteC5, NoteD5, NoteE5, NoteF5, NoteG5, NoteA5, NoteB5 }));
         
         auto& out0 = *c74::max::object_getoutput(quantizerTestObject, 0);
         auto& out1 = *c74::max::object_getoutput(quantizerTestObject, 1);
         
         WHEN("processing a note with integer message") {
-            atoms args = { NoteDS5 }; // D#5 should quantize to E5
-            REQUIRE_NOTHROW(quantizerTestObject.note_int(args));
+            // D#5 should quantize to E5
+            REQUIRE_NOTHROW(quantizerTestObject.note_int(NoteDS5));
             
             THEN("output should be sent") {
                 REQUIRE(!out0.empty());
@@ -83,8 +72,7 @@ SCENARIO("quantizer processes notes correctly") {
         }
         
         WHEN("processing a note with list message") {
-            atoms args = { NoteDS5, 100 }; // NOLINT
-            REQUIRE_NOTHROW(quantizerTestObject.list(args));
+            REQUIRE_NOTHROW(quantizerTestObject.list({ NoteDS5, 100 })); // NOLINT
             
             THEN("both note and velocity outputs should be sent") {
                 REQUIRE(!out0.empty());
@@ -100,16 +88,13 @@ SCENARIO("quantizer handles note deletion") {
         test_wrapper<QuantizerMax> an_instance;
         QuantizerMax& quantizerTestObject = an_instance;
         
-        atoms notes = {NoteC5, NoteE5, NoteG5};
-        
         quantizerTestObject.quantizerMode(1);
-        quantizerTestObject.quantizerAddNote(notes);
+        quantizerTestObject.quantizerAddNote({ NoteC5, NoteE5, NoteG5 });
 
         REQUIRE(quantizerTestObject.noteCount() == 3);
         
         WHEN("deleting notes via del message") {
-            atoms toDelete = {NoteE5};
-            REQUIRE_NOTHROW(quantizerTestObject.quantizerDeleteNote(toDelete));
+            REQUIRE_NOTHROW(quantizerTestObject.quantizerDeleteNote(NoteE5));
             
             THEN("note count should decrease") {
                 REQUIRE(quantizerTestObject.noteCount() == 2);
@@ -124,8 +109,7 @@ SCENARIO("quantizer handles round directions") {
         test_wrapper<QuantizerMax> an_instance;
         QuantizerMax& quantizerTestObject = an_instance;
         
-        atoms notes = {NoteC5, NoteE5};
-        quantizerTestObject.quantizerAddNote(notes);
+        quantizerTestObject.quantizerAddNote({ NoteC5, NoteE5 });
         
         WHEN("setting round direction") {
             REQUIRE_NOTHROW(quantizerTestObject.quantizerRound(Quantizer::RoundDirection::UP));
@@ -143,15 +127,9 @@ SCENARIO("quantizer handles range limits") {
         test_wrapper<QuantizerMax> an_instance;
         QuantizerMax& quantizerTestObject = an_instance;
         
-        quantizerTestObject.quantizerMode(Quantizer::QuantizeMode::TWELVE_NOTES);
-        
-        atoms notes = {NoteC5, NoteE5, NoteE6};
-        quantizerTestObject.quantizerAddNote(notes);
-
-        int rangeLow = NoteC3;
-        int rangeHigh = NoteC5;
-
-        quantizerTestObject.quantizerRange({rangeLow, rangeHigh});
+        quantizerTestObject.quantizerMode(Quantizer::QuantizeMode::TWELVE_NOTES);        
+        quantizerTestObject.quantizerAddNote({ NoteC5, NoteE5, NoteE6 });
+        quantizerTestObject.quantizerRange({NoteC3, NoteC5});
 
         REQUIRE_NOTHROW(quantizerTestObject.note_int(NoteB3));
 
@@ -172,27 +150,28 @@ SCENARIO("adding notes to the quantizer") {
 
     test_wrapper<QuantizerMax> an_instance;
     QuantizerMax &quantizerTestObject = an_instance;
-    quantizerTestObject.quantizerMode(Quantizer::QuantizeMode::ALL_NOTES);
+
+    REQUIRE_NOTHROW(quantizerTestObject.quantizerMode(Quantizer::QuantizeMode::ALL_NOTES));
     
     GIVEN("the notes"){
         auto &note_output = *c74::max::object_getoutput(quantizerTestObject, 0);
         
-        REQUIRE_NOTHROW(quantizerTestObject.note_int(MIDI::Notes::NoteB3));
-        REQUIRE(note_output[0][1] == MIDI::Notes::NoteB3);
+        REQUIRE_NOTHROW(quantizerTestObject.note_int(NoteB3));
+        REQUIRE(note_output[0][1] == NoteB3);
 
         REQUIRE(!note_output.empty());
-        REQUIRE_NOTHROW(quantizerTestObject.quantizerAddNote(MIDI::Notes::NoteC4));
+        REQUIRE_NOTHROW(quantizerTestObject.quantizerAddNote(NoteC4));
         
-        REQUIRE_NOTHROW(quantizerTestObject.note_int(MIDI::Notes::NoteC4));
+        REQUIRE_NOTHROW(quantizerTestObject.note_int(NoteC4));
         REQUIRE(!note_output.empty());
         REQUIRE(!note_output[0].empty());
-        REQUIRE(note_output[1][1] == 48);
+        REQUIRE(note_output[1][1] == NoteC4);
 
         WHEN("first note is detected") {
             REQUIRE(quantizerTestObject.noteCount() == 1);
         }
         
-        REQUIRE_NOTHROW(quantizerTestObject.quantizerAddNote(MIDI::Notes::NoteC5));
+        REQUIRE_NOTHROW(quantizerTestObject.quantizerAddNote(NoteC5));
         REQUIRE(quantizerTestObject.noteCount() == 2);
     }
 }
@@ -211,49 +190,39 @@ SCENARIO("adding notes to the quantizer with velocity") {
         auto &note_output = *c74::max::object_getoutput(quantizerTestObject, 0);
         auto &velocity_output = *c74::max::object_getoutput(quantizerTestObject, 1);
 
-        c74::min::atoms args = {MIDI::Notes::NoteB3, 127}; // NOLINT
-        REQUIRE_NOTHROW(quantizerTestObject.list(args));
+        REQUIRE_NOTHROW(quantizerTestObject.list({ NoteB3, 127 })); // NOLINT
 
         REQUIRE(!note_output.empty());
         REQUIRE(!velocity_output.empty());
         REQUIRE(!note_output[0].empty());
         REQUIRE(!velocity_output[0].empty());
-        REQUIRE(note_output[0][1] == MIDI::Notes::NoteB3);
+        REQUIRE(note_output[0][1] == NoteB3);
         REQUIRE(velocity_output[0][1] == 127);
         REQUIRE_NOTHROW(quantizerTestObject.quantizerAddNote({NoteB3, 69}));
         REQUIRE(quantizerTestObject.noteCount() == 2);
-
         REQUIRE_NOTHROW(quantizerTestObject.quantizerAddNote(NoteC5));
         REQUIRE(quantizerTestObject.noteCount() == 3);
-
-        c74::min::atoms args2 = {MIDI::Notes::NoteB4, 127}; // NOLINT
-        REQUIRE_NOTHROW(quantizerTestObject.list(args2));
-
+        REQUIRE_NOTHROW(quantizerTestObject.list({ NoteB4, 127 })); // NOLINT
         REQUIRE(!note_output.empty());
         REQUIRE(!velocity_output.empty());
         REQUIRE(!note_output[1].empty());
         REQUIRE(!velocity_output[1].empty());
-        REQUIRE(note_output[1][1] == MIDI::Notes::NoteC5);
+        REQUIRE(note_output[1][1] == NoteC5);
         REQUIRE(velocity_output[1][1] == 127);
-
         REQUIRE_NOTHROW(quantizerTestObject.quantizerAddNote(NoteG4));
         REQUIRE(quantizerTestObject.noteCount() == 4);
-    
         REQUIRE_NOTHROW(quantizerTestObject.quantizerRound(Quantizer::RoundDirection::DOWN));
-
-        c74::min::atoms args3 = {MIDI::Notes::NoteB4, 127}; // NOLINT
-        REQUIRE_NOTHROW(quantizerTestObject.list(args3));
-
+        REQUIRE_NOTHROW(quantizerTestObject.list({ NoteB4, 127 }));
         REQUIRE(!note_output.empty());
         REQUIRE(!velocity_output.empty());
         REQUIRE(!note_output[2].empty());
         REQUIRE(!velocity_output[2].empty());
-        REQUIRE(note_output[2][1] == MIDI::Notes::NoteG4);
+        REQUIRE(note_output[2][1] == NoteG4);
         REQUIRE(velocity_output[2][1] == 127); // NOLINT
     }
 }
 
-SCENARIO("clear the notes") { // NOLINT
+SCENARIO("clear the notes") {
     ext_main(nullptr);
     
     GIVEN("OCTAVE MODE") {
