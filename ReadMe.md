@@ -37,8 +37,8 @@ cmake --build build --config Release --clean-first --target <TARGET_NAME>
 - BinaryCounter_test
 - Counter
 - Counter_test
-- Keyboard
-- Keyboard_test
+- RandomOctave
+- RandomOctave_test
 - RandomNoteOctave
 - RandomNoteOctave_test
 - ShiftRegister
