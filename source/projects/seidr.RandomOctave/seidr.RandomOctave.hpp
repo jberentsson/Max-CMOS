@@ -22,12 +22,14 @@ public:
     auto clearNoteMessage(int note) -> void;
     auto clearAllNotesMessage() -> void;
     auto setRangeMessage(int low, int high) -> void;
-    [[nodiscard]] auto getActiveNotes() -> const std::vector<std::unique_ptr<RandomOctave::ActiveNote>>& { return randomOctave_.getActiveNotes(); }
+
+    [[nodiscard]] auto getActiveNotes() -> const std::vector<std::shared_ptr<RandomOctave::ActiveNote>>& { return randomOctave_.getActiveNotes(); }
+    [[nodiscard]] auto getQueuedNotes() -> const std::vector<std::shared_ptr<RandomOctave::ActiveNote>>& { return randomOctave_.getQueuedNotes(); }
 
     // Inlets and outlets
     inlet<> input_note_velcoty {this, "(int) note, (int) velocity"};
-    outlet<> output_note       {this, "(int) pitch"};
-    outlet<> output_velocity   {this, "(int) velocity"};
+    outlet<> output_note       {this, "(anything) pitch"};
+    outlet<> output_velocity   {this, "(anything) velocity"};
 
     message<> anything{
         this, "anything", "Process note messages",

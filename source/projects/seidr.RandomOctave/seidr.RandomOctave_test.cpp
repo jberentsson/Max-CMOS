@@ -285,6 +285,7 @@ SCENARIO("seidr.RandomOctaveMax musical scale tests") { // NOLINT
                 REQUIRE_NOTHROW(randomOctaveTestObject.int_message({ NoteE5, 100 }));
                 REQUIRE_NOTHROW(randomOctaveTestObject.int_message({ NoteG5, 100 }));
 
+                REQUIRE(randomOctaveTestObject.getQueuedNotes().size() == 3);
                 REQUIRE(randomOctaveTestObject.getActiveNotes().size() == 3);
 
                 // Release chord
@@ -292,6 +293,7 @@ SCENARIO("seidr.RandomOctaveMax musical scale tests") { // NOLINT
                 REQUIRE_NOTHROW(randomOctaveTestObject.int_message({ NoteE5, 0 }));
                 REQUIRE_NOTHROW(randomOctaveTestObject.int_message({ NoteG5, 0 }));
              
+                REQUIRE(randomOctaveTestObject.getQueuedNotes().size() == 3);
                 REQUIRE(randomOctaveTestObject.getActiveNotes().empty());
             }
         }

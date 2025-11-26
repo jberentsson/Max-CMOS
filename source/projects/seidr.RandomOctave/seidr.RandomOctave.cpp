@@ -3,6 +3,10 @@
 
 using namespace c74::min;
 
+RandomOctaveMax::RandomOctaveMax(const atoms &args) {
+    // Nothing here.
+}
+
 void RandomOctaveMax::clearNoteMessage(int note) {
     int clearedCount = randomOctave_.clearNotesByPitchClass(note);
 
@@ -24,27 +28,20 @@ auto RandomOctaveMax::setRangeMessage(int low, int high) -> void {
     randomOctave_.setRange(low, high);
 }
 
-RandomOctaveMax::RandomOctaveMax(const atoms &args) {
-    // Nothing here.
-}
-
 void RandomOctaveMax::processNoteMessage(int note, int velocity) { // NOLINT
+    //cout << "Note IN: " << note << " " << velocity << " " << endl;
+
     // Process the note.
-    randomOctave_.note(note, velocity);
+    this->randomOctave_.note(note, velocity);
 
-    // Note ON
-    const auto &activeNotes = randomOctave_.getActiveNotes();
-
-    if (activeNotes.empty()) {
-        return;
+    for(auto it = this->randomOctave_.getQueuedNotes().begin(); it != this->randomOctave_.getQueuedNotes().end(); ++it){
+        // Send to outputs.
+        output_note.send((*it)->pitch());
+        output_velocity.send((*it)->velocity());
     }
 
-    // Get the most recently added note.
-    const auto &lastNote = activeNotes.back();
+    this->randomOctave_.clearQueue();
 
-    // Send to outputs.
-    output_note.send(lastNote->pitch());
-    output_velocity.send(lastNote->velocity());
 }
 
 MIN_EXTERNAL(RandomOctaveMax); // NOLINT
