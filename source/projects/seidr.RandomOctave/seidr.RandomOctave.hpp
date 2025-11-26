@@ -18,10 +18,11 @@ private:
 public:
     explicit RandomOctaveMax(const c74::min::atoms &args = {});
 
-    void processNoteMessage(int note, int velocity);
-    void clearNoteMessage(int note);
-    void clearAllNotesMessage();
-    void setRangeMessage(int low, int high);
+    auto processNoteMessage(int note, int velocity) -> void;
+    auto clearNoteMessage(int note) -> void;
+    auto clearAllNotesMessage() -> void;
+    auto setRangeMessage(int low, int high) -> void;
+    auto getActiveNotes() const -> const std::vector<std::unique_ptr<RandomOctave::ActiveNote>> & { return this->randomOctave_.getActiveNotes(); }
 
     // Inlets and outlets
     inlet<> input_note_velcoty {this, "(int) note, (int) velocity"};
