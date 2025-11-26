@@ -34,10 +34,10 @@ void RandomOctaveMax::processNoteMessage(int note, int velocity) { // NOLINT
     // Process the note.
     this->randomOctave_.note(note, velocity);
 
-    for(auto it = this->randomOctave_.getQueuedNotes().begin(); it != this->randomOctave_.getQueuedNotes().end(); ++it){
+    for(const auto &currentNote : this->randomOctave_.getQueuedNotes()){
         // Send to outputs.
-        output_note.send((*it)->pitch());
-        output_velocity.send((*it)->velocity());
+        output_note.send(currentNote->pitch());
+        output_velocity.send(currentNote->velocity());
     }
 
     this->randomOctave_.clearQueue();
