@@ -20,7 +20,7 @@ void RandomOctaveMax::clearAllNotesMessage() {
     }
 }
 
-void RandomOctaveMax::setRangeMessage(int low, int high) {
+auto RandomOctaveMax::setRangeMessage(int low, int high) -> void {
     randomOctave_.setRange(low, high);
 }
 

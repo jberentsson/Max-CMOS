@@ -22,7 +22,7 @@ public:
     auto clearNoteMessage(int note) -> void;
     auto clearAllNotesMessage() -> void;
     auto setRangeMessage(int low, int high) -> void;
-    auto getActiveNotes() const -> const std::vector<std::unique_ptr<RandomOctave::ActiveNote>> & { return this->randomOctave_.getActiveNotes(); }
+    [[nodiscard]] auto getActiveNotes() -> const std::vector<std::unique_ptr<RandomOctave::ActiveNote>>& { return randomOctave_.getActiveNotes(); }
 
     // Inlets and outlets
     inlet<> input_note_velcoty {this, "(int) note, (int) velocity"};
