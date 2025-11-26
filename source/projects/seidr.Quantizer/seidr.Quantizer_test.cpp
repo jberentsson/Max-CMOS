@@ -33,7 +33,6 @@ SCENARIO("quantizer can add notes") {
         myObject.quantizerMode(Quantizer::QuantizeMode::ALL_NOTES);
         
         WHEN("adding notes via addNote method") {
-            // FIXED: Use the actual method names
             REQUIRE_NOTHROW(myObject.quantizerAddNote(NoteC4));
             REQUIRE(myObject.noteCount() == 1);
             
@@ -43,7 +42,6 @@ SCENARIO("quantizer can add notes") {
         
         WHEN("adding notes via add message") {
             atoms args = {NoteC4, NoteE4, NoteG4};
-            // FIXED: Use the correct message handler name
             REQUIRE_NOTHROW(myObject.quantizerAddNote(args));
             REQUIRE(myObject.noteCount() == 3);
         }
@@ -93,7 +91,7 @@ SCENARIO("quantizer handles note deletion") {
         
         atoms notes = {NoteC5, NoteE5, NoteG5};
         
-        myObject.quantizerMode(1);  // FIXED: Pass as atoms
+        myObject.quantizerMode(1);
         myObject.quantizerAddNote(notes);
 
         REQUIRE(myObject.noteCount() == 3);
