@@ -20,7 +20,7 @@ SCENARIO("NCounterMax object produces correct output") { // NOLINT
         WHEN("test the rollover") {
             THEN("check counter value and outputs") {
                 // Expected outputs for each step (which output is active)
-                int expected[12][10] = { // NOLINT
+                int expected[13][10] = { // NOLINT
                     {1, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Step 0
                     {0, 1, 0, 0, 0, 0, 0, 0, 0, 0}, // Step 1
                     {0, 0, 1, 0, 0, 0, 0, 0, 0, 0}, // Step 2
@@ -34,14 +34,14 @@ SCENARIO("NCounterMax object produces correct output") { // NOLINT
                     {1, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Step 10 (wrap around)
                     {0, 1, 0, 0, 0, 0, 0, 0, 0, 0}  // Step 11
                 };
-
+                myObject.max_value(9);
                 // Test initial state
                 REQUIRE(myObject.counterValue() == 0);
 
                 myObject.bang();
 
                 // Test stepping through values
-                for (int step = 0; step < 10; step++) { // NOLINT
+                for (int step = 0; step < 13; step++) { // NOLINT
                     // Check current outputs
                     for (int output_index = 0; output_index < 10; output_index++) { // NOLINT
                         auto &out = *object_getoutput(myObject, output_index);
@@ -112,13 +112,14 @@ SCENARIO("NCounterMax object produces correct output") { // NOLINT
 
                 // Verify all outputs match expected
                 int step = 0;
+                for (int step = 0; step < 6; step++) { // NOLINT
+                    for (int output_index = 0; output_index < 10; output_index++) { // NOLINT
+                        auto &out = *object_getoutput(myObject, output_index);
+                        REQUIRE(!out.empty());
 
-                for (int output_index = 0; output_index < 10; output_index++) { // NOLINT
-                    auto &out = *object_getoutput(myObject, output_index);
-                    REQUIRE(!out.empty());
-
-                    if (!out[0].empty()) {
-                        REQUIRE(out[step][1] == expected[step][output_index]);
+                        if (!out[0].empty()) {
+                            REQUIRE(out[step][1] == expected[step][output_index]);
+                        }
                     }
                 }
             }

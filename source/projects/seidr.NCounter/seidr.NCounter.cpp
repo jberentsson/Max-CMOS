@@ -5,14 +5,16 @@
 ///             found in the License.md file.
 
 #include "seidr.NCounter.hpp" // NOLINT
+#include <iostream>
 
 void NCounterMax::handleOutputs() {
-    // Send data to the outputs.
+    std::cout << "Counter value: " << this->counter.value() << std::endl;
     for (int i = 0; i < NCounterMax::OUTPUT_COUNT; i++) {
-        this->outputs[i]->send(i == this->counter.value());
+        // Only activate output when counter > 0 and matches the output index
+        bool isActive = (this->counter.value() > 0) && (i == (this->counter.value() - 1));
+        this->outputs[i]->send(isActive);
     }
 }
-
 auto NCounterMax::counterValue() -> unsigned int {
     return this->counter.value();
 }

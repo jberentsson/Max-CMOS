@@ -75,6 +75,15 @@ public:
         }
     };
 
+    message<> max_value{this, "max", "Set the counter max value.",
+        MIN_FUNCTION{
+            if(!args.empty()){
+                this->counter.setMaxValue(static_cast<int> (args[0]));
+            }
+            return {};
+        }
+    };
+
 private:
     Counter counter = Counter(NCounterMax::OUTPUT_COUNT);
     std::vector<int> outputStates_;
