@@ -35,24 +35,24 @@ SCENARIO("object produces correct output") { // NOLINT
 
                 REQUIRE(myObject.counterValue() == 0);
 
-                myObject.bang();
+                myObject.bang(0);
 
                 REQUIRE(myObject.counterValue() == 1);
 
-                myObject.bang();
+                myObject.bang(0);
 
                 REQUIRE(myObject.counterValue() == 2);
 
-                myObject.bang();
+                myObject.bang(0);
 
                 REQUIRE(myObject.counterValue() == 3);
 
-                myObject.bang();
+                myObject.bang(0);
 
                 REQUIRE(myObject.counterValue() == 4);
 
-                myObject.reset();
-                myObject.bang();
+                myObject.reset((atoms) {}, 1);
+                myObject.bang(0);
 
                 REQUIRE(myObject.counterValue() == 0);
 
@@ -68,49 +68,50 @@ SCENARIO("object produces correct output") { // NOLINT
 
         WHEN("test the preset function") {
             THEN("our greeting is produced at the outlet") {
-                int expected[6][8] = {// NOLINT
+                int expected[][8] = {// NOLINT
                     {0, 0, 0, 0, 0, 0, 0, 0},
                     {0, 0, 0, 0, 0, 0, 0, 1},
-                    {0, 0, 0, 0, 0, 0, 0, 1},
                     {0, 0, 0, 0, 1, 1, 1, 1},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 1},
                     {0, 0, 0, 0, 0, 0, 0, 0},
                     {0, 0, 0, 0, 0, 0, 0, 1},
                 };
 
                 myObject.max_value(16); // NOLINT
 
-                myObject.bang();
+                myObject.bang(0);
 
                 REQUIRE(myObject.counterValue() == 0);
 
-                myObject.bang();
+                myObject.bang(0);
 
                 REQUIRE(myObject.counterValue() == 1);
 
-                myObject.setPreset(14); // NOLINT
-                myObject.preset();
-                myObject.bang();
+                myObject.preset_msg(14, 1); // NOLINT
+                myObject.preset_msg((atoms) {},1);
+                myObject.bang(0);
 
                 REQUIRE(myObject.counterValue() == 15);
 
-                myObject.bang();
+                myObject.bang(0);
 
                 REQUIRE(myObject.counterValue() == 0);
 
-                myObject.bang();
+                myObject.bang(0);
 
                 REQUIRE(myObject.counterValue() == 1);
 
-                myObject.reset();
-                myObject.bang();
+                myObject.reset((atoms) {}, 1);
+                myObject.bang(0);
 
                 REQUIRE(myObject.counterValue() == 0);
 
-                myObject.bang();
+                myObject.bang(0);
 
                 REQUIRE(myObject.counterValue() == 1);
 
-                for (int i = 0; i < 6; i++) { // NOLINT
+                for (int i = 0; i < 7; i++) { // NOLINT
                     for (int j = 0; j < BinaryCounterMax::OUTPUT_COUNT; j++) {
                         auto &out = *object_getoutput(myObject, j);
                         REQUIRE(!out.empty());
@@ -132,21 +133,21 @@ SCENARIO("enable bangs works") { // NOLINT
         auto &out = *object_getoutput(myObject, 7); // NOLINT
 
         WHEN("test the bangs") {
-            myObject.bangEnable();
+            myObject.bangEnable(1);
             
-            myObject.bang();
-            myObject.bang();
+            myObject.bang(0);
+            myObject.bang(0);
 
             REQUIRE(!out.empty());
             REQUIRE(!out[0].empty());
             REQUIRE(out[0][0] == "bang");
-            myObject.bangDisable();
-            myObject.reset();
+            myObject.bangDisable(1);
+            myObject.reset(1);
             
-            myObject.bang();
-            REQUIRE(out[2][0] == 0);
-            myObject.bang();
-            REQUIRE(out[3][0] == 1);
+            myObject.bang(0);
+            REQUIRE(out[1][0] == 0);
+            myObject.bang(0);
+            REQUIRE(out[2][0] == 1);
         }
     }
 }

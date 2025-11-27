@@ -8,21 +8,21 @@
 
 NCounterMax::NCounterMax(const atoms &args) {
     if (!args.empty()) {
-        this->stepCount = args[0];
+        this->stepCount_ = args[0];
     }
 
-    for (int i = 0; i < this->stepCount; i++) {
+    for (int i = 0; i < this->stepCount_; i++) {
         outputs.push_back(std::make_unique<outlet<>>(this, "(anything) output bit " + std::to_string(i)));
     }
 
-    this->counter = Counter(this->stepCount);
+    this->counter_ = Counter(this->stepCount_);
 };
 
 void NCounterMax::handleOutputs() {
-    for (int i = 0; i < this->stepCount; i++) {
-        bool isActive = i == this->counter.value();
+    for (int i = 0; i < this->stepCount_; i++) {
+        bool isActive = i == this->counter_.value();
 
-        if (this->bangEnabled && isActive) {
+        if (this->bangEnabled_ && isActive) {
             this->outputs[i]->send("bang");
         } else {
             this->outputs[i]->send(isActive);
@@ -31,7 +31,7 @@ void NCounterMax::handleOutputs() {
 }
 
 auto NCounterMax::counterValue() -> unsigned int {
-    return this->counter.value();
+    return this->counter_.value();
 }
 
 MIN_EXTERNAL(NCounterMax); // NOLINT

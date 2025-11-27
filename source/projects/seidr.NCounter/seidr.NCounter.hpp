@@ -29,18 +29,18 @@ public:
     auto step() -> unsigned int;
 
     inlet<> input0{this, "(bang) input pulse"};
-    inlet<> input1{this, "(reset | preset | preset_value) reset pulse"};
+    inlet<> input1{this, "(int | reset | preset | preset_value) reset pulse"};
 
     std::vector<std::unique_ptr<outlet<>>> outputs;
     
-    argument<symbol> bangArg{this, "bang_on", "Initial value for the bang attribute.", MIN_ARGUMENT_FUNCTION{bangEnabled = FALSE; }};
+    argument<symbol> bangArg{this, "bang_on", "Initial value for the bang attribute.", MIN_ARGUMENT_FUNCTION{bangEnabled_ = FALSE; }};
 
     message<threadsafe::yes> bang {this, "bang", "Steps the counter.",
         MIN_FUNCTION{
-            if (this->alreadyBanged){
-                this->counter.step();
+            if (this->alreadyBanged_){
+                this->counter_.step();
             } else {
-                this->alreadyBanged = true;
+                this->alreadyBanged_ = true;
             }
 
             this->handleOutputs();
@@ -50,8 +50,8 @@ public:
 
     message<threadsafe::yes> reset {this, "reset", "Reset the counter.",
         MIN_FUNCTION{
-            this->counter.reset();
-            this->alreadyBanged = false;
+            this->counter_.reset();
+            this->alreadyBanged_ = false;
             return {};
         }
     };
@@ -59,7 +59,7 @@ public:
     message<threadsafe::yes> max_value {this, "max", "Set the counter max value.",
         MIN_FUNCTION{
             if(!args.empty()){
-                this->counter.setMaxValue(static_cast<int> (args[0]));
+                this->counter_.setMaxValue(static_cast<int> (args[0]));
             }
             
             return {};
@@ -69,7 +69,7 @@ public:
     message<threadsafe::yes> preset_value {this, "preset_value", "Set the counter preset value.",
         MIN_FUNCTION{
             if(!args.empty()){
-                this->counter.setPreset(static_cast<int> (args[0]));
+                this->counter_.setPreset(static_cast<int> (args[0]));
             }
 
             return {};
@@ -78,29 +78,29 @@ public:
 
     message<threadsafe::yes> preset {this, "preset", "Set the counter preset value.",
         MIN_FUNCTION{
-            this->counter.preset();
+            this->counter_.preset();
             return {};
         }
     };
 
     message<threadsafe::yes> bangEnable {this, "bangEnable", "Enable bang outputs.",
         MIN_FUNCTION{
-            this->bangEnabled = true;
+            this->bangEnabled_ = true;
             return {};
         }
     };
 
     message<threadsafe::yes> bangDisable {this, "bangDisable", "Enable bang outputs.",
         MIN_FUNCTION{
-            this->bangEnabled = false;
+            this->bangEnabled_ = false;
             return {};
         }
     };
 
 private:
-    Counter counter;
+    Counter counter_;
     std::vector<int> outputStates_;
-    bool bangEnabled = false;
-    bool alreadyBanged = false;
-    int stepCount = OUTPUT_COUNT;
+    bool bangEnabled_ = false;
+    bool alreadyBanged_ = false;
+    int stepCount_ = OUTPUT_COUNT;
 };

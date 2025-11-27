@@ -34,19 +34,28 @@ public:
     auto getStepCount() const -> int { return this->stepCount; };
 
     inlet<> input0 {this, "(bang | list | reset) input pulse"};
-    inlet<> input1 {this, "(reset) reset pulse"};
+    inlet<> input1 {this, "(int | reset) reset pulse"};
 
     std::vector<std::unique_ptr<outlet<>>> outputs;
 
     message<threadsafe::yes> bang {
         this, "bang", "Steps the counter.",
         MIN_FUNCTION{
-            if (this->alreadyBanged){
-                this->counter_.step();
-            } else {
-                this->alreadyBanged = true;
+            switch(inlet){
+                case 1:
+                    this->counter_.reset();
+                    this->alreadyBanged = false;
+
+                    break;
+                default:
+                    if (this->alreadyBanged){
+                        this->counter_.step();
+                    } else {
+                        this->alreadyBanged = true;
+                    }
+                    this->updateOutputs();
+                    break;
             }
-            this->updateOutputs();
             return {};
         }
     };
@@ -54,9 +63,14 @@ public:
     message<threadsafe::yes> reset {
         this, "reset", "Reset the counter.",
         MIN_FUNCTION{
-            this->counter_.reset();
-            this->alreadyBanged = false;
-            this->updateOutputs();
+            switch(inlet){
+                case 1:
+                    this->counter_.reset();
+                    this->alreadyBanged = false;
+                    break;
+                default:
+                    break;
+            }
             return {};
         }
     };
@@ -64,9 +78,11 @@ public:
     message<threadsafe::yes> preset_msg {
         this, "preset", "Set preset value.",
         MIN_FUNCTION{
-            if (!args.empty()) {
+            if (!args.empty() && inlet == 1) {
                 int preset_value = args[0];
                 this->counter_.setPreset(preset_value);
+            } else if (args.empty() && inlet == 1) {
+                this->counter_.preset();
             }
             return {};
         }
