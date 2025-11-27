@@ -123,3 +123,36 @@ SCENARIO("object produces correct output") { // NOLINT
         }
     }
 }
+
+SCENARIO("enable bangs works") { // NOLINT
+    ext_main(nullptr);
+
+    GIVEN("An instance of our object") {
+        test_wrapper<BinaryCounterMax> an_instance;
+        BinaryCounterMax &myObject = an_instance;
+
+        //myObject.setMaxValue(256);
+
+        auto &out = *object_getoutput(myObject, 4); // NOLINT
+
+        WHEN("test the bangs") {
+            myObject.bangEnable();
+            
+            for (int i = 0; i < 100; i++){
+                myObject.bang();
+            }
+
+            REQUIRE(!out.empty());
+            REQUIRE(!out[0].empty());
+            REQUIRE(out[0][0] == "bang");
+            myObject.bangDisable();
+            myObject.reset();
+            
+            for (int i = 0; i < 100; i++){
+                myObject.bang();
+            }
+
+            REQUIRE(out[1][1] == 1);
+        }
+    }
+}

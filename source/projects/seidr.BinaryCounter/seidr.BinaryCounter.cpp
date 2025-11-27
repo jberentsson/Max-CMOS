@@ -13,7 +13,7 @@ BinaryCounterMax::BinaryCounterMax(const atoms &args) {
     }
 
     // Create outputs
-    for (int i = 0; i < OUTPUT_COUNT; i++) {
+    for (int i = 0; i < this->stepCount; i++) {
         outputs.push_back(
             std::make_unique<outlet<>>(this, "(anything) output bit " + std::to_string(i)));
     }
@@ -32,7 +32,7 @@ void BinaryCounterMax::updateOutputs() {
     for (int i = 0; i < OUTPUT_COUNT; i++) {
         int current = OUTPUT_COUNT - i - 1;
 
-        if (this->bangEnable) {
+        if (this->bangEnabled) {
             if (this->getBit(i) == 1) {
                 this->outputs[current]->send("bang");
             }
@@ -42,15 +42,15 @@ void BinaryCounterMax::updateOutputs() {
     }
 }
 
-void BinaryCounterMax::enableBangs() {
-    this->bangEnable = true;
+/* void BinaryCounterMax::enableBangs() {
+    this->bangEnabled = true;
     this->updateOutputs();
 }
 
 void BinaryCounterMax::disableBangs() {
-    this->bangEnable = false;
+    this->bangEnabled = false;
     this->updateOutputs();
-}
+} */
 
 auto BinaryCounterMax::counterValue() -> unsigned int {
     return this->counter_.value();

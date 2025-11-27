@@ -24,8 +24,8 @@ public:
 
     explicit BinaryCounterMax(const atoms &args = {});
 
-    auto enableBangs() -> void;
-    auto disableBangs() -> void;
+/*     auto enableBangs() -> void;
+    auto disableBangs() -> void; */
     auto updateOutputs() -> void;
     auto getBit(int output) -> unsigned int;
 
@@ -33,15 +33,14 @@ public:
     auto setPreset(unsigned int presetValue) -> unsigned int;
     auto preset() -> unsigned int;
     auto maxValue() -> unsigned int;
+    auto getStepCount() -> int { return this->stepCount; };
 
     inlet<> input0 {this, "(bang | list | reset) input pulse"};
     inlet<> input1 {this, "(reset) reset pulse"};
 
     std::vector<std::unique_ptr<outlet<>>> outputs;
 
-    attribute<bool> bangEnable{this, "bangEnable", false, description{"Output mode: true for bang outputs, false for integer outputs"}};
-
-    message<threadsafe::yes> bang{
+    message<threadsafe::yes> bang {
         this, "bang", "Steps the counter.",
         MIN_FUNCTION{
             this->counter_.step();
@@ -50,7 +49,7 @@ public:
         }
     };
 
-    message<threadsafe::yes> reset{
+    message<threadsafe::yes> reset {
         this, "reset", "Reset the counter.",
         MIN_FUNCTION{
             this->counter_.reset();
@@ -59,7 +58,7 @@ public:
         }
     };
 
-    message<threadsafe::yes> preset_msg{
+    message<threadsafe::yes> preset_msg {
         this, "preset", "Set preset value.",
         MIN_FUNCTION{
             if (!args.empty()) {
@@ -70,7 +69,7 @@ public:
         }
     };
 
-    message<threadsafe::yes> output{
+    message<threadsafe::yes> output {
         this, "output", "Output current value without changing it.",
         MIN_FUNCTION{
             this->updateOutputs();
@@ -87,7 +86,22 @@ public:
         }
     };
 
+    message<threadsafe::yes> bangEnable {this, "bangEnable", "Enable bang outputs.",
+        MIN_FUNCTION{
+            this->bangEnabled = true;
+            return {};
+        }
+    };
+
+    message<threadsafe::yes> bangDisable {this, "bangDisable", "Enable bang outputs.",
+        MIN_FUNCTION{
+            this->bangEnabled = false;
+            return {};
+        }
+    };
+
 private:
     Counter counter_;
     int stepCount = (int) std::pow(2, OUTPUT_COUNT - 1);
+    bool bangEnabled = false;
 };
