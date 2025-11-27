@@ -33,7 +33,7 @@ public:
     auto setPreset(unsigned int presetValue) -> unsigned int;
     auto preset() -> unsigned int;
     auto maxValue() -> unsigned int;
-    auto getStepCount() -> int { return this->stepCount; };
+    auto getStepCount() const -> int { return this->stepCount; };
 
     inlet<> input0 {this, "(bang | list | reset) input pulse"};
     inlet<> input1 {this, "(reset) reset pulse"};

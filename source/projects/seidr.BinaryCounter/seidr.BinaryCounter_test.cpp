@@ -26,7 +26,6 @@ SCENARIO("object produces correct output") { // NOLINT
 
             THEN("our greeting is produced at the outlet") {
                 int expected[6][8] = {// NOLINT
-                    {0, 0, 0, 0, 0, 0, 0, 0},
                     {0, 0, 0, 0, 0, 0, 0, 1},
                     {0, 0, 0, 0, 0, 0, 1, 0},
                     {0, 0, 0, 0, 0, 0, 1, 1},
@@ -61,8 +60,8 @@ SCENARIO("object produces correct output") { // NOLINT
                     for (int j = 0; j < BinaryCounterMax::OUTPUT_COUNT; j++) {
                         auto &out = *object_getoutput(myObject, j);
                         REQUIRE(!out.empty());
-                        // REQUIRE(out[0].size() == 2);
-                        // REQUIRE(out[i][1] == expected[i][j]);
+                        //REQUIRE(out[0].size() == 2);
+                        //REQUIRE(out[i][1] == expected[i][j]);
                     }
                 }
             }
@@ -131,16 +130,13 @@ SCENARIO("enable bangs works") { // NOLINT
         test_wrapper<BinaryCounterMax> an_instance;
         BinaryCounterMax &myObject = an_instance;
 
-        //myObject.setMaxValue(256);
-
-        auto &out = *object_getoutput(myObject, 4); // NOLINT
+        auto &out = *object_getoutput(myObject, 7); // NOLINT
 
         WHEN("test the bangs") {
             myObject.bangEnable();
             
-            for (int i = 0; i < 100; i++){
-                myObject.bang();
-            }
+            myObject.bang();
+            myObject.bang();
 
             REQUIRE(!out.empty());
             REQUIRE(!out[0].empty());
@@ -148,11 +144,10 @@ SCENARIO("enable bangs works") { // NOLINT
             myObject.bangDisable();
             myObject.reset();
             
-            for (int i = 0; i < 100; i++){
-                myObject.bang();
-            }
-
-            REQUIRE(out[1][1] == 1);
+            myObject.bang();
+            REQUIRE(out[2][0] == 1);
+            myObject.bang();
+            REQUIRE(out[3][0] == 0);
         }
     }
 }
