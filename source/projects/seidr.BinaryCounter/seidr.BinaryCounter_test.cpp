@@ -79,6 +79,8 @@ SCENARIO("object produces correct output") { // NOLINT
                     {0, 0, 0, 0, 0, 0, 0, 1},
                 };
 
+                myObject.max_value(32); // NOLINT
+
                 myObject.bang();
 
                 REQUIRE(myObject.counterValue() == 1);

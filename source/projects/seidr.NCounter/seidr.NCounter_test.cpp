@@ -36,7 +36,7 @@ SCENARIO("NCounterMax object produces correct output") { // NOLINT
                     {0, 1, 0, 0, 0, 0, 0, 0, 0, 0}  // Step 11
                 };
                 
-                myObject.max_value(10);
+                myObject.max_value(10); // NOLINT
 
                 // Test initial state
                 REQUIRE(myObject.counterValue() == 0);
@@ -44,7 +44,7 @@ SCENARIO("NCounterMax object produces correct output") { // NOLINT
                 myObject.bang();
 
                 // Test stepping through values
-                for (int step = 0; step < 10; step++) { // NOLINT
+                for (int step = 0; step < 12; step++) { // NOLINT
                     // Check current outputs
                     for (int output_index = 0; output_index < 5; output_index++) { // NOLINT
                         auto &out = *object_getoutput(myObject, output_index);
@@ -86,7 +86,7 @@ SCENARIO("NCounterMax object produces correct output") { // NOLINT
                     {1, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // After reset
                     {0, 1, 0, 0, 0, 0, 0, 0, 0, 0}  // After bang from reset
                 };
-                myObject.max_value(10);
+                myObject.max_value(10); // NOLINT
 
                 // Initial state
                 REQUIRE(myObject.counterValue() == 0);
@@ -98,9 +98,9 @@ SCENARIO("NCounterMax object produces correct output") { // NOLINT
                 REQUIRE(myObject.counterValue() == 1);
 
                 // Set preset and activate it
-                myObject.setPreset(6); // NOLINT
+                myObject.preset_value(6); // NOLINT
                 myObject.preset();
-                myObject.step();
+                myObject.bang();
                 REQUIRE(myObject.counterValue() == 6);
 
                 // Step from preset
@@ -109,14 +109,16 @@ SCENARIO("NCounterMax object produces correct output") { // NOLINT
 
                 // Reset and step again
                 myObject.reset();
+                myObject.bang();
                 REQUIRE(myObject.counterValue() == 0);
 
                 myObject.bang();
                 REQUIRE(myObject.counterValue() == 1);
+                myObject.bang();
 
                 // Verify all outputs match expected
                 int step = 0;
-                for (int step = 0; step < 3; step++) { // NOLINT
+                for (int step = 0; step < 6; step++) { // NOLINT
                     for (int output_index = 0; output_index < 10; output_index++) { // NOLINT
                         auto &out = *object_getoutput(myObject, output_index);
                         REQUIRE(!out.empty());
@@ -132,10 +134,10 @@ SCENARIO("NCounterMax object produces correct output") { // NOLINT
         WHEN("test maximum value rollover") {
             auto &out0 = *object_getoutput(myObject, 0); // NOLINT
             auto &out9 = *object_getoutput(myObject, 9); // NOLINT
-            myObject.max_value(10);
+            myObject.max_value(10); // NOLINT
             THEN("counter should wrap around correctly") {
                 // Go to maximum value
-                for (int i = 0; i < 10; i++) { // NOLINT
+                for (int i = 0; i <= 10; i++) { // NOLINT
                     myObject.bang();
                 }
 

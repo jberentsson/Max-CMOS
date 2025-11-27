@@ -5,11 +5,21 @@
 ///             found in the License.md file.
 
 #include "seidr.NCounter.hpp" // NOLINT
-#include <iostream>
+
+NCounterMax::NCounterMax(const atoms &args) {
+    if (!args.empty()) {
+        this->stepCount = args[0];
+    }
+
+    for (int i = 0; i < this->stepCount; i++) {
+        outputs.push_back(std::make_unique<outlet<>>(this, "(anything) output bit " + std::to_string(i)));
+    }
+
+    this->counter = Counter(this->stepCount);
+};
 
 void NCounterMax::handleOutputs() {
-    std::cout << "Counter: " << this->counter.value() << std::endl;
-    for (int i = 0; i < NCounterMax::OUTPUT_COUNT; i++) {
+    for (int i = 0; i < this->stepCount; i++) {
         bool isActive = i == this->counter.value();
         this->outputs[i]->send(isActive);
     }
@@ -17,18 +27,6 @@ void NCounterMax::handleOutputs() {
 
 auto NCounterMax::counterValue() -> unsigned int {
     return this->counter.value();
-}
-
-auto NCounterMax::setPreset(int presetValue) -> unsigned int {
-    return this->counter.setPreset(presetValue);
-}
-
-auto NCounterMax::preset() -> unsigned int {
-    return this->counter.preset();
-}
-
-auto NCounterMax::step() -> unsigned int {
-    return this->counter.step();
 }
 
 MIN_EXTERNAL(NCounterMax); // NOLINT

@@ -8,9 +8,6 @@
 #include <c74_min.h>
 #include "Counter/Counter.hpp"
 
-#include <ext_mess.h>
-#include <fcntl.h>
-
 #include <string>
 #include <vector>
 #include <cstdint>
@@ -28,26 +25,20 @@ public:
     MIN_AUTHOR{"Jóhann Berentsson"}; // NOLINT 
     MIN_RELATED{"seidr.*"};          // NOLINT 
 
-    explicit NCounterMax(const atoms &args = {}) {
-        for (int i = 0; i < OUTPUT_COUNT; i++) {
-            outputs.push_back(std::make_unique<outlet<>>(this, "(anything) output bit " + std::to_string(i)));
-        }
-    };
+    explicit NCounterMax(const atoms &args = {});
 
     void handleOutputs();
     auto counterValue() -> unsigned int;
-    auto preset() -> unsigned int;
     auto step() -> unsigned int;
-    auto setPreset(int presetValue) -> unsigned int;
 
     inlet<> input0{this, "(bang) input pulse"};
-    inlet<> input1{this, "(reset) reset pulse"};
+    inlet<> input1{this, "(reset | preset | preset_value) reset pulse"};
 
     std::vector<std::unique_ptr<outlet<>>> outputs;
     
     argument<symbol> bangArg{this, "bang_on", "Initial value for the bang attribute.", MIN_ARGUMENT_FUNCTION{bangEnabled = FALSE; }};
 
-    message<> bang{this, "bang", "Steps the counter.",
+    message<threadsafe::yes> bang {this, "bang", "Steps the counter.",
         MIN_FUNCTION{
             if (this->alreadyBanged){
                 this->counter.step();
@@ -60,7 +51,7 @@ public:
         }
     };
 
-    message<> reset{this, "reset", "Reset the counter.",
+    message<threadsafe::yes> reset {this, "reset", "Reset the counter.",
         MIN_FUNCTION{
             this->counter.reset();
             this->alreadyBanged = FALSE;
@@ -68,7 +59,7 @@ public:
         }
     };
 
-    message<> max_value{this, "max", "Set the counter max value.",
+    message<threadsafe::yes> max_value {this, "max", "Set the counter max value.",
         MIN_FUNCTION{
             if(!args.empty()){
                 this->counter.setMaxValue(static_cast<int> (args[0]));
@@ -77,9 +68,26 @@ public:
         }
     };
 
+    message<threadsafe::yes> preset_value {this, "preset_value", "Set the counter preset value.",
+        MIN_FUNCTION{
+            if(!args.empty()){
+                this->counter.setPreset(static_cast<int> (args[0]));
+            }
+            return {};
+        }
+    };
+
+    message<threadsafe::yes> preset {this, "preset", "Set the counter preset value.",
+        MIN_FUNCTION{
+            this->counter.preset();
+            return {};
+        }
+    };
+
 private:
-    Counter counter = Counter(NCounterMax::OUTPUT_COUNT);
+    Counter counter;
     std::vector<int> outputStates_;
     bool bangEnabled = FALSE;
     bool alreadyBanged = FALSE;
+    int stepCount = OUTPUT_COUNT;
 };

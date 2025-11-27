@@ -9,18 +9,16 @@
 using namespace c74::min;
 
 ShiftRegisterMax::ShiftRegisterMax(const atoms &args) {
-    int numberOfOutputs = 0;
+    int numberOfOutputs = OUTPUT_COUNT;
 
     if (!args.empty()) {
         numberOfOutputs = args[0];
-    } else {
-        numberOfOutputs = OUTPUT_COUNT;
     }
 
     if (numberOfOutputs > 0) {
         for (int i = 0; i < numberOfOutputs; i++) {
             outputs.push_back(
-                std::make_unique<outlet<>>(this, "( int | bang ) output " + std::to_string(i)));
+                std::make_unique<outlet<>>(this, "(int | bang) output " + std::to_string(i)));
         }
     }
 };

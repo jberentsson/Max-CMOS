@@ -7,11 +7,18 @@
 #include "seidr.BinaryCounter.hpp"
 
 BinaryCounterMax::BinaryCounterMax(const atoms &args) {
+    if (!args.empty()) {
+        int argValue = args[0];
+        this->stepCount = (int) std::pow(2, argValue - 1);
+    }
+
     // Create outputs
     for (int i = 0; i < OUTPUT_COUNT; i++) {
         outputs.push_back(
             std::make_unique<outlet<>>(this, "(anything) output bit " + std::to_string(i)));
     }
+
+    this->counter_ = Counter(this->stepCount);
 
     updateOutputs();
 }

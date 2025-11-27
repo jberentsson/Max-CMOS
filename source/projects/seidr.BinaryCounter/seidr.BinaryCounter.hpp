@@ -78,6 +78,16 @@ public:
         }
     };
 
+    message<threadsafe::yes> max_value {this, "max", "Set the counter max value.",
+        MIN_FUNCTION{
+            if(!args.empty()){
+                this->counter_.setMaxValue(static_cast<int> (args[0]));
+            }
+            return {};
+        }
+    };
+
 private:
-    Counter counter_ = Counter(OUTPUT_COUNT);
+    Counter counter_;
+    int stepCount = (int) std::pow(2, OUTPUT_COUNT - 1);
 };
