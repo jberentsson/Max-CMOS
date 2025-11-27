@@ -28,7 +28,11 @@ public:
     MIN_AUTHOR{"Jóhann Berentsson"}; // NOLINT 
     MIN_RELATED{"seidr.*"};          // NOLINT 
 
-    explicit NCounterMax(const atoms &args = {}) {};
+    explicit NCounterMax(const atoms &args = {}) {
+        for (int i = 0; i < OUTPUT_COUNT; i++) {
+            outputs.push_back(std::make_unique<outlet<>>(this, "(anything) output bit " + std::to_string(i)));
+        }
+    };
 
     void handleOutputs();
     auto counterValue() -> unsigned int;
@@ -39,25 +43,18 @@ public:
     inlet<> input0{this, "(bang) input pulse"};
     inlet<> input1{this, "(reset) reset pulse"};
 
-    outlet<> output0{this, "(anything) output bit 0"};
-    outlet<> output1{this, "(anything) output bit 1"};
-    outlet<> output2{this, "(anything) output bit 2"};
-    outlet<> output3{this, "(anything) output bit 3"};
-    outlet<> output4{this, "(anything) output bit 4"};
-    outlet<> output5{this, "(anything) output bit 5"};
-    outlet<> output6{this, "(anything) output bit 6"};
-    outlet<> output7{this, "(anything) output bit 7"};
-    outlet<> output8{this, "(anything) output bit 8"};
-    outlet<> output9{this, "(anything) output bit 9"};
-
-    std::array<outlet<>*, OUTPUT_COUNT> outputs = {&output0, &output1, &output2, &output3, &output4,
-                                     &output5, &output6, &output7, &output8, &output9};
+    std::vector<std::unique_ptr<outlet<>>> outputs;
     
     argument<symbol> bangArg{this, "bang_on", "Initial value for the bang attribute.", MIN_ARGUMENT_FUNCTION{bangEnabled = FALSE; }};
 
     message<> bang{this, "bang", "Steps the counter.",
         MIN_FUNCTION{
-            this->counter.step();
+            if (this->alreadyBanged){
+                this->counter.step();
+            } else {
+                this->alreadyBanged = TRUE;
+            }
+            
             this->handleOutputs();
             return {};
         }
