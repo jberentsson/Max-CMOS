@@ -29,8 +29,6 @@ auto RandomOctaveMax::setRangeMessage(int low, int high) -> void {
 }
 
 void RandomOctaveMax::processNoteMessage(int note, int velocity) { // NOLINT
-    //cout << "Note IN: " << note << " " << velocity << " " << endl;
-
     // Process the note.
     this->randomOctave_.note(note, velocity);
 
