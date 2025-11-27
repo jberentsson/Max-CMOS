@@ -36,14 +36,14 @@ public:
 
     std::vector<std::unique_ptr<outlet<>>> outputs;
     
-    argument<symbol> bangArg{this, "bang_on", "Initial value for the bang attribute.", MIN_ARGUMENT_FUNCTION{bangEnabled = FALSE; }};
+    //argument<symbol> bangArg{this, "bang_on", "Initial value for the bang attribute.", MIN_ARGUMENT_FUNCTION{bangEnabled = FALSE; }};
 
     message<threadsafe::yes> bang {this, "bang", "Steps the counter.",
         MIN_FUNCTION{
             if (this->alreadyBanged){
                 this->counter.step();
             } else {
-                this->alreadyBanged = TRUE;
+                this->alreadyBanged = true;
             }
 
             this->handleOutputs();
@@ -54,7 +54,7 @@ public:
     message<threadsafe::yes> reset {this, "reset", "Reset the counter.",
         MIN_FUNCTION{
             this->counter.reset();
-            this->alreadyBanged = FALSE;
+            this->alreadyBanged = false;
             return {};
         }
     };
@@ -84,10 +84,24 @@ public:
         }
     };
 
+    message<threadsafe::yes> bangEnable {this, "bangEnable", "Enable bang outputs.",
+        MIN_FUNCTION{
+            this->bangEnabled = true;
+            return {};
+        }
+    };
+
+    message<threadsafe::yes> bangDisable {this, "bangDisable", "Enable bang outputs.",
+        MIN_FUNCTION{
+            this->bangEnabled = false;
+            return {};
+        }
+    };
+
 private:
     Counter counter;
     std::vector<int> outputStates_;
-    bool bangEnabled = FALSE;
-    bool alreadyBanged = FALSE;
+    bool bangEnabled = false;
+    bool alreadyBanged = false;
     int stepCount = OUTPUT_COUNT;
 };

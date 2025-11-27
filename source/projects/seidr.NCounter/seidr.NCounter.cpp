@@ -21,7 +21,12 @@ NCounterMax::NCounterMax(const atoms &args) {
 void NCounterMax::handleOutputs() {
     for (int i = 0; i < this->stepCount; i++) {
         bool isActive = i == this->counter.value();
-        this->outputs[i]->send(isActive);
+
+        if (this->bangEnabled && isActive) {
+            this->outputs[i]->send("bang");
+        } else {
+            this->outputs[i]->send(isActive);
+        }
     }
 }
 

@@ -164,3 +164,26 @@ SCENARIO("NCounterMax object produces correct output") { // NOLINT
         }
     }
 }
+
+SCENARIO("enable bangs works") { // NOLINT
+    ext_main(nullptr);
+
+    GIVEN("An instance of our object") {
+        test_wrapper<NCounterMax> an_instance;
+        NCounterMax &myObject = an_instance;
+
+        auto &out = *object_getoutput(myObject, 0); // NOLINT
+
+        WHEN("test the bangs") {
+            myObject.bangEnable();
+            myObject.bang();
+            REQUIRE(!out.empty());
+            REQUIRE(!out[0].empty());
+            REQUIRE(out[0][0] == "bang");
+            myObject.bangDisable();
+            myObject.reset();
+            myObject.bang();
+            REQUIRE(out[1][1] == 1);
+        }
+    }
+}
