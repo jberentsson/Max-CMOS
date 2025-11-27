@@ -43,7 +43,11 @@ public:
     message<threadsafe::yes> bang {
         this, "bang", "Steps the counter.",
         MIN_FUNCTION{
-            this->counter_.step();
+            if (this->alreadyBanged){
+                this->counter_.step();
+            } else {
+                this->alreadyBanged = true;
+            }
             this->updateOutputs();
             return {};
         }
@@ -53,6 +57,7 @@ public:
         this, "reset", "Reset the counter.",
         MIN_FUNCTION{
             this->counter_.reset();
+            this->alreadyBanged = false;
             this->updateOutputs();
             return {};
         }
@@ -104,4 +109,5 @@ private:
     Counter counter_;
     int stepCount = (int) std::pow(2, OUTPUT_COUNT - 1);
     bool bangEnabled = false;
+    bool alreadyBanged = false;
 };

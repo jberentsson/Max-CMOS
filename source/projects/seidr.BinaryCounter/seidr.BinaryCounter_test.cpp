@@ -21,17 +21,21 @@ SCENARIO("object produces correct output") { // NOLINT
             myObject.maxValue();
 
             THEN("check counter value") {
-                REQUIRE(myObject.counterValue() == 1);
+                REQUIRE(myObject.counterValue() == 0);
             }
 
             THEN("our greeting is produced at the outlet") {
                 int expected[6][8] = {// NOLINT
+                    {0, 0, 0, 0, 0, 0, 0, 0},
                     {0, 0, 0, 0, 0, 0, 0, 1},
                     {0, 0, 0, 0, 0, 0, 1, 0},
                     {0, 0, 0, 0, 0, 0, 1, 1},
                     {0, 0, 0, 0, 0, 1, 0, 0},
-                    {0, 0, 0, 0, 0, 0, 0, 0},
                 };
+
+                REQUIRE(myObject.counterValue() == 0);
+
+                myObject.bang();
 
                 REQUIRE(myObject.counterValue() == 1);
 
@@ -47,21 +51,16 @@ SCENARIO("object produces correct output") { // NOLINT
 
                 REQUIRE(myObject.counterValue() == 4);
 
-                myObject.bang();
-
-                REQUIRE(myObject.counterValue() == 5);
-
                 myObject.reset();
                 myObject.bang();
 
-                REQUIRE(myObject.counterValue() == 1);
+                REQUIRE(myObject.counterValue() == 0);
 
                 for (int i = 0; i < 5; i++) { // NOLINT
                     for (int j = 0; j < BinaryCounterMax::OUTPUT_COUNT; j++) {
                         auto &out = *object_getoutput(myObject, j);
                         REQUIRE(!out.empty());
-                        //REQUIRE(out[0].size() == 2);
-                        //REQUIRE(out[i][1] == expected[i][j]);
+                        REQUIRE(out[i][0] == expected[i][j]);
                     }
                 }
             }
@@ -72,26 +71,27 @@ SCENARIO("object produces correct output") { // NOLINT
                 int expected[6][8] = {// NOLINT
                     {0, 0, 0, 0, 0, 0, 0, 0},
                     {0, 0, 0, 0, 0, 0, 0, 1},
-                    {0, 0, 1, 0, 0, 0, 0, 0},
-                    {0, 0, 1, 0, 0, 0, 0, 1},
+                    {0, 0, 0, 0, 0, 0, 0, 1},
+                    {0, 0, 0, 0, 1, 1, 1, 1},
                     {0, 0, 0, 0, 0, 0, 0, 0},
                     {0, 0, 0, 0, 0, 0, 0, 1},
                 };
 
-                myObject.max_value(32); // NOLINT
+                myObject.max_value(16); // NOLINT
+
+                myObject.bang();
+
+                REQUIRE(myObject.counterValue() == 0);
 
                 myObject.bang();
 
                 REQUIRE(myObject.counterValue() == 1);
 
+                myObject.setPreset(14); // NOLINT
+                myObject.preset();
                 myObject.bang();
 
-                REQUIRE(myObject.counterValue() == 2);
-
-                myObject.setPreset(32); // NOLINT
-                myObject.preset();
-
-                REQUIRE(myObject.counterValue() == 31);
+                REQUIRE(myObject.counterValue() == 15);
 
                 myObject.bang();
 
@@ -104,18 +104,17 @@ SCENARIO("object produces correct output") { // NOLINT
                 myObject.reset();
                 myObject.bang();
 
-                REQUIRE(myObject.counterValue() == 1);
+                REQUIRE(myObject.counterValue() == 0);
 
                 myObject.bang();
 
-                REQUIRE(myObject.counterValue() == 2);
+                REQUIRE(myObject.counterValue() == 1);
 
                 for (int i = 0; i < 6; i++) { // NOLINT
                     for (int j = 0; j < BinaryCounterMax::OUTPUT_COUNT; j++) {
                         auto &out = *object_getoutput(myObject, j);
                         REQUIRE(!out.empty());
-                        // REQUIRE(out[0].size() == 0);
-                        // REQUIRE(out[i][1] == expected[i][j]);
+                        REQUIRE(out[i][0] == expected[i][j]);
                     }
                 }
             }
@@ -145,9 +144,9 @@ SCENARIO("enable bangs works") { // NOLINT
             myObject.reset();
             
             myObject.bang();
-            REQUIRE(out[2][0] == 1);
+            REQUIRE(out[2][0] == 0);
             myObject.bang();
-            REQUIRE(out[3][0] == 0);
+            REQUIRE(out[3][0] == 1);
         }
     }
 }

@@ -8,9 +8,7 @@
 #include <c74_min.h>
 #include "Counter/Counter.hpp"
 
-#include <string>
 #include <vector>
-#include <cstdint>
 
 using namespace c74::min;
 

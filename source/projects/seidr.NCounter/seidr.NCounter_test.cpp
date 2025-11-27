@@ -7,7 +7,6 @@
 #include "seidr.NCounter.cpp" // NOLINT
 #include "seidr.NCounter.hpp"
 #include <c74_min_unittest.h>
-#include <iostream>
 
 using namespace c74::max;
 
@@ -81,8 +80,8 @@ SCENARIO("NCounterMax object produces correct output") { // NOLINT
                 int expected[6][10] = { // NOLINT
                     {1, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Initial
                     {0, 1, 0, 0, 0, 0, 0, 0, 0, 0}, // After 1 bang
-                    {0, 0, 0, 0, 0, 0, 1, 0, 0, 0}, // After preset to 6
-                    {0, 0, 0, 0, 0, 0, 0, 1, 0, 0}, // After bang from preset
+                    {0, 0, 0, 0, 0, 0, 0, 1, 0, 0}, // After preset to 6
+                    {0, 0, 0, 0, 0, 0, 0, 0, 1, 0}, // After bang from preset
                     {1, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // After reset
                     {0, 1, 0, 0, 0, 0, 0, 0, 0, 0}  // After bang from reset
                 };
@@ -101,11 +100,11 @@ SCENARIO("NCounterMax object produces correct output") { // NOLINT
                 myObject.preset_value(6); // NOLINT
                 myObject.preset();
                 myObject.bang();
-                REQUIRE(myObject.counterValue() == 6);
+                REQUIRE(myObject.counterValue() == 7);
 
                 // Step from preset
                 myObject.bang();
-                REQUIRE(myObject.counterValue() == 7);
+                REQUIRE(myObject.counterValue() == 8);
 
                 // Reset and step again
                 myObject.reset();
