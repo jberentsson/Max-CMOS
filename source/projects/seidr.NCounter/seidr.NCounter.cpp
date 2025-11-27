@@ -8,13 +8,13 @@
 #include <iostream>
 
 void NCounterMax::handleOutputs() {
-    std::cout << "Counter value: " << this->counter.value() << std::endl;
+    std::cout << "Counter: " << this->counter.value() << std::endl;
     for (int i = 0; i < NCounterMax::OUTPUT_COUNT; i++) {
-        // Only activate output when counter > 0 and matches the output index
-        bool isActive = (this->counter.value() > 0) && (i == (this->counter.value() - 1));
+        bool isActive = i == this->counter.value();
         this->outputs[i]->send(isActive);
     }
 }
+
 auto NCounterMax::counterValue() -> unsigned int {
     return this->counter.value();
 }

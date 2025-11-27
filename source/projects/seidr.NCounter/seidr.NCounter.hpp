@@ -57,12 +57,7 @@ public:
 
     message<> bang{this, "bang", "Steps the counter.",
         MIN_FUNCTION{
-            if (this->alreadyBanged){
-                this->counter.step();
-            } else {
-                this->alreadyBanged = TRUE;
-            }
-
+            this->counter.step();
             this->handleOutputs();
             return {};
         }

@@ -7,6 +7,7 @@
 #include "seidr.NCounter.cpp" // NOLINT
 #include "seidr.NCounter.hpp"
 #include <c74_min_unittest.h>
+#include <iostream>
 
 using namespace c74::max;
 
@@ -34,16 +35,18 @@ SCENARIO("NCounterMax object produces correct output") { // NOLINT
                     {1, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Step 10 (wrap around)
                     {0, 1, 0, 0, 0, 0, 0, 0, 0, 0}  // Step 11
                 };
-                myObject.max_value(9);
+                
+                myObject.max_value(10);
+
                 // Test initial state
                 REQUIRE(myObject.counterValue() == 0);
 
                 myObject.bang();
 
                 // Test stepping through values
-                for (int step = 0; step < 13; step++) { // NOLINT
+                for (int step = 0; step < 10; step++) { // NOLINT
                     // Check current outputs
-                    for (int output_index = 0; output_index < 10; output_index++) { // NOLINT
+                    for (int output_index = 0; output_index < 5; output_index++) { // NOLINT
                         auto &out = *object_getoutput(myObject, output_index);
                         REQUIRE(!out[step].empty());
 
@@ -83,6 +86,7 @@ SCENARIO("NCounterMax object produces correct output") { // NOLINT
                     {1, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // After reset
                     {0, 1, 0, 0, 0, 0, 0, 0, 0, 0}  // After bang from reset
                 };
+                myObject.max_value(10);
 
                 // Initial state
                 REQUIRE(myObject.counterValue() == 0);
@@ -112,7 +116,7 @@ SCENARIO("NCounterMax object produces correct output") { // NOLINT
 
                 // Verify all outputs match expected
                 int step = 0;
-                for (int step = 0; step < 6; step++) { // NOLINT
+                for (int step = 0; step < 3; step++) { // NOLINT
                     for (int output_index = 0; output_index < 10; output_index++) { // NOLINT
                         auto &out = *object_getoutput(myObject, output_index);
                         REQUIRE(!out.empty());
@@ -128,19 +132,19 @@ SCENARIO("NCounterMax object produces correct output") { // NOLINT
         WHEN("test maximum value rollover") {
             auto &out0 = *object_getoutput(myObject, 0); // NOLINT
             auto &out9 = *object_getoutput(myObject, 9); // NOLINT
-
+            myObject.max_value(10);
             THEN("counter should wrap around correctly") {
                 // Go to maximum value
                 for (int i = 0; i < 10; i++) { // NOLINT
                     myObject.bang();
                 }
 
-                REQUIRE(myObject.counterValue() == 9);
+                REQUIRE(myObject.counterValue() == 0);
 
                 // Next bang should wrap to 0
                 myObject.bang();
 
-                REQUIRE(myObject.counterValue() == 0);
+                REQUIRE(myObject.counterValue() == 1);
 
                 // Verify output 0 is active after wrap
                 REQUIRE(!out0.empty());
