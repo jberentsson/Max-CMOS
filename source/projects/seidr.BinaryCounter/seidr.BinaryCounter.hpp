@@ -39,11 +39,8 @@ public:
 
     std::vector<std::unique_ptr<outlet<>>> outputs;
 
-    // FIXED: Proper attribute for bang mode
-    attribute<bool> bangEnable{this, "bangEnable", false,
-        description{"Output mode: true for bang outputs, false for integer outputs"}};
+    attribute<bool> bangEnable{this, "bangEnable", false, description{"Output mode: true for bang outputs, false for integer outputs"}};
 
-    // FIXED: Simplified bang handler
     message<threadsafe::yes> bang{
         this, "bang", "Steps the counter.",
         MIN_FUNCTION{
@@ -53,44 +50,26 @@ public:
         }
     };
 
-    // FIXED: Reset handler that updates outputs
     message<threadsafe::yes> reset{
         this, "reset", "Reset the counter.",
         MIN_FUNCTION{
             this->counter_.reset();
-            this->updateOutputs();  // CRITICAL: Update outputs after reset
+            this->updateOutputs();
             return {};
         }
     };
 
-    // FIXED: Preset handler
-    //message<threadsafe::yes> preset_msg{
-    //    this, "preset", "Set preset value.",
-    //    MIN_FUNCTION{
-    //        if (!args.empty()) {
-    //            int preset_value = args[0];
-    //            this->counter_.setPreset(preset_value);
-    //            this->updateOutputs();  // Update outputs after preset change
-    //        }
-    //        return {};
-    //    }
-    //};
-
-    // FIXED: Set value handler
-    message<threadsafe::yes> set{
-        this, "set", "Set counter value.",
+    message<threadsafe::yes> preset_msg{
+        this, "preset", "Set preset value.",
         MIN_FUNCTION{
             if (!args.empty()) {
-                int value = args[0];
-                // You'll need to implement a setValue method in BinaryCounter
-                //this->counter_.setValue(value);
-                this->updateOutputs();  // Update outputs after value change
+                int preset_value = args[0];
+                this->counter_.setPreset(preset_value);
             }
             return {};
         }
     };
 
-    // FIXED: Output current value
     message<threadsafe::yes> output{
         this, "output", "Output current value without changing it.",
         MIN_FUNCTION{

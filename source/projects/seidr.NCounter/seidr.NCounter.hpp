@@ -53,36 +53,26 @@ public:
     std::array<outlet<>*, OUTPUT_COUNT> outputs = {&output0, &output1, &output2, &output3, &output4,
                                      &output5, &output6, &output7, &output8, &output9};
     
-    argument<symbol> bangArg{this, "bang_on", "Initial value for the bang attribute.",
-                              MIN_ARGUMENT_FUNCTION{bangEnabled = FALSE;
-    }
-    };
-
-    argument<symbol> outputTypeArg{this, "outputType", "Initial value for the greeting attribute.",
-                                    MIN_ARGUMENT_FUNCTION{outputType = arg;
-    }
-    };
-
-    attribute<symbol> outputType{
-        this, "outputType", "integer",
-        description{"Greeting to be posted. "
-                    "The greeting will be posted to the Max console when a bang is "
-                    "received."}};
+    argument<symbol> bangArg{this, "bang_on", "Initial value for the bang attribute.", MIN_ARGUMENT_FUNCTION{bangEnabled = FALSE; }};
 
     message<> bang{this, "bang", "Steps the counter.",
-                MIN_FUNCTION{if (this->alreadyBanged){this->counter.step();
-        } else {
-            this->alreadyBanged = TRUE;
-        }
+        MIN_FUNCTION{
+            if (this->alreadyBanged){
+                this->counter.step();
+            } else {
+                this->alreadyBanged = TRUE;
+            }
 
-        this->handleOutputs();
-        return {};
-    }
+            this->handleOutputs();
+            return {};
+        }
     };
 
-    message<> reset{this, "reset", "Reset the counter.", MIN_FUNCTION{this->counter.reset();
-        return {};
-    }
+    message<> reset{this, "reset", "Reset the counter.",
+        MIN_FUNCTION{
+            this->counter.reset();
+            return {};
+        }
     };
 
 private:

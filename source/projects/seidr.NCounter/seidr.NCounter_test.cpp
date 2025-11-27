@@ -20,7 +20,7 @@ SCENARIO("NCounterMax object produces correct output") { // NOLINT
         WHEN("test the rollover") {
             THEN("check counter value and outputs") {
                 // Expected outputs for each step (which output is active)
-                int expected[12][10] = {// NOLINT
+                int expected[12][10] = { // NOLINT
                     {1, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Step 0
                     {0, 1, 0, 0, 0, 0, 0, 0, 0, 0}, // Step 1
                     {0, 0, 1, 0, 0, 0, 0, 0, 0, 0}, // Step 2
@@ -56,11 +56,11 @@ SCENARIO("NCounterMax object produces correct output") { // NOLINT
                     myObject.bang();
                 }
 
-                // // Test reset
+                // Test reset
                 myObject.reset();
                 REQUIRE(myObject.counterValue() == 0);
 
-                // // Verify outputs after reset
+                // Verify outputs after reset
                 for (int output_index = 0; output_index < 10; output_index++) { // NOLINT
                     auto &out = *object_getoutput(myObject, output_index);
                     REQUIRE(!out.empty());
@@ -75,7 +75,7 @@ SCENARIO("NCounterMax object produces correct output") { // NOLINT
         WHEN("test the preset function") {
             THEN("check preset behavior") {
                 // Expected outputs after preset operations
-                int expected[6][10] = {// NOLINT
+                int expected[6][10] = { // NOLINT
                     {1, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Initial
                     {0, 1, 0, 0, 0, 0, 0, 0, 0, 0}, // After 1 bang
                     {0, 0, 0, 0, 0, 0, 1, 0, 0, 0}, // After preset to 6
