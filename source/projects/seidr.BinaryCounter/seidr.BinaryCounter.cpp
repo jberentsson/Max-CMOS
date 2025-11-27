@@ -8,8 +8,7 @@
 
 BinaryCounterMax::BinaryCounterMax(const atoms &args) {
     if (!args.empty()) {
-        int argValue = args[0];
-        this->stepCount = (int) std::pow(2, argValue - 1);
+        this->stepCount = args[0];
     }
 
     // Create outputs
@@ -18,7 +17,8 @@ BinaryCounterMax::BinaryCounterMax(const atoms &args) {
             std::make_unique<outlet<>>(this, "(anything) output bit " + std::to_string(i)));
     }
 
-    this->counter_ = Counter(this->stepCount);
+    int maxValue = (int) std::pow(2, this->stepCount - 1);
+    this->counter_ = Counter(maxValue);
 
     updateOutputs();
 }

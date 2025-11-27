@@ -5,23 +5,22 @@
 
 #pragma once
 
+#include <vector>
 #include <c74_min.h>
 #include "Counter/Counter.hpp"
-
-#include <vector>
 
 using namespace c74::min;
 
 class NCounterMax : public object<NCounterMax> {
 public:
-    enum : uint8_t {
-        OUTPUT_COUNT = 10
-    };
-
     MIN_DESCRIPTION{"NCounter"};     // NOLINT 
     MIN_TAGS{"jb, counter"};         // NOLINT 
     MIN_AUTHOR{"Jóhann Berentsson"}; // NOLINT 
     MIN_RELATED{"seidr.*"};          // NOLINT 
+
+    enum : uint8_t {
+        OUTPUT_COUNT = 10
+    };
 
     explicit NCounterMax(const atoms &args = {});
 
@@ -34,7 +33,7 @@ public:
 
     std::vector<std::unique_ptr<outlet<>>> outputs;
     
-    //argument<symbol> bangArg{this, "bang_on", "Initial value for the bang attribute.", MIN_ARGUMENT_FUNCTION{bangEnabled = FALSE; }};
+    argument<symbol> bangArg{this, "bang_on", "Initial value for the bang attribute.", MIN_ARGUMENT_FUNCTION{bangEnabled = FALSE; }};
 
     message<threadsafe::yes> bang {this, "bang", "Steps the counter.",
         MIN_FUNCTION{
@@ -62,6 +61,7 @@ public:
             if(!args.empty()){
                 this->counter.setMaxValue(static_cast<int> (args[0]));
             }
+            
             return {};
         }
     };
@@ -71,6 +71,7 @@ public:
             if(!args.empty()){
                 this->counter.setPreset(static_cast<int> (args[0]));
             }
+
             return {};
         }
     };

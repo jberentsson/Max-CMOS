@@ -183,6 +183,8 @@ SCENARIO("enable bangs works") { // NOLINT
             myObject.reset();
             myObject.bang();
             REQUIRE(out[1][1] == 1);
+            myObject.bangArg(true);
+            myObject.bangArg(false);
         }
     }
 }

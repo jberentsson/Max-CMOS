@@ -14,7 +14,7 @@ using namespace c74::min;
 
 class QuantizerMax : public object<QuantizerMax> {
 public:
-    MIN_DESCRIPTION{"Quantizer"};      // NOLINT 
+    MIN_DESCRIPTION{"Quantize a MIDI note message."};      // NOLINT 
     MIN_TAGS{"seidr"};                 // NOLINT 
     MIN_AUTHOR{"Jóhann Berentsson"};   // NOLINT 
     MIN_RELATED{"seidr.*"};            // NOLINT 
@@ -161,7 +161,7 @@ public:
                         case 4:
                             this->quantizer.setRoundDirection(Quantizer::RoundDirection::NEAREST);
                             break;
-                        case 5:
+                        case 5: // NOLINT
                             this->quantizer.setRoundDirection(Quantizer::RoundDirection::FURTHEST);
                             break;
                         default:

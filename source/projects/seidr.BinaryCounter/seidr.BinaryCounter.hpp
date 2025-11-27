@@ -24,8 +24,6 @@ public:
 
     explicit BinaryCounterMax(const atoms &args = {});
 
-/*     auto enableBangs() -> void;
-    auto disableBangs() -> void; */
     auto updateOutputs() -> void;
     auto getBit(int output) -> unsigned int;
 
@@ -107,7 +105,7 @@ public:
 
 private:
     Counter counter_;
-    int stepCount = (int) std::pow(2, OUTPUT_COUNT - 1);
+    int stepCount = OUTPUT_COUNT;
     bool bangEnabled = false;
     bool alreadyBanged = false;
 };
