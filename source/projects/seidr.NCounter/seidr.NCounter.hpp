@@ -54,7 +54,7 @@ public:
             } else {
                 this->alreadyBanged = TRUE;
             }
-            
+
             this->handleOutputs();
             return {};
         }
@@ -63,6 +63,7 @@ public:
     message<> reset{this, "reset", "Reset the counter.",
         MIN_FUNCTION{
             this->counter.reset();
+            this->alreadyBanged = FALSE;
             return {};
         }
     };
