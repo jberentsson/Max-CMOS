@@ -10,6 +10,8 @@
 
 using namespace c74::max;
 
+c74::min::atoms emptyAtoms = {};
+
 SCENARIO("object produces correct output") { // NOLINT
     ext_main(nullptr);
     GIVEN("An instance of our object") {
@@ -50,8 +52,7 @@ SCENARIO("object produces correct output") { // NOLINT
                 myObject.bang(0);
 
                 REQUIRE(myObject.counterValue() == 4);
-
-                myObject.reset((atoms) {}, 1);
+                myObject.reset(emptyAtoms, 1);
                 myObject.bang(0);
 
                 REQUIRE(myObject.counterValue() == 0);
@@ -89,7 +90,7 @@ SCENARIO("object produces correct output") { // NOLINT
                 REQUIRE(myObject.counterValue() == 1);
 
                 myObject.preset_msg(14, 1); // NOLINT
-                myObject.preset_msg((atoms) {},1);
+                myObject.preset_msg(emptyAtoms,1);
                 myObject.bang(0);
 
                 REQUIRE(myObject.counterValue() == 15);
@@ -102,7 +103,7 @@ SCENARIO("object produces correct output") { // NOLINT
 
                 REQUIRE(myObject.counterValue() == 1);
 
-                myObject.reset((atoms) {}, 1);
+                myObject.reset(emptyAtoms, 1);
                 myObject.bang(0);
 
                 REQUIRE(myObject.counterValue() == 0);
