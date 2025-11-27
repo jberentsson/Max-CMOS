@@ -125,6 +125,9 @@ SCENARIO("NCounterMax object produces correct output") { // NOLINT
         }
 
         WHEN("test maximum value rollover") {
+            auto &out0 = *object_getoutput(myObject, 0); // NOLINT
+            auto &out9 = *object_getoutput(myObject, 9); // NOLINT
+
             THEN("counter should wrap around correctly") {
                 // Go to maximum value
                 for (int i = 0; i < 10; i++) { // NOLINT
@@ -139,14 +142,12 @@ SCENARIO("NCounterMax object produces correct output") { // NOLINT
                 REQUIRE(myObject.counterValue() == 0);
 
                 // Verify output 0 is active after wrap
-                auto &out0 = *object_getoutput(myObject, 0);
                 REQUIRE(!out0.empty());
 
                 if (!out0[0].empty()) {
                     REQUIRE(out0[0][1] == 1); // Output 0 should be active
                 }
 
-                auto &out9 = *object_getoutput(myObject, 9); // NOLINT
                 REQUIRE(!out9.empty());
 
                 if (!out9[0].empty()) {
