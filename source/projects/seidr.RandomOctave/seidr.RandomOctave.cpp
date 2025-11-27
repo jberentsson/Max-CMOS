@@ -34,10 +34,12 @@ void RandomOctaveMax::processNoteMessage(int note, int velocity) { // NOLINT
     // Process the note.
     this->randomOctave_.note(note, velocity);
 
-    for(const auto &currentNote : this->randomOctave_.getQueuedNotes()){
+    for(const auto &currentNote : this->randomOctave_.getQueuedNotes()) {
         // Send to outputs.
-        output_note.send(currentNote->pitch());
-        output_velocity.send(currentNote->velocity());
+        if (currentNote->pitch() < MIDI::KEYBOARD_SIZE){
+            output_note.send(currentNote->pitch());
+            output_velocity.send(currentNote->velocity());
+        }
     }
 
     this->randomOctave_.clearQueue();

@@ -13,6 +13,7 @@ using namespace MIDI::Notes;
 
 SCENARIO("object can be created") {
     ext_main(nullptr);
+
     GIVEN("A QuantizerMax instance") {
         test_wrapper<QuantizerMax> an_instance;
         QuantizerMax& quantizerTestObject = an_instance;
@@ -27,13 +28,13 @@ SCENARIO("object can be created") {
 
 SCENARIO("quantizer can add notes") {
     ext_main(nullptr);
+
     GIVEN("A QuantizerMax instance") {
         test_wrapper<QuantizerMax> an_instance;
         QuantizerMax& quantizerTestObject = an_instance;
         REQUIRE_NOTHROW(quantizerTestObject.quantizerMode(Quantizer::QuantizeMode::ALL_NOTES));
         
         WHEN("adding notes via addNote method") {
-            // FIXED: Use the actual method names
             REQUIRE_NOTHROW(quantizerTestObject.quantizerAddNote(NoteC4));
             REQUIRE(quantizerTestObject.noteCount() == 1);
             
@@ -42,7 +43,6 @@ SCENARIO("quantizer can add notes") {
         }
         
         WHEN("adding notes via add message") {
-            // FIXED: Use the correct message handler name
             REQUIRE_NOTHROW(quantizerTestObject.quantizerAddNote({ NoteC4, NoteE4, NoteG4 }));
             REQUIRE(quantizerTestObject.noteCount() == 3);
         }
@@ -51,19 +51,20 @@ SCENARIO("quantizer can add notes") {
 
 SCENARIO("quantizer processes notes correctly") {
     ext_main(nullptr);
+
     GIVEN("A QuantizerMax with C major scale") {
         test_wrapper<QuantizerMax> an_instance;
         QuantizerMax& quantizerTestObject = an_instance;
         REQUIRE_NOTHROW(quantizerTestObject.quantizerMode(Quantizer::QuantizeMode::ALL_NOTES));
         
-        // Add C major notes
+        // Add C major notes.
         REQUIRE_NOTHROW(quantizerTestObject.quantizerAddNote({ NoteC5, NoteD5, NoteE5, NoteF5, NoteG5, NoteA5, NoteB5 }));
         
         auto& out0 = *c74::max::object_getoutput(quantizerTestObject, 0);
         auto& out1 = *c74::max::object_getoutput(quantizerTestObject, 1);
         
         WHEN("processing a note with integer message") {
-            // D#5 should quantize to E5
+            // D#5 should quantize to E5.
             REQUIRE_NOTHROW(quantizerTestObject.note_int(NoteDS5));
             
             THEN("output should be sent") {
@@ -84,6 +85,7 @@ SCENARIO("quantizer processes notes correctly") {
 
 SCENARIO("quantizer handles note deletion") {
     ext_main(nullptr);
+
     GIVEN("A QuantizerMax with some notes") {
         test_wrapper<QuantizerMax> an_instance;
         QuantizerMax& quantizerTestObject = an_instance;
@@ -105,6 +107,7 @@ SCENARIO("quantizer handles note deletion") {
 
 SCENARIO("quantizer handles round directions") {
     ext_main(nullptr);
+
     GIVEN("A QuantizerMax with specific notes") {
         test_wrapper<QuantizerMax> an_instance;
         QuantizerMax& quantizerTestObject = an_instance;
@@ -123,6 +126,7 @@ SCENARIO("quantizer handles round directions") {
 
 SCENARIO("quantizer handles range limits") {
     ext_main(nullptr);
+
     GIVEN("A QuantizerMax with range limits") {
         test_wrapper<QuantizerMax> an_instance;
         QuantizerMax& quantizerTestObject = an_instance;
@@ -232,10 +236,10 @@ SCENARIO("clear the notes") {
         quantizerTestObject.quantizerMode(Quantizer::QuantizeMode::TWELVE_NOTES);
 
         WHEN("add and remove notes") {
-            REQUIRE_NOTHROW(quantizerTestObject.quantizerAddNote({0,1,2,3,4,5,6,7,8,9,10,11,12}));
+            REQUIRE_NOTHROW(quantizerTestObject.quantizerAddNote({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}));
 
             for (int i = 0; i <= 11; i++) { // NOLINT
-                REQUIRE_NOTHROW(quantizerTestObject.quantizerDeleteNote({i, -1}));
+                REQUIRE_NOTHROW(quantizerTestObject.quantizerDeleteNote(i));
             }
 
             REQUIRE(quantizerTestObject.noteCount() == 0);            
