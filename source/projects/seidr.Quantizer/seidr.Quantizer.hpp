@@ -152,6 +152,18 @@ public:
                         case 1:
                             this->quantizer.setRoundDirection(Quantizer::RoundDirection::DOWN);
                             break;
+                        case 2:
+                            this->quantizer.setRoundDirection(Quantizer::RoundDirection::UP_OVERFLOW);
+                            break;
+                        case 3:
+                            this->quantizer.setRoundDirection(Quantizer::RoundDirection::DOWN_UNDERFLOW);
+                            break;
+                        case 4:
+                            this->quantizer.setRoundDirection(Quantizer::RoundDirection::NEAREST);
+                            break;
+                        case 5:
+                            this->quantizer.setRoundDirection(Quantizer::RoundDirection::FURTHEST);
+                            break;
                         default:
                             break;
                     }
