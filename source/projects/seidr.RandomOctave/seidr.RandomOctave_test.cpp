@@ -65,15 +65,18 @@ SCENARIO("seidr.RandomOctaveMax object basic functionality") { // NOLINT
                 REQUIRE_NOTHROW(randomOctaveTestObject.int_message({ NoteC5, 64 }));
                 REQUIRE_NOTHROW(randomOctaveTestObject.int_message({ NoteC5, 1 }));
                 
+                // TODO: We should be producing output here.
                 //REQUIRE(!note_output.empty());
                 //REQUIRE(note_output.size() == 3);
                 
                 // Turn all notes off fo that class of notes.
-                //REQUIRE_NOTHROW(randomOctaveTestObject.int_message({ NoteC5, 0 }));
+                REQUIRE_NOTHROW(randomOctaveTestObject.int_message({ NoteC5, 0 }));
                 
+                // TODO: We should be producing output here.
                 //REQUIRE(!note_output.empty());
                 //REQUIRE(note_output.size() == 6);
                 
+                // TODO: We should be producing output here.
                 //REQUIRE(static_cast<int> (note_output[0][1]) % 12 == 0);
                 //REQUIRE(static_cast<int> (note_output[1][1]) % 12 == 0);
                 //REQUIRE(static_cast<int> (note_output[2][1]) % 12 == 0);
@@ -107,10 +110,13 @@ SCENARIO("seidr.RandomOctaveMax object basic functionality") { // NOLINT
             THEN("range changes don't crash subsequent note processing") {
                 randomOctaveTestObject.range({ 24, 72 }); // NOLINT
                 REQUIRE_NOTHROW(randomOctaveTestObject.int_message({ NoteC5, 100 }));
+                // TODO: We should be producing output here.
                 //REQUIRE(static_cast<int> (note_output[0][1]) % 12 == 6);
 
+                // TODO: The range is untested.
                 //randomOctaveTestObject.range({ 48, 48 });
-                //REQUIRE_NOTHROW(randomOctaveTestObject.int_message({ NoteG5, 80 }));
+                REQUIRE_NOTHROW(randomOctaveTestObject.int_message({ NoteG5, 80 }));
+                // TODO: We should be producing output here.
                 //REQUIRE(static_cast<int> (note_output[1][1]) % 12 == 4);
             }
         }
@@ -152,6 +158,7 @@ SCENARIO("seidr.RandomOctaveMax stress and performance tests") { // NOLINT
                 }
                 
                 REQUIRE(!note_output.empty());
+                // TODO: We are not producing any note output.
                 //REQUIRE(note_output.size() == 50);
             }
 
@@ -159,7 +166,8 @@ SCENARIO("seidr.RandomOctaveMax stress and performance tests") { // NOLINT
                 for (int i = 0; i < 50; i++) { // NOLINT
                     REQUIRE_NOTHROW(randomOctaveTestObject.int_message({NoteC5 + (i % OCTAVE), 0}));
                 }
-
+                
+                // TODO: We are not producing any note output.
                 //REQUIRE(!note_output.empty());
             }
 
@@ -301,7 +309,7 @@ SCENARIO("seidr.RandomOctaveMax musical scale tests") { // NOLINT
                 }
 
                 REQUIRE(randomOctaveTestObject.getActiveNotes().empty());
-                //REQUIRE(!note_output.empty());
+                REQUIRE(!note_output.empty());
                 for(const auto &nout : note_output){
                     REQUIRE(static_cast<int> (nout[0]) != 0);
                 }
@@ -313,13 +321,15 @@ SCENARIO("seidr.RandomOctaveMax musical scale tests") { // NOLINT
                 for (int note = NoteC5; note <= NoteC6; note++) {
                     REQUIRE_NOTHROW(randomOctaveTestObject.int_message({ note, 100 }));
                 }
-
+                
+                // TODO: There should be 13 active notes.
                 //REQUIRE(randomOctaveTestObject.getActiveNotes().size() == 13);
 
                 for (int note = NoteC5; note <= NoteC6; note++) {
                     REQUIRE_NOTHROW(randomOctaveTestObject.int_message({ note, 0 }));
                 }
 
+                // TODO: There should be no active notes.
                 //REQUIRE(randomOctaveTestObject.getActiveNotes().empty());
 
                 REQUIRE(!note_output.empty());
@@ -353,7 +363,8 @@ SCENARIO("seidr.RandomOctaveMax musical scale tests") { // NOLINT
                 REQUIRE_NOTHROW(randomOctaveTestObject.int_message({ NoteE5, 100 }));
                 REQUIRE_NOTHROW(randomOctaveTestObject.int_message({ NoteG5, 100 }));
 
-                //REQUIRE(randomOctaveTestObject.getQueuedNotes().empty());
+                REQUIRE(randomOctaveTestObject.getQueuedNotes().empty());
+                // TODO: Three notes should be active.
                 //REQUIRE(randomOctaveTestObject.getActiveNotes().size() == 3);
 
                 // Release chord
