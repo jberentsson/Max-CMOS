@@ -8,12 +8,12 @@ RandomOctaveMax::RandomOctaveMax(const atoms &args) {
 }
 
 void RandomOctaveMax::clearNoteMessage(int note) {
-    int clearedCount = randomOctave_.clearNotesByPitchClass(note, 0);
-
-    if (clearedCount > 0) {
-        output_note.send(note);
-        output_velocity.send(0);
-    }
+    //int clearedCount = randomOctave_.clearNotesByPitchClass(note, 0);
+    //
+    //if (clearedCount > 0) {
+    //    output_note.send(note);
+    //    output_velocity.send(0);
+    //}
 }
 
 void RandomOctaveMax::clearAllNotesMessage() {
@@ -32,7 +32,7 @@ void RandomOctaveMax::processNoteMessage(int note, int velocity) { // NOLINT
     // Process the note.
     this->randomOctave_.note(note, velocity);
 
-    for(const auto &currentNote : this->randomOctave_.getQueuedNotes()) {
+    for(const auto &currentNote : this->randomOctave_.getNoteQueue()) {
         // Send to outputs.
         if (currentNote->pitch() < MIDI::KEYBOARD_SIZE){
             output_note.send(currentNote->pitch());

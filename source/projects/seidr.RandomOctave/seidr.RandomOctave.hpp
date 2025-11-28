@@ -29,7 +29,7 @@ public:
     auto setRangeMessage(int low, int high) -> void;
 
     auto getActiveNotes() -> std::vector<std::shared_ptr<RandomOctave::ActiveNote>> { return this->randomOctave_.getActiveNotes(); }
-    auto getQueuedNotes() -> std::vector<std::shared_ptr<RandomOctave::ActiveNote>> { return this->randomOctave_.getQueuedNotes(); }
+    auto getQueuedNotes() -> std::vector<std::shared_ptr<RandomOctave::ActiveNote>> { return this->randomOctave_.getNoteQueue(); }
 
     // Inlets and outlets
     inlet<> input_note_velcoty {this, "(int) note, (int) velocity"};
