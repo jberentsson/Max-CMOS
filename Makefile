@@ -55,7 +55,7 @@ clean:
 
 line-count:
 	@echo "Counting lines of code..."
-	@wc -l source/thulr/source/*/*.{cpp,hpp} source/projects/*/*.{cpp,hpp} | sort -n
+	@wc -l source/thulr/source/*/*.{cpp,hpp} source/thulr/source/*/*/*.{cpp,hpp} source/projects/*/*.{cpp,hpp} source/projects/*/*/*.{cpp,hpp} | sort -n
 
 deps:
 	@echo "Checking dependencies..."
