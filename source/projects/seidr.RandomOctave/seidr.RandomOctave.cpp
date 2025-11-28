@@ -8,7 +8,7 @@ RandomOctaveMax::RandomOctaveMax(const atoms &args) {
 }
 
 void RandomOctaveMax::clearNoteMessage(int note) {
-    int clearedCount = randomOctave_.clearNotesByPitchClass(note);
+    int clearedCount = randomOctave_.clearNotesByPitchClass(note, 0);
 
     if (clearedCount > 0) {
         output_note.send(note);

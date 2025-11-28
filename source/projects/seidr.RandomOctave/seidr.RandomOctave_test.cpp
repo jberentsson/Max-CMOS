@@ -29,7 +29,7 @@ SCENARIO("seidr.RandomOctaveMax object basic functionality") { // NOLINT
                 REQUIRE(!note_output.empty());
                 REQUIRE(!velocity_output.empty());
 
-                REQUIRE(note_output[0][1] == NoteC5);
+                REQUIRE(static_cast<int> (note_output[0][1]) % 12 == 0);
                 REQUIRE(velocity_output[0][1] == 100);
             }
         }
@@ -40,9 +40,9 @@ SCENARIO("seidr.RandomOctaveMax object basic functionality") { // NOLINT
                 REQUIRE_NOTHROW(randomOctaveTestObject.int_message({ NoteG5, 80 }));
                 REQUIRE_NOTHROW(randomOctaveTestObject.int_message({ NoteC6, 100 }));
 
-                REQUIRE(note_output[0][1] == NoteC5);
-                REQUIRE(note_output[1][1] == NoteG5);
-                REQUIRE(note_output[2][1] == NoteC6);
+                REQUIRE(static_cast<int> (note_output[0][1]) % 12 == 0);
+                REQUIRE(static_cast<int> (note_output[1][1]) % 12 == 7);
+                REQUIRE(static_cast<int> (note_output[2][1]) % 12 == 0);
                 
             }
 
@@ -51,20 +51,28 @@ SCENARIO("seidr.RandomOctaveMax object basic functionality") { // NOLINT
                 REQUIRE_NOTHROW(randomOctaveTestObject.int_message({ NoteC5, 0 }));
                 REQUIRE_NOTHROW(randomOctaveTestObject.int_message({ NoteG5, 0 }));
 
-                //REQUIRE(!note_output.empty());
+                REQUIRE(!note_output.empty());
 
-                //REQUIRE(note_output[0][1] == NoteC5);
-                //REQUIRE(note_output[1][1] == NoteG5);
+                REQUIRE(static_cast<int> (note_output[0][1]) % 12 == NoteC0);
+                REQUIRE(static_cast<int> (note_output[1][1]) % 12 == NoteG0);
             }
 
             THEN("velocity values are processed correctly") {
+                REQUIRE(note_output.empty());
+
+                // Same note but in different octaves
                 REQUIRE_NOTHROW(randomOctaveTestObject.int_message({ NoteC5, 127 }));
                 REQUIRE_NOTHROW(randomOctaveTestObject.int_message({ NoteC5, 64 }));
                 REQUIRE_NOTHROW(randomOctaveTestObject.int_message({ NoteC5, 1 }));
+                
+                REQUIRE(!note_output.empty());
+                REQUIRE(note_output.size() == 3);
+                
+                // Turn all notes off fo that class of notes.
                 REQUIRE_NOTHROW(randomOctaveTestObject.int_message({ NoteC5, 0 }));
                 
                 REQUIRE(!note_output.empty());
-                //REQUIRE(note_output.size() == 3); TODO: Fix this.
+                REQUIRE(note_output.size() == 6);
                 
                 REQUIRE(static_cast<int> (note_output[0][1]) % 12 == 0);
                 REQUIRE(static_cast<int> (note_output[1][1]) % 12 == 0);
@@ -122,7 +130,7 @@ SCENARIO("seidr.RandomOctaveMax object basic functionality") { // NOLINT
                 randomOctaveTestObject.int_message({ NoteC6, 0 });
 
                 REQUIRE(!note_output.empty());
-                //REQUIRE(note_output.size() == 6); // TODO: this is giving us 4 
+                REQUIRE(note_output.size() == 6);
             }
         }
     } 
@@ -153,7 +161,7 @@ SCENARIO("seidr.RandomOctaveMax stress and performance tests") { // NOLINT
                     REQUIRE_NOTHROW(randomOctaveTestObject.int_message({NoteC5 + (i % OCTAVE), 0}));
                 }
 
-                //REQUIRE(!note_output.empty());
+                REQUIRE(!note_output.empty());
             }
 
             THEN("it handles mixed rapid messages without crashing") {
@@ -207,7 +215,7 @@ SCENARIO("seidr.RandomOctaveMax error handling tests") { // NOLINT
 
             THEN("single element list is handled") {
                 REQUIRE_NOTHROW(randomOctaveTestObject.int_message(NoteC5));
-                //REQUIRE(!note_output.empty()); // TODO: Do we want this to work?
+                REQUIRE(note_output.empty());
             }
 
             THEN("too many elements are handled") {
@@ -294,7 +302,10 @@ SCENARIO("seidr.RandomOctaveMax musical scale tests") { // NOLINT
                 }
 
                 REQUIRE(randomOctaveTestObject.getActiveNotes().empty());
-                REQUIRE(note_output.empty());
+                REQUIRE(!note_output.empty());
+                for(const auto &nout : note_output){
+                    REQUIRE(static_cast<int> (nout[0]) != 0);
+                }
             }
         }
 
@@ -332,7 +343,7 @@ SCENARIO("seidr.RandomOctaveMax musical scale tests") { // NOLINT
                 REQUIRE_NOTHROW(randomOctaveTestObject.int_message({ NoteG6, 0 }));
 
                 REQUIRE(!note_output.empty());
-                REQUIRE(note_output.size() == 6); // TODO: Fix this. Should ouput six times.
+                REQUIRE(note_output.size() == 6);
             }
         }
 
@@ -354,18 +365,6 @@ SCENARIO("seidr.RandomOctaveMax musical scale tests") { // NOLINT
                 REQUIRE(randomOctaveTestObject.getQueuedNotes().empty());
                 REQUIRE(randomOctaveTestObject.getActiveNotes().empty());
                 REQUIRE(!note_output.empty());
-
-                for(const auto &xexe : randomOctaveTestObject.getQueuedNotes()){
-                    std::cout << (*xexe).pitch() << " " << (*xexe).velocity() << std::endl;
-                }
-
-                for(int i = 0; i < note_output.size(); i++) {
-                    std::cout << note_output[i][1] << std::endl;
-                }
-
-                for(int i = 0; i < velocity_output.size(); i++) {
-                    std::cout << velocity_output[i][1] << std::endl;
-                }
 
                 REQUIRE(note_output.size() == 6);
             }
