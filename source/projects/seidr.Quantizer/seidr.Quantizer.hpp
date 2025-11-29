@@ -8,7 +8,6 @@
 
 #include "Quantizer/Quantizer.hpp"
 #include <c74_min.h>
-#include <iostream>
 
 using namespace c74::min;
 
@@ -19,11 +18,32 @@ public:
     MIN_AUTHOR{"Jóhann Berentsson"};                  // NOLINT 
     MIN_RELATED{"seidr.*"};                           // NOLINT 
 
-    explicit QuantizerMax(const atoms &args = {});
+    explicit QuantizerMax(const atoms &args = {}) {
+        if (!args.empty()) {
+            // TODO: Add some arguments.
+        }
+    }
 
-    auto processNote(int note, int velocity) -> void;
     auto noteCount() -> int { return this->quantizer.noteCount(); }
     auto getRoundDirection() -> Quantizer::RoundDirection { return this->quantizer.getRoundDirection(); }
+    
+    // Process note implementation
+    auto processNote(int notePitch, int velocity) -> void { // NOLINT
+        // Validate input.
+        if ((notePitch < MIDI::RANGE_LOW )|| (notePitch > MIDI::RANGE_HIGH)) {
+            return;
+        }
+        
+        // Quantize the note.
+        int quantizedNote = quantizer.quantize(MIDI::Note(notePitch));
+        
+        // Send to outlets.
+        output_note.send(quantizedNote);
+        
+        if (velocity <= MIDI::RANGE_HIGH) {
+            output_velocity.send(velocity);
+        }
+    }
 
     inlet<> input_note {this, "(anything | list | reset) input note"};
 
@@ -77,7 +97,7 @@ public:
                 for (const auto &arg : args) {
                     int note = static_cast<int>(arg);
                     if(note >= MIDI::RANGE_LOW && note <= MIDI::RANGE_HIGH ) {
-                        this->quantizer.addNote(note);
+                        this->quantizer.addNote(MIDI::Note(note));
                     }
                 }                
             }
@@ -110,11 +130,11 @@ public:
         this, "update", "Clears all of the notes currently set and adds the new ones.",
         MIN_FUNCTION {
             if (!args.empty()) {
-                    this->quantizer.clear();
-                    
-                    for(const auto &argValue : args) {
-                        this->quantizer.addNote(static_cast<int> (argValue));
-                    }
+                this->quantizer.clear();
+                
+                for(const auto &argValue : args) {
+                    this->quantizer.addNote(MIDI::Note(static_cast<int> (argValue)));
+                }
             }
             return {};
         }
@@ -139,11 +159,9 @@ public:
 
                     switch(modeFlag){
                         case 0:
-                            std::cout << "TWELVE" << std::endl;
                             this->quantizer.setMode(Quantizer::QuantizeMode::TWELVE_NOTES);
                             break; 
                         case 1:
-                            std::cout << "ALL_NOTES" << std::endl;
                             this->quantizer.setMode(Quantizer::QuantizeMode::ALL_NOTES);
                             break;
                         default:
@@ -194,8 +212,10 @@ public:
         this, "range", "Set quantizer range.",
         MIN_FUNCTION {
             if (!args.empty() && args.size() >= 2) {
-                int low = static_cast<int>(args[0]);
-                int high = static_cast<int>(args[1]);
+                //int low = static_cast<int>(args[0]);
+                //int high = static_cast<int>(args[1]);
+                auto low = MIDI::Note(static_cast<int> (args[0]));
+                auto high = MIDI::Note(static_cast<int> (args[1]));
                 this->quantizer.setRange(low, high);
             }
             return {};
@@ -207,7 +227,7 @@ public:
         MIN_FUNCTION {
             if (!args.empty()){
                 for(const auto &arg: args){
-                    this->quantizer.deleteNote(static_cast<int>(arg));
+                    this->quantizer.deleteNote(MIDI::Note(static_cast<int> (arg)));
                 }
             }
             return {};
@@ -217,3 +237,5 @@ public:
 private:
     Quantizer quantizer;
 };
+
+MIN_EXTERNAL(QuantizerMax); // NOLINT
