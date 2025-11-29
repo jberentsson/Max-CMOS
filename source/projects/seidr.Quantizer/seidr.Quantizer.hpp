@@ -14,10 +14,10 @@ using namespace c74::min;
 
 class QuantizerMax : public object<QuantizerMax> {
 public:
-    MIN_DESCRIPTION{"Quantize a MIDI note message."};      // NOLINT 
-    MIN_TAGS{"seidr"};                 // NOLINT 
-    MIN_AUTHOR{"Jóhann Berentsson"};   // NOLINT 
-    MIN_RELATED{"seidr.*"};            // NOLINT 
+    MIN_DESCRIPTION{"Quantize a MIDI note message."}; // NOLINT 
+    MIN_TAGS{"seidr"};                                // NOLINT 
+    MIN_AUTHOR{"Jóhann Berentsson"};                  // NOLINT 
+    MIN_RELATED{"seidr.*"};                           // NOLINT 
 
     explicit QuantizerMax(const atoms &args = {});
 
@@ -29,6 +29,7 @@ public:
 
     outlet<> output_note     {this, "(int) output note"};
     outlet<> output_velocity {this, "(int) output velocity"};
+    outlet<> output_invalid  {this, "(bang) note was not playaed"};
 
     message<threadsafe::yes> int_message { this, "int", "Post something to the Max console.",
         MIN_FUNCTION {
@@ -46,7 +47,7 @@ public:
         }
     };
     
-    message<threadsafe::yes> note_int {
+    message<threadsafe::yes> noteInput {
         this, "int", "Process note messages",
         MIN_FUNCTION {
             if (!args.empty()) {
@@ -105,6 +106,20 @@ public:
         }
     };
 
+    message<threadsafe::yes> updateNotes {
+        this, "update", "Clears all of the notes currently set and adds the new ones.",
+        MIN_FUNCTION {
+            if (!args.empty()) {
+                    this->quantizer.clear();
+                    
+                    for(const auto &argValue : args) {
+                        this->quantizer.addNote(static_cast<int> (argValue));
+                    }
+            }
+            return {};
+        }
+    };
+
     message<threadsafe::yes> quantizerClear {
         this, "clear", "Clear notes from the quantizer.",
         MIN_FUNCTION {
@@ -124,9 +139,11 @@ public:
 
                     switch(modeFlag){
                         case 0:
+                            std::cout << "TWELVE" << std::endl;
                             this->quantizer.setMode(Quantizer::QuantizeMode::TWELVE_NOTES);
                             break; 
                         case 1:
+                            std::cout << "ALL_NOTES" << std::endl;
                             this->quantizer.setMode(Quantizer::QuantizeMode::ALL_NOTES);
                             break;
                         default:

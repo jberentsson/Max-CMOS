@@ -31,8 +31,10 @@ public:
     auto getActiveNotes() -> std::vector<std::shared_ptr<RandomOctave::ActiveNote>> { return this->randomOctave_.getActiveNotes(); }
     auto getQueuedNotes() -> std::vector<std::shared_ptr<RandomOctave::ActiveNote>> { return this->randomOctave_.getNoteQueue(); }
 
-    // Inlets and outlets
+    // Inlets
     inlet<> input_note_velcoty {this, "(int) note, (int) velocity"};
+
+    // Outlets
     outlet<> output_note       {this, "(anything) pitch"};
     outlet<> output_velocity   {this, "(anything) velocity"};
 

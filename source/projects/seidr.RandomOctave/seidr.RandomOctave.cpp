@@ -1,5 +1,6 @@
 #include "seidr.RandomOctave.hpp"
 #include "Utils/MIDI.hpp"
+#include <iostream>
 
 using namespace c74::min;
 
@@ -35,6 +36,7 @@ void RandomOctaveMax::processNoteMessage(int note, int velocity) { // NOLINT
     for(const auto &currentNote : this->randomOctave_.getNoteQueue()) {
         // Send to outputs.
         if (currentNote->pitch() < MIDI::KEYBOARD_SIZE){
+            std::cout << "Sending out " << currentNote->pitch() << " " << currentNote->velocity() << "\n";
             output_note.send(currentNote->pitch());
             output_velocity.send(currentNote->velocity());
         }
