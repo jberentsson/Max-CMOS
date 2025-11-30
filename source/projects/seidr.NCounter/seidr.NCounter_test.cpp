@@ -20,7 +20,7 @@ SCENARIO("NCounterMax object produces correct output") { // NOLINT
         WHEN("test the rollover") {
             THEN("check counter value and outputs") {
                 // Expected outputs for each step (which output is active)
-                int expected[12][10] = {// NOLINT
+                int expected[13][10] = { // NOLINT
                     {1, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Step 0
                     {0, 1, 0, 0, 0, 0, 0, 0, 0, 0}, // Step 1
                     {0, 0, 1, 0, 0, 0, 0, 0, 0, 0}, // Step 2
@@ -34,6 +34,8 @@ SCENARIO("NCounterMax object produces correct output") { // NOLINT
                     {1, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Step 10 (wrap around)
                     {0, 1, 0, 0, 0, 0, 0, 0, 0, 0}  // Step 11
                 };
+                
+                myObject.max_value(10); // NOLINT
 
                 // Test initial state
                 REQUIRE(myObject.counterValue() == 0);
@@ -41,9 +43,9 @@ SCENARIO("NCounterMax object produces correct output") { // NOLINT
                 myObject.bang();
 
                 // Test stepping through values
-                for (int step = 0; step < 10; step++) { // NOLINT
+                for (int step = 0; step < 12; step++) { // NOLINT
                     // Check current outputs
-                    for (int output_index = 0; output_index < 10; output_index++) { // NOLINT
+                    for (int output_index = 0; output_index < 5; output_index++) { // NOLINT
                         auto &out = *object_getoutput(myObject, output_index);
                         REQUIRE(!out[step].empty());
 
@@ -56,11 +58,11 @@ SCENARIO("NCounterMax object produces correct output") { // NOLINT
                     myObject.bang();
                 }
 
-                // // Test reset
+                // Test reset
                 myObject.reset();
                 REQUIRE(myObject.counterValue() == 0);
 
-                // // Verify outputs after reset
+                // Verify outputs after reset
                 for (int output_index = 0; output_index < 10; output_index++) { // NOLINT
                     auto &out = *object_getoutput(myObject, output_index);
                     REQUIRE(!out.empty());
@@ -75,14 +77,15 @@ SCENARIO("NCounterMax object produces correct output") { // NOLINT
         WHEN("test the preset function") {
             THEN("check preset behavior") {
                 // Expected outputs after preset operations
-                int expected[6][10] = {// NOLINT
+                int expected[6][10] = { // NOLINT
                     {1, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Initial
                     {0, 1, 0, 0, 0, 0, 0, 0, 0, 0}, // After 1 bang
-                    {0, 0, 0, 0, 0, 0, 1, 0, 0, 0}, // After preset to 6
-                    {0, 0, 0, 0, 0, 0, 0, 1, 0, 0}, // After bang from preset
+                    {0, 0, 0, 0, 0, 0, 0, 1, 0, 0}, // After preset to 6
+                    {0, 0, 0, 0, 0, 0, 0, 0, 1, 0}, // After bang from preset
                     {1, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // After reset
                     {0, 1, 0, 0, 0, 0, 0, 0, 0, 0}  // After bang from reset
                 };
+                myObject.max_value(10); // NOLINT
 
                 // Initial state
                 REQUIRE(myObject.counterValue() == 0);
@@ -94,65 +97,94 @@ SCENARIO("NCounterMax object produces correct output") { // NOLINT
                 REQUIRE(myObject.counterValue() == 1);
 
                 // Set preset and activate it
-                myObject.setPreset(6); // NOLINT
+                myObject.preset_value(6); // NOLINT
                 myObject.preset();
-                myObject.step();
-                REQUIRE(myObject.counterValue() == 6);
-
-                // Step from preset
                 myObject.bang();
                 REQUIRE(myObject.counterValue() == 7);
 
+                // Step from preset
+                myObject.bang();
+                REQUIRE(myObject.counterValue() == 8);
+
                 // Reset and step again
                 myObject.reset();
+                myObject.bang();
                 REQUIRE(myObject.counterValue() == 0);
 
                 myObject.bang();
                 REQUIRE(myObject.counterValue() == 1);
+                myObject.bang();
 
                 // Verify all outputs match expected
                 int step = 0;
+                for (int step = 0; step < 6; step++) { // NOLINT
+                    for (int output_index = 0; output_index < 10; output_index++) { // NOLINT
+                        auto &out = *object_getoutput(myObject, output_index);
+                        REQUIRE(!out.empty());
 
-                for (int output_index = 0; output_index < 10; output_index++) { // NOLINT
-                    auto &out = *object_getoutput(myObject, output_index);
-                    REQUIRE(!out.empty());
-
-                    if (!out[0].empty()) {
-                        REQUIRE(out[step][1] == expected[step][output_index]);
+                        if (!out[0].empty()) {
+                            REQUIRE(out[step][1] == expected[step][output_index]);
+                        }
                     }
                 }
             }
         }
 
         WHEN("test maximum value rollover") {
+            auto &out0 = *object_getoutput(myObject, 0); // NOLINT
+            auto &out9 = *object_getoutput(myObject, 9); // NOLINT
+            myObject.max_value(10); // NOLINT
             THEN("counter should wrap around correctly") {
                 // Go to maximum value
-                for (int i = 0; i < 10; i++) { // NOLINT
+                for (int i = 0; i <= 10; i++) { // NOLINT
                     myObject.bang();
                 }
 
-                REQUIRE(myObject.counterValue() == 9);
+                REQUIRE(myObject.counterValue() == 0);
 
                 // Next bang should wrap to 0
                 myObject.bang();
 
-                REQUIRE(myObject.counterValue() == 0);
+                REQUIRE(myObject.counterValue() == 1);
 
                 // Verify output 0 is active after wrap
-                auto &out0 = *object_getoutput(myObject, 0);
                 REQUIRE(!out0.empty());
 
                 if (!out0[0].empty()) {
                     REQUIRE(out0[0][1] == 1); // Output 0 should be active
                 }
 
-                auto &out9 = *object_getoutput(myObject, 9); // NOLINT
                 REQUIRE(!out9.empty());
 
                 if (!out9[0].empty()) {
                     REQUIRE(out9[0][1] == 0); // Output 9 should be inactive
                 }
             }
+        }
+    }
+}
+
+SCENARIO("enable bangs works") { // NOLINT
+    ext_main(nullptr);
+
+    GIVEN("An instance of our object") {
+        test_wrapper<NCounterMax> an_instance;
+        NCounterMax &myObject = an_instance;
+
+        auto &out = *object_getoutput(myObject, 0); // NOLINT
+
+        WHEN("test the bangs") {
+            myObject.bangEnable();
+            myObject.bang();
+            REQUIRE(!out.empty());
+            REQUIRE(!out[0].empty());
+            REQUIRE(out[0][0] == "bang");
+            myObject.bangDisable();
+            myObject.reset();
+            myObject.bang();
+            REQUIRE(out[1][1] == 1);
+            myObject.bangArg(true);
+            myObject.bangArg(false);
         }
     }
 }

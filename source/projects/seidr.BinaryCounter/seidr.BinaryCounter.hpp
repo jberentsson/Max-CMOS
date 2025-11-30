@@ -24,8 +24,6 @@ public:
 
     explicit BinaryCounterMax(const atoms &args = {});
 
-    auto enableBangs() -> void;
-    auto disableBangs() -> void;
     auto updateOutputs() -> void;
     auto getBit(int output) -> unsigned int;
 
@@ -33,65 +31,64 @@ public:
     auto setPreset(unsigned int presetValue) -> unsigned int;
     auto preset() -> unsigned int;
     auto maxValue() -> unsigned int;
+    auto getStepCount() const -> int { return this->stepCount; };
 
     inlet<> input0 {this, "(bang | list | reset) input pulse"};
-    inlet<> input1 {this, "(reset) reset pulse"};
+    inlet<> input1 {this, "(int | reset) reset pulse"};
 
     std::vector<std::unique_ptr<outlet<>>> outputs;
 
-    // FIXED: Proper attribute for bang mode
-    attribute<bool> bangEnable{this, "bangEnable", false,
-        description{"Output mode: true for bang outputs, false for integer outputs"}};
-
-    // FIXED: Simplified bang handler
-    message<threadsafe::yes> bang{
+    message<threadsafe::yes> bang {
         this, "bang", "Steps the counter.",
         MIN_FUNCTION{
-            this->counter_.step();
-            this->updateOutputs();
-            return {};
-        }
-    };
+            switch(inlet){
+                case 1:
+                    this->counter_.reset();
+                    this->alreadyBanged = false;
 
-    // FIXED: Reset handler that updates outputs
-    message<threadsafe::yes> reset{
-        this, "reset", "Reset the counter.",
-        MIN_FUNCTION{
-            this->counter_.reset();
-            this->updateOutputs();  // CRITICAL: Update outputs after reset
-            return {};
-        }
-    };
-
-    // FIXED: Preset handler
-    //message<threadsafe::yes> preset_msg{
-    //    this, "preset", "Set preset value.",
-    //    MIN_FUNCTION{
-    //        if (!args.empty()) {
-    //            int preset_value = args[0];
-    //            this->counter_.setPreset(preset_value);
-    //            this->updateOutputs();  // Update outputs after preset change
-    //        }
-    //        return {};
-    //    }
-    //};
-
-    // FIXED: Set value handler
-    message<threadsafe::yes> set{
-        this, "set", "Set counter value.",
-        MIN_FUNCTION{
-            if (!args.empty()) {
-                int value = args[0];
-                // You'll need to implement a setValue method in BinaryCounter
-                //this->counter_.setValue(value);
-                this->updateOutputs();  // Update outputs after value change
+                    break;
+                default:
+                    if (this->alreadyBanged){
+                        this->counter_.step();
+                    } else {
+                        this->alreadyBanged = true;
+                    }
+                    this->updateOutputs();
+                    break;
             }
             return {};
         }
     };
 
-    // FIXED: Output current value
-    message<threadsafe::yes> output{
+    message<threadsafe::yes> reset {
+        this, "reset", "Reset the counter.",
+        MIN_FUNCTION{
+            switch(inlet){
+                case 1:
+                    this->counter_.reset();
+                    this->alreadyBanged = false;
+                    break;
+                default:
+                    break;
+            }
+            return {};
+        }
+    };
+
+    message<threadsafe::yes> preset_msg {
+        this, "preset", "Set preset value.",
+        MIN_FUNCTION{
+            if (!args.empty() && inlet == 1) {
+                int preset_value = args[0];
+                this->counter_.setPreset(preset_value);
+            } else if (args.empty() && inlet == 1) {
+                this->counter_.preset();
+            }
+            return {};
+        }
+    };
+
+    message<threadsafe::yes> output {
         this, "output", "Output current value without changing it.",
         MIN_FUNCTION{
             this->updateOutputs();
@@ -99,6 +96,32 @@ public:
         }
     };
 
+    message<threadsafe::yes> max_value {this, "max", "Set the counter max value.",
+        MIN_FUNCTION{
+            if(!args.empty()){
+                this->counter_.setMaxValue(static_cast<int> (args[0]));
+            }
+            return {};
+        }
+    };
+
+    message<threadsafe::yes> bangEnable {this, "bangEnable", "Enable bang outputs.",
+        MIN_FUNCTION{
+            this->bangEnabled = true;
+            return {};
+        }
+    };
+
+    message<threadsafe::yes> bangDisable {this, "bangDisable", "Enable bang outputs.",
+        MIN_FUNCTION{
+            this->bangEnabled = false;
+            return {};
+        }
+    };
+
 private:
-    Counter counter_ = Counter(OUTPUT_COUNT);
+    Counter counter_;
+    int stepCount = OUTPUT_COUNT;
+    bool bangEnabled = false;
+    bool alreadyBanged = false;
 };

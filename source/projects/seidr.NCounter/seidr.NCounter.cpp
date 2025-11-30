@@ -6,27 +6,32 @@
 
 #include "seidr.NCounter.hpp" // NOLINT
 
+NCounterMax::NCounterMax(const atoms &args) {
+    if (!args.empty()) {
+        this->stepCount_ = args[0];
+    }
+
+    for (int i = 0; i < this->stepCount_; i++) {
+        outputs.push_back(std::make_unique<outlet<>>(this, "(anything) output bit " + std::to_string(i)));
+    }
+
+    this->counter_ = Counter(this->stepCount_);
+};
+
 void NCounterMax::handleOutputs() {
-    // Send data to the outputs.
-    for (int i = 0; i < NCounterMax::OUTPUT_COUNT; i++) {
-        this->outputs[i]->send(i == this->counter.value());
+    for (int i = 0; i < this->stepCount_; i++) {
+        bool isActive = i == this->counter_.value();
+
+        if (this->bangEnabled_ && isActive) {
+            this->outputs[i]->send("bang");
+        } else {
+            this->outputs[i]->send(isActive);
+        }
     }
 }
 
 auto NCounterMax::counterValue() -> unsigned int {
-    return this->counter.value();
-}
-
-auto NCounterMax::setPreset(int presetValue) -> unsigned int {
-    return this->counter.setPreset(presetValue);
-}
-
-auto NCounterMax::preset() -> unsigned int {
-    return this->counter.preset();
-}
-
-auto NCounterMax::step() -> unsigned int {
-    return this->counter.step();
+    return this->counter_.value();
 }
 
 MIN_EXTERNAL(NCounterMax); // NOLINT

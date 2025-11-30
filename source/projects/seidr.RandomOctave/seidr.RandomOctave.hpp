@@ -16,17 +16,27 @@ private:
     RandomOctave randomOctave_;
 
 public:
+    MIN_DESCRIPTION{"Randomize the octave of a MIDI note message."}; // NOLINT 
+    MIN_TAGS{"seidr"};                                               // NOLINT 
+    MIN_AUTHOR{"Jóhann Berentsson"};                                 // NOLINT 
+    MIN_RELATED{"seidr.*"};                                          // NOLINT 
+
     explicit RandomOctaveMax(const c74::min::atoms &args = {});
 
-    void processNoteMessage(int note, int velocity);
-    void clearNoteMessage(int note);
-    void clearAllNotesMessage();
-    void setRangeMessage(int low, int high);
+    auto processNoteMessage(int note, int velocity) -> void;
+    auto clearAllNotesMessage() -> void;
+    auto clearNoteMessage(int note) -> void;
+    auto setRangeMessage(int low, int high) -> void;
 
-    // Inlets and outlets
+    auto getActiveNotes() -> std::vector<std::shared_ptr<RandomOctave::ActiveNote>> { return this->randomOctave_.getActiveNotes(); }
+    auto getQueuedNotes() -> std::vector<std::shared_ptr<RandomOctave::ActiveNote>> { return this->randomOctave_.getNoteQueue(); }
+
+    // Inlets
     inlet<> input_note_velcoty {this, "(int) note, (int) velocity"};
-    outlet<> output_note       {this, "(int) pitch"};
-    outlet<> output_velocity   {this, "(int) velocity"};
+
+    // Outlets
+    outlet<> output_note       {this, "(anything) pitch"};
+    outlet<> output_velocity   {this, "(anything) velocity"};
 
     message<> anything{
         this, "anything", "Process note messages",

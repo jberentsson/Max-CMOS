@@ -10,6 +10,8 @@
 
 using namespace c74::max;
 
+c74::min::atoms emptyAtoms = {};
+
 SCENARIO("object produces correct output") { // NOLINT
     ext_main(nullptr);
     GIVEN("An instance of our object") {
@@ -21,7 +23,7 @@ SCENARIO("object produces correct output") { // NOLINT
             myObject.maxValue();
 
             THEN("check counter value") {
-                REQUIRE(myObject.counterValue() == 1);
+                REQUIRE(myObject.counterValue() == 0);
             }
 
             THEN("our greeting is produced at the outlet") {
@@ -31,38 +33,35 @@ SCENARIO("object produces correct output") { // NOLINT
                     {0, 0, 0, 0, 0, 0, 1, 0},
                     {0, 0, 0, 0, 0, 0, 1, 1},
                     {0, 0, 0, 0, 0, 1, 0, 0},
-                    {0, 0, 0, 0, 0, 0, 0, 0},
                 };
+
+                REQUIRE(myObject.counterValue() == 0);
+
+                myObject.bang(0);
 
                 REQUIRE(myObject.counterValue() == 1);
 
-                myObject.bang();
+                myObject.bang(0);
 
                 REQUIRE(myObject.counterValue() == 2);
 
-                myObject.bang();
+                myObject.bang(0);
 
                 REQUIRE(myObject.counterValue() == 3);
 
-                myObject.bang();
+                myObject.bang(0);
 
                 REQUIRE(myObject.counterValue() == 4);
+                myObject.reset(emptyAtoms, 1);
+                myObject.bang(0);
 
-                myObject.bang();
-
-                REQUIRE(myObject.counterValue() == 5);
-
-                myObject.reset();
-                myObject.bang();
-
-                REQUIRE(myObject.counterValue() == 1);
+                REQUIRE(myObject.counterValue() == 0);
 
                 for (int i = 0; i < 5; i++) { // NOLINT
                     for (int j = 0; j < BinaryCounterMax::OUTPUT_COUNT; j++) {
                         auto &out = *object_getoutput(myObject, j);
                         REQUIRE(!out.empty());
-                        // REQUIRE(out[0].size() == 2);
-                        // REQUIRE(out[i][1] == expected[i][j]);
+                        REQUIRE(out[i][0] == expected[i][j]);
                     }
                 }
             }
@@ -70,54 +69,86 @@ SCENARIO("object produces correct output") { // NOLINT
 
         WHEN("test the preset function") {
             THEN("our greeting is produced at the outlet") {
-                int expected[6][8] = {// NOLINT
+                int expected[][8] = {// NOLINT
                     {0, 0, 0, 0, 0, 0, 0, 0},
                     {0, 0, 0, 0, 0, 0, 0, 1},
-                    {0, 0, 1, 0, 0, 0, 0, 0},
-                    {0, 0, 1, 0, 0, 0, 0, 1},
+                    {0, 0, 0, 0, 1, 1, 1, 1},
+                    {0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 1},
                     {0, 0, 0, 0, 0, 0, 0, 0},
                     {0, 0, 0, 0, 0, 0, 0, 1},
                 };
 
-                myObject.bang();
+                myObject.max_value(16); // NOLINT
 
-                REQUIRE(myObject.counterValue() == 1);
-
-                myObject.bang();
-
-                REQUIRE(myObject.counterValue() == 2);
-
-                myObject.setPreset(32); // NOLINT
-                myObject.preset();
-
-                REQUIRE(myObject.counterValue() == 31);
-
-                myObject.bang();
+                myObject.bang(0);
 
                 REQUIRE(myObject.counterValue() == 0);
 
-                myObject.bang();
+                myObject.bang(0);
 
                 REQUIRE(myObject.counterValue() == 1);
 
-                myObject.reset();
-                myObject.bang();
+                myObject.preset_msg(14, 1); // NOLINT
+                myObject.preset_msg(emptyAtoms,1);
+                myObject.bang(0);
+
+                REQUIRE(myObject.counterValue() == 15);
+
+                myObject.bang(0);
+
+                REQUIRE(myObject.counterValue() == 0);
+
+                myObject.bang(0);
 
                 REQUIRE(myObject.counterValue() == 1);
 
-                myObject.bang();
+                myObject.reset(emptyAtoms, 1);
+                myObject.bang(0);
 
-                REQUIRE(myObject.counterValue() == 2);
+                REQUIRE(myObject.counterValue() == 0);
 
-                for (int i = 0; i < 6; i++) { // NOLINT
+                myObject.bang(0);
+
+                REQUIRE(myObject.counterValue() == 1);
+
+                for (int i = 0; i < 7; i++) { // NOLINT
                     for (int j = 0; j < BinaryCounterMax::OUTPUT_COUNT; j++) {
                         auto &out = *object_getoutput(myObject, j);
                         REQUIRE(!out.empty());
-                        // REQUIRE(out[0].size() == 0);
-                        // REQUIRE(out[i][1] == expected[i][j]);
+                        REQUIRE(out[i][0] == expected[i][j]);
                     }
                 }
             }
+        }
+    }
+}
+
+SCENARIO("enable bangs works") { // NOLINT
+    ext_main(nullptr);
+
+    GIVEN("An instance of our object") {
+        test_wrapper<BinaryCounterMax> an_instance;
+        BinaryCounterMax &myObject = an_instance;
+
+        auto &out = *object_getoutput(myObject, 7); // NOLINT
+
+        WHEN("test the bangs") {
+            myObject.bangEnable(1);
+            
+            myObject.bang(0);
+            myObject.bang(0);
+
+            REQUIRE(!out.empty());
+            REQUIRE(!out[0].empty());
+            REQUIRE(out[0][0] == "bang");
+            myObject.bangDisable(1);
+            myObject.reset(1);
+            
+            myObject.bang(0);
+            REQUIRE(out[1][0] == 0);
+            myObject.bang(0);
+            REQUIRE(out[2][0] == 1);
         }
     }
 }
