@@ -6,6 +6,7 @@
 
 #include <c74_min_unittest.h>
 #include "seidr.Quantizer.hpp"
+#include "seidr.Quantizer.cpp" // NOLINT
 
 using namespace c74::min;
 using namespace MIDI::Notes;

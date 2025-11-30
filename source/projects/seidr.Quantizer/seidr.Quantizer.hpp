@@ -23,16 +23,18 @@ public:
 
     explicit QuantizerMax(const atoms &args = {}) {
         if (!args.empty()) {
+            // QuantizeMode
             if (!args.empty()) {
                 this->quantizer.setMode(Quantizer::QuantizeMode(args[0]));
             }
 
+            // RoundDirection
             if (args.size() >= 2) {
                 this->quantizer.setRoundDirection(Quantizer::RoundDirection(args[1]));
             }
 
-            if (args.size() == 4) {
-                
+            // Range
+            if (args.size() == 4) { 
                 uint8_t rangeLow = int(args[2]);
                 uint8_t rangeHigh = int(args[3]);
                 this->quantizer.setRange(Quantizer::Note(rangeLow), Quantizer::Note(rangeHigh));

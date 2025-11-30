@@ -3,12 +3,8 @@
 
 using namespace c74::min;
 
-RandomOctaveMax::RandomOctaveMax(const atoms &args) {
-    // Nothing here.
-}
-
-auto RandomOctaveMax::clearNoteMessage(int note) -> void {
-    //int clearedCount = this->randomOctave_.clear(note, 0);
+auto RandomOctaveMax::clearNoteMessage(int note) -> void{
+    //int clearedCount = randomOctave_.clearNotesByPitchClass(note);
     //
     //if (clearedCount > 0) {
     //    output_note.send(note);
@@ -25,23 +21,33 @@ auto RandomOctaveMax::clearAllNotesMessage() -> void {
 }
 
 auto RandomOctaveMax::setRangeMessage(int low, int high) -> void {
-    this->randomOctave_.setRange(low, high);
+    randomOctave_.setRange(low, high);
 }
 
-void RandomOctaveMax::processNoteMessage(int note, int velocity) { // NOLINT
-    // Process the note.
-    this->randomOctave_.note(note, velocity);
+RandomOctaveMax::RandomOctaveMax(const atoms &args) {
+    // Nothing here.
+}
 
-    for(const auto &currentNote : this->randomOctave_.getNoteQueue()) {
-        // Send to outputs.
-        if (currentNote->pitch() < MIDI::KEYBOARD_SIZE){
-            output_note.send(currentNote->pitch());
-            output_velocity.send(currentNote->velocity());
+auto RandomOctaveMax::processNoteMessage(atoms args) -> void { // NOLINT
+    // The input needs to be an array with two integes.
+    if (args.size() >= 2) {
+        int note = args[0];
+        int velocity = args[1];
+
+        if(this->randomOctave_.note(note, velocity) == 0){ 
+            if (randomOctave_.getNoteQueue().empty()) {
+                return;
+            }
+
+            for (const auto &currentNote : randomOctave_.getNoteQueue()) {
+                // Send to outputs.
+                output_note.send(currentNote->pitch());
+                output_velocity.send(currentNote->velocity());
+            }
+
+            randomOctave_.clearQueue();
         }
     }
-
-    this->randomOctave_.clearQueue();
-
 }
 
 MIN_EXTERNAL(RandomOctaveMax); // NOLINT
