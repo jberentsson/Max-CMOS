@@ -21,16 +21,11 @@ macro(project_template)
         ${CMAKE_CURRENT_SOURCE_DIR}
     )
 
-    if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}.cpp)
-        set( SOURCE_FILES
-            ${PROJECT_NAME}.hpp
-            ${PROJECT_NAME}.cpp
-        )
-    else()
-        set( SOURCE_FILES
-            ${PROJECT_NAME}.hpp
-        )
-    endif()
+    message("cpp file found!")
+    set( SOURCE_FILES
+        ${PROJECT_NAME}.hpp
+        ${PROJECT_NAME}.cpp
+    )
 
 
     add_library(
