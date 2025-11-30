@@ -304,6 +304,7 @@ SCENARIO("seidr.RandomOctaveMax musical scale tests") { // NOLINT
                     REQUIRE_NOTHROW(randomOctaveTestObject.anything({note, 0}));
                 }
 
+                // TODO: there are not supposed to be any active notes.
                 REQUIRE(randomOctaveTestObject.getActiveNotes().empty());
                 REQUIRE(!note_output.empty());
                 for(const auto &nout : note_output){
@@ -319,14 +320,14 @@ SCENARIO("seidr.RandomOctaveMax musical scale tests") { // NOLINT
                 }
                 
                 // TODO: There should be 13 active notes. Always crashes. Sometimes there are 12 notes.
-                //REQUIRE(randomOctaveTestObject.getActiveCount() == 13);
+                //REQUIRE(randomOctaveTestObject.getActiveNotes().size() == 13);
 
                 for (int note = NoteC5; note <= NoteC6; note++) {
                     REQUIRE_NOTHROW(randomOctaveTestObject.anything({ note, 0 }));
                 }
 
                 // TODO: There should be no active notes.
-                //REQUIRE(randomOctaveTestObject.getActiveCount() == 0);
+                //REQUIRE(randomOctaveTestObject.getActiveNotes().size() == 0);
 
                 REQUIRE(!note_output.empty());
             }
@@ -360,7 +361,7 @@ SCENARIO("seidr.RandomOctaveMax musical scale tests") { // NOLINT
                 REQUIRE_NOTHROW(randomOctaveTestObject.anything({ NoteG5, 100 }));
 
                 REQUIRE(randomOctaveTestObject.getQueuedNotes().empty());
-                REQUIRE(randomOctaveTestObject.getActiveCount() == 3);
+                REQUIRE(randomOctaveTestObject.getActiveNotes().size() == 3);
 
                 // Release chord
                 REQUIRE_NOTHROW(randomOctaveTestObject.anything({ NoteC5, 0 }));

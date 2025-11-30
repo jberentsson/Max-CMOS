@@ -27,7 +27,6 @@ public:
     auto clearAllNotesMessage() -> void;
     auto clearNoteMessage(int note) -> void;
     auto setRangeMessage(int low, int high) -> void;
-    auto getActiveCount() -> int { return this->randomOctave_.getActiveCount(); }
 
     auto getActiveNotes() -> std::vector<std::shared_ptr<ActiveNote>> { return this->randomOctave_.getActiveNotes(); }
     auto getQueuedNotes() -> std::vector<std::shared_ptr<ActiveNote>> { return this->randomOctave_.getNoteQueue(); }
