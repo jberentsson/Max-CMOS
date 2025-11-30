@@ -258,7 +258,6 @@ SCENARIO("clear the notes") {
         WHEN("add and remove notes") {
             REQUIRE(quantizerTestObject.noteCount() == 0);
 
-            // TODO: There are some mysterious bugs in here.
             for (int i = 0; i < MIDI::KEYBOARD_SIZE; i++) {
                 REQUIRE(quantizerTestObject.noteCount() == i);
                 REQUIRE_NOTHROW(quantizerTestObject.quantizerAddNote(i));

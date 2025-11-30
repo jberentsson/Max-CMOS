@@ -12,6 +12,9 @@
 using namespace c74::min;
 
 class QuantizerMax : public object<QuantizerMax> {
+private:
+    Quantizer quantizer;
+
 public:
     MIN_DESCRIPTION{"Quantize a MIDI note message."}; // NOLINT 
     MIN_TAGS{"seidr"};                                // NOLINT 
@@ -20,7 +23,20 @@ public:
 
     explicit QuantizerMax(const atoms &args = {}) {
         if (!args.empty()) {
-            // TODO: Add some arguments.
+            if (!args.empty()) {
+                this->quantizer.setMode(Quantizer::QuantizeMode(args[0]));
+            }
+
+            if (args.size() >= 2) {
+                this->quantizer.setRoundDirection(Quantizer::RoundDirection(args[1]));
+            }
+
+            if (args.size() == 4) {
+                
+                uint8_t rangeLow = int(args[2]);
+                uint8_t rangeHigh = int(args[3]);
+                this->quantizer.setRange(Quantizer::Note(rangeLow), Quantizer::Note(rangeHigh));
+            }
         }
     }
 
@@ -233,9 +249,6 @@ public:
             return {};
         }
     };
-
-private:
-    Quantizer quantizer;
 };
 
 MIN_EXTERNAL(QuantizerMax); // NOLINT

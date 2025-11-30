@@ -16,16 +16,16 @@ private:
     RandomOctave randomOctave_;
 
 public:
-    MIN_DESCRIPTION{"Randomize the octave of a MIDI note message."};      // NOLINT 
-    MIN_TAGS{"seidr"};                 // NOLINT 
-    MIN_AUTHOR{"Jóhann Berentsson"};   // NOLINT 
-    MIN_RELATED{"seidr.*"};            // NOLINT 
+    MIN_DESCRIPTION{"Randomize the octave of a MIDI note message."}; // NOLINT 
+    MIN_TAGS{"seidr"};                                               // NOLINT 
+    MIN_AUTHOR{"Jóhann Berentsson"};                                 // NOLINT 
+    MIN_RELATED{"seidr.*"};                                          // NOLINT 
 
     explicit RandomOctaveMax(const c74::min::atoms &args = {});
 
     auto processNoteMessage(int note, int velocity) -> void;
-    auto clearNoteMessage(int note) -> void;
     auto clearAllNotesMessage() -> void;
+    auto clearNoteMessage(int note) -> void;
     auto setRangeMessage(int low, int high) -> void;
 
     auto getActiveNotes() -> std::vector<std::shared_ptr<RandomOctave::ActiveNote>> { return this->randomOctave_.getActiveNotes(); }
