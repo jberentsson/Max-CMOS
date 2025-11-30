@@ -21,12 +21,10 @@ macro(project_template)
         ${CMAKE_CURRENT_SOURCE_DIR}
     )
 
-    message("cpp file found!")
     set( SOURCE_FILES
         ${PROJECT_NAME}.hpp
         ${PROJECT_NAME}.cpp
     )
-
 
     add_library(
         ${PROJECT_NAME}
