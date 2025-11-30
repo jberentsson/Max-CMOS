@@ -250,5 +250,3 @@ public:
         }
     };
 };
-
-MIN_EXTERNAL(QuantizerMax); // NOLINT
