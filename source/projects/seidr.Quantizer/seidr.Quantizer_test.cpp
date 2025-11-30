@@ -260,12 +260,12 @@ SCENARIO("clear the notes") {
 
             // TODO: There are some mysterious bugs in here.
             for (int i = 0; i < MIDI::KEYBOARD_SIZE; i++) {
-                //REQUIRE(quantizerTestObject.noteCount() == i);
+                REQUIRE(quantizerTestObject.noteCount() == i);
                 REQUIRE_NOTHROW(quantizerTestObject.quantizerAddNote(i));
-                //REQUIRE(quantizerTestObject.noteCount() == i + 1);
+                REQUIRE(quantizerTestObject.noteCount() == i + 1);
             }
 
-            //REQUIRE(quantizerTestObject.noteCount() == 128);
+            REQUIRE(quantizerTestObject.noteCount() == 128);
 
             for (int i = 0; i < MIDI::KEYBOARD_SIZE; i++) {
                 REQUIRE_NOTHROW(quantizerTestObject.quantizerDeleteNote(i));
