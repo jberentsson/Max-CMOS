@@ -305,7 +305,6 @@ SCENARIO("seidr.RandomOctaveMax musical scale tests") { // NOLINT
                 }
 
                 // TODO: there are not supposed to be any active notes.
-                REQUIRE(randomOctaveTestObject.getActiveNotes().size() == 0);
                 REQUIRE(randomOctaveTestObject.getActiveNotes().empty());
                 REQUIRE(!note_output.empty());
 
