@@ -1,5 +1,6 @@
 #include "seidr.RandomOctave.hpp"
 #include "Utils/MIDI.hpp"
+#include <iostream>
 
 using namespace c74::min;
 
