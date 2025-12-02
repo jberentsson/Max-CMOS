@@ -42,7 +42,7 @@ public:
     message<> anything {
         this, "anything", "Process note messages",
         MIN_FUNCTION {
-            cout << "anything\n";
+            std::cout << "anything\n";
             processNoteMessage(args);
             return {};
         }
@@ -51,7 +51,7 @@ public:
     message<> intInput {
         this, "int", "Process note messages",
         MIN_FUNCTION {
-            cout << "int\n";
+            std::cout << "int\n";
             processNoteMessage(args);
             return {};
         }
@@ -60,7 +60,7 @@ public:
     message<> floatInput {
         this, "float", "Process note messages",
         MIN_FUNCTION {
-            cout << "float\n";
+            std::cout << "float\n";
             processNoteMessage(args);
             return {};
         }
