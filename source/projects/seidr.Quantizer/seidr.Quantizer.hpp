@@ -78,7 +78,7 @@ public:
     message<threadsafe::yes> anything {
         this, "anything", "Process note messages",
         MIN_FUNCTION {
-            std::cout << "anything\n";
+            std::cout << "anything" << std::endl;
             if (!args.empty()){
                 std::cout << "ANYTHING: Arg.size(): " << args.size() << endl;
             }
@@ -89,7 +89,7 @@ public:
     message<threadsafe::yes> noteInput {
         this, "int", "Process note messages",
         MIN_FUNCTION {
-            std::cout << "int\n";
+            std::cout << "int" << std::endl;
             if (!args.empty()) {
                 int note = static_cast<int>(args[0]);
                 this->processNote(note, MIDI::RANGE_HIGH + 1);
@@ -101,7 +101,7 @@ public:
     message<threadsafe::yes> noteInputFloat {
         this, "float", "Process note messages",
         MIN_FUNCTION {
-            std::cout << "float\n";
+            std::cout << "float" << std::endl;
             if (!args.empty()) {
                 int note = static_cast<int>(args[0]);
                 this->processNote(note, MIDI::RANGE_HIGH + 1);
@@ -113,7 +113,7 @@ public:
     message<threadsafe::yes> list {
         this, "list", "Process note messages",
         MIN_FUNCTION {
-            std::cout << "list\n";
+            std::cout << "list" << std::endl;
             if (!args.empty() && args.size() == 2){
                 int note = static_cast<int>(args[0]);
                 int velocity = static_cast<int>(args[1]);
@@ -126,7 +126,7 @@ public:
     message<threadsafe::yes> quantizerAddNote {
         this, "add", "Add notes to quantizer",
         MIN_FUNCTION {
-            std::cout << "add\n";
+            std::cout << "add" << std::endl;
             if (!args.empty()) {
                 for (const auto &arg : args) {
                     int note = static_cast<int>(arg);
@@ -142,7 +142,7 @@ public:
     message<threadsafe::yes> quantizerThrough {
         this, "through", "Disable note through.",
         MIN_FUNCTION {
-            std::cout << "through\n";
+            std::cout << "through" << std::endl;
             if (!args.empty()) {
                 int quantizeFlag = static_cast<int>(args[0]);
 
@@ -164,7 +164,7 @@ public:
     message<threadsafe::yes> updateNotes {
         this, "update", "Clears all of the notes currently set and adds the new ones.",
         MIN_FUNCTION {
-            std::cout << "update\n";
+            std::cout << "update" << std::endl;
             if (!args.empty()) {
                 this->quantizer.clear();
                 
@@ -179,7 +179,7 @@ public:
     message<threadsafe::yes> quantizerClear {
         this, "clear", "Clear notes from the quantizer.",
         MIN_FUNCTION {
-            std::cout << "clear\n";
+            std::cout << "clear" << std::endl;
             if (!args.empty()) {
                     this->quantizer.clear();
             }
@@ -249,8 +249,6 @@ public:
         this, "range", "Set quantizer range.",
         MIN_FUNCTION {
             if (!args.empty() && args.size() >= 2) {
-                //int low = static_cast<int>(args[0]);
-                //int high = static_cast<int>(args[1]);
                 auto low = MIDI::Note(static_cast<int> (args[0]));
                 auto high = MIDI::Note(static_cast<int> (args[1]));
                 this->quantizer.setRange(low, high);
