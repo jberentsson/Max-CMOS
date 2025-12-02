@@ -80,9 +80,9 @@ public:
     min::message<min::threadsafe::yes> anything {
         this, "anything", "Process note messages",
         MIN_FUNCTION {
-            max::object_post((c74::max::t_object*)this, "anything");
+            max::object_post((c74::max::t_object*) this, "anything");
             if (!args.empty()){
-                max::object_post((c74::max::t_object*)this, "ANYTHING: Arg.size(): %d", args.size());
+                max::object_post((c74::max::t_object*) this, "ANYTHING: Arg.size(): %d", args.size());
             }
             return {};
         }
@@ -91,9 +91,9 @@ public:
     min::message<min::threadsafe::yes> noteInput {
         this, "int", "Process note messages",
         MIN_FUNCTION {
-            max::object_post((c74::max::t_object*)this, "int");
+            max::object_post((c74::max::t_object*) this, "int");
             if (!args.empty()) {
-                int note = static_cast<int>(args[0]);
+                int note = static_cast<int> (args[0]);
                 this->processNote(note, MIDI::RANGE_HIGH + 1);
             }
             return {};
@@ -103,9 +103,9 @@ public:
     min::message<min::threadsafe::yes> noteInputFloat {
         this, "float", "Process note messages",
         MIN_FUNCTION {
-            max::object_post((c74::max::t_object*)this, "float");
+            max::object_post((c74::max::t_object*) this, "float");
             if (!args.empty()) {
-                int note = static_cast<int>(args[0]);
+                int note = static_cast<int> (args[0]);
                 this->processNote(note, MIDI::RANGE_HIGH + 1);
             }
             return {};
@@ -117,8 +117,8 @@ public:
         MIN_FUNCTION {
             max::object_post((max::t_object*)this, "list");
             if (!args.empty() && args.size() == 2){
-                int note = static_cast<int>(args[0]);
-                int velocity = static_cast<int>(args[1]);
+                int note = static_cast<int> (args[0]);
+                int velocity = static_cast<int> (args[1]);
                 this->processNote(note, velocity);
             }
             return {};
@@ -131,8 +131,8 @@ public:
             max::object_post((max::t_object*)this, "add");
             if (!args.empty()) {
                 for (const auto &arg : args) {
-                    int note = static_cast<int>(arg);
-                    if(note >= MIDI::RANGE_LOW && note <= MIDI::RANGE_HIGH ) {
+                    int note = static_cast<int> (arg);
+                    if((note >= MIDI::RANGE_LOW) && (note <= MIDI::RANGE_HIGH) ) {
                         this->quantizer.addNote(MIDI::Note(note));
                     }
                 }                
@@ -144,9 +144,9 @@ public:
     min::message<min::threadsafe::yes> quantizerThrough {
         this, "through", "Disable note through.",
         MIN_FUNCTION {
-            max::object_post((max::t_object*)this, "through");
+            max::object_post((max::t_object*) this, "through");
             if (!args.empty()) {
-                int quantizeFlag = static_cast<int>(args[0]);
+                int quantizeFlag = static_cast<int> (args[0]);
 
                 switch(quantizeFlag){
                     case 0:
@@ -166,7 +166,7 @@ public:
     min::message<min::threadsafe::yes> updateNotes {
         this, "update", "Clears all of the notes currently set and adds the new ones.",
         MIN_FUNCTION {
-            max::object_post((max::t_object*)this, "update");
+            max::object_post((max::t_object*) this, "update");
             if (!args.empty()) {
                 this->quantizer.clear();
                 
@@ -181,7 +181,7 @@ public:
     min::message<min::threadsafe::yes> quantizerClear {
         this, "clear", "Clear notes from the quantizer.",
         MIN_FUNCTION {
-            max::object_post((max::t_object*)this, "clear");
+            max::object_post((max::t_object*) this, "clear");
             if (!args.empty()) {
                     this->quantizer.clear();
             }
@@ -194,7 +194,7 @@ public:
         MIN_FUNCTION {
             if (!args.empty()) {
                 for (const auto &arg : args) {
-                    int modeFlag = static_cast<int>(arg);
+                    int modeFlag = static_cast<int> (arg);
 
                     switch(modeFlag){
                         case 0:
@@ -217,7 +217,7 @@ public:
         MIN_FUNCTION {
             if (!args.empty()) {
                 for (const auto &arg : args) {
-                    int modeFlag = static_cast<int>(arg);
+                    int modeFlag = static_cast<int> (arg);
 
                     switch(modeFlag){
                         case 0:
@@ -263,7 +263,7 @@ public:
         this, "delete", "Delete notes from quantizer",
         MIN_FUNCTION {
             if (!args.empty()){
-                for(const auto &arg: args){
+                for(const auto &arg : args){
                     this->quantizer.deleteNote(MIDI::Note(static_cast<int> (arg)));
                 }
             }

@@ -42,10 +42,10 @@ public:
     min::message<> anything {
         this, "anything", "Process note messages",
         MIN_FUNCTION {
-            max::object_post((max::t_object*)this, "anything");
-            if (static_cast<int>(args.size()) >= 2) {
-                int note = static_cast<int>(args[0]);
-                int velocity = static_cast<int>(args[1]);
+            max::object_post((max::t_object*) this, "anything");
+            if (args.size() >= 2) {
+                int note = static_cast<int> (args[0]);
+                int velocity = static_cast<int> (args[1]);
                 processNoteMessage(note, velocity);
             }
             return {};
@@ -55,10 +55,10 @@ public:
     min::message<> intInput {
         this, "int", "Process note messages",
         MIN_FUNCTION {
-            max::object_post((max::t_object*)this, "int");
-            if (static_cast<int>(args.size()) >= 2) {
-                int note = static_cast<int>(args[0]);
-                int velocity = static_cast<int>(args[1]);
+            max::object_post((max::t_object*) this, "int");
+            if (args.size() >= 2) {
+                int note = static_cast<int> (args[0]);
+                int velocity = static_cast<int> (args[1]);
                 processNoteMessage(note, velocity);
             }
             return {};
@@ -68,10 +68,10 @@ public:
     min::message<> floatInput {
         this, "float", "Process note messages",
         MIN_FUNCTION {
-            max::object_post((max::t_object*)this, "float");
+            max::object_post((max::t_object*) this, "float");
             if (args.size() >= 2) {
-                int note = static_cast<int>(args[0]);
-                int velocity = static_cast<int>(args[1]);
+                int note = static_cast<int> (args[0]);
+                int velocity = static_cast<int> (args[1]);
                 processNoteMessage(note, velocity);
                 return {};
             }
@@ -86,7 +86,7 @@ public:
                 if (args[0] == "all") {
                     clearAllNotesMessage();
                 } else {
-                    int note = static_cast<int>(args[0]);
+                    int note = static_cast<int> (args[0]);
                     clearNoteMessage(note);
                 }
             }
@@ -97,9 +97,9 @@ public:
     min::message<> range{
         this, "range", "Set range",
         MIN_FUNCTION {
-            if (!static_cast<int>(args.empty()) && static_cast<int>(args.size()) >= 2) {
-                int low = static_cast<int>(args[0]);
-                int high = static_cast<int>(args[1]);
+            if (!args.empty() && args.size() >= 2) {
+                int low = static_cast<int> (args[0]);
+                int high = static_cast<int> (args[1]);
                 this->randomOctave_.setRange(low, high);
             }
             return {};

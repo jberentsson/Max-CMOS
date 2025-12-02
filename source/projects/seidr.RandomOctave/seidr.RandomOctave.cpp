@@ -10,10 +10,10 @@ RandomOctaveMax::RandomOctaveMax(const min::atoms &args) {
         int rangeLow = static_cast<int>(args[0]);
         int rangeHigh = static_cast<int>(args[1]);
         
-        max::object_post((max::t_object*)this, "Setting range: %d to %d", rangeLow, rangeHigh);
+        max::object_post((max::t_object*) this, "Setting range: %d to %d", rangeLow, rangeHigh);
         this->randomOctave_.setRange(rangeLow, rangeHigh);
     } else {
-        max::object_post((max::t_object*)this, "Using default range");
+        max::object_post((max::t_object*) this, "Using default range");
     }
 }
 
