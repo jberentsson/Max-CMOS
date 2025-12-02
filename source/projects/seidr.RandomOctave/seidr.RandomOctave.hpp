@@ -8,6 +8,7 @@
 
 #include <c74_min.h>
 #include "RandomOctave/RandomOctave.hpp"
+#include <string>
 
 using namespace c74::min;
 
@@ -38,8 +39,24 @@ public:
     outlet<> output_note       {this, "(anything) pitch"};
     outlet<> output_velocity   {this, "(anything) velocity"};
 
-    message<> anything{
+    message<> anything {
         this, "anything", "Process note messages",
+        MIN_FUNCTION {
+            processNoteMessage(args);
+            return {};
+        }
+    };
+    
+    message<> intInput {
+        this, "int", "Process note messages",
+        MIN_FUNCTION {
+            processNoteMessage(args);
+            return {};
+        }
+    };
+    
+    message<> floatInput {
+        this, "float", "Process note messages",
         MIN_FUNCTION {
             processNoteMessage(args);
             return {};
@@ -50,17 +67,13 @@ public:
         this, "clear", "Clear specific note",
         MIN_FUNCTION {
             if (!args.empty()) {
-                int note = args[0];
-                clearNoteMessage(note);
+                if (static_cast<string>(args[0]) == "all") {
+                    clearAllNotesMessage();
+                } else {
+                    int note = args[0];
+                    clearNoteMessage(note);
+                }
             }
-            return {};
-        }
-    };
-
-    c74::min::message<> clearall{
-        this, "clearall", "Clear all notes",
-        MIN_FUNCTION {
-            clearAllNotesMessage();
             return {};
         }
     };
