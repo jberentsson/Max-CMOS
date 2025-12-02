@@ -4,9 +4,9 @@
 ///	@license	Use of this source code is governed by the MIT License
 ///             found in the License.md file.
 
-#include <c74_min_unittest.h>
-#include "seidr.Quantizer.hpp"
 #include "seidr.Quantizer.cpp" // NOLINT
+#include "seidr.Quantizer.hpp"
+#include <c74_min_unittest.h>
 
 using namespace c74;
 using namespace MIDI::Notes;

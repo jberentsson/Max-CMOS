@@ -4,21 +4,19 @@
 
 using namespace c74;
 
-RandomOctaveMax::RandomOctaveMax(const min::atoms args) {
+RandomOctaveMax::RandomOctaveMax(const min::atoms &args) {
     // Default range
     int low = MIDI::RANGE_LOW;
     int high = MIDI::RANGE_HIGH;
     
     if (args.size() >= 2) {
-        low = std::clamp(int(args[0]), MIDI::RANGE_LOW, MIDI::RANGE_HIGH);
-        high = std::clamp(int(args[1]), MIDI::RANGE_LOW, MIDI::RANGE_HIGH);
+        low = std::clamp(static_cast<int> (args[0]), MIDI::RANGE_LOW, MIDI::RANGE_HIGH);
+        high = std::clamp(static_cast<int> (args[1]), MIDI::RANGE_LOW, MIDI::RANGE_HIGH);
         
         if (low > high) {
             std::swap(low, high);
         }
     }
-    
-    max::object_post((max::t_object*)this, "RandomOctaveMax initialized with range %d-%d", low, high);
     
     this->randomOctave_.setRange(low, high);
 }
@@ -45,7 +43,7 @@ auto RandomOctaveMax::clearAllNotesMessage() -> void {
 
 auto RandomOctaveMax::processNoteMessage(int note, int velocity) -> void { // NOLINT
     // The input needs to be an array with two integes.
-    if(this->randomOctave_.note(note, velocity) == 0){ 
+    if (this->randomOctave_.note(note, velocity) == 0) { 
         for (const auto &currentNote : randomOctave_.getNoteQueue()) {
             // Send to outputs.
             output_note.send(currentNote->pitch());
