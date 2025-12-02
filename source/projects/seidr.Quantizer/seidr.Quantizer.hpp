@@ -64,7 +64,7 @@ public:
     }
 
     // Inlets
-    min::inlet<> input_note       {this, "(anything|add|delete|update|reset) input note"};
+    min::inlet<> input_note       {this, "(list) input note"};
 
     // Outlets
     min::outlet<> output_note     {this, "(anything) output note"};
@@ -77,36 +77,23 @@ public:
         }
     };
 
-    min::message<> integerInput {
-        this, "int", "Process note messages",
+    min::message<> anything {
+        this, "anything", "Handle any input",
         MIN_FUNCTION {
-            max::object_post((max::t_object*) this, "anything with %d args", args.size());
-            
-            if (args.size() >= 2) {
-                int note = args[0];
-                int velocity = args[1];
-                processNoteMessage(note, velocity);
-            } else {
-                max::object_error((max::t_object*) this, "Need 1 or 2 arguments (note, [velocity])");
-            }
-            
-            return {};
+            // Forward to list handler.
+            return list(args, inlet);
         }
     };
 
-    min::message<> floatInput {
-        this, "float", "Process note messages",
+    min::message<> list {
+        this, "list", "Process note messages",
         MIN_FUNCTION {
-            max::object_post((max::t_object*) this, "anything with %d args", args.size());
-            
+            max::object_post((max::t_object*) this, "integer");
             if (args.size() >= 2) {
-                int note = args[0];
-                int velocity = args[1];
+                int note = static_cast<int> (args[0]);
+                int velocity = static_cast<int> (args[1]);
                 processNoteMessage(note, velocity);
-            } else {
-                max::object_error((max::t_object*) this, "Need 1 or 2 arguments (note, [velocity])");
             }
-            
             return {};
         }
     };

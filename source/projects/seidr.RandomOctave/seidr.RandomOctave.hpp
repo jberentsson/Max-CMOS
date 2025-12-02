@@ -33,7 +33,7 @@ public:
     auto getQueuedNotes() -> std::vector<std::shared_ptr<ActiveNote>> { return this->randomOctave_.getNoteQueue(); }
 
     // Inlets
-    min::inlet<> input_note_velcoty {this, "(anything) note, (anything) velocity"};
+    min::inlet<> input_note_velcoty {this, "(list) note, velocity"};
 
     // Outlets
     min::outlet<> output_note       {this, "(anything) pitch"};

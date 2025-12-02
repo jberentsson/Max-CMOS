@@ -65,7 +65,7 @@ SCENARIO("quantizer processes notes correctly") {
         
         WHEN("processing a note with integer message") {
             // D#5 should quantize to E5.
-            REQUIRE_NOTHROW(quantizerTestObject.integerInput({NoteDS5, 75}));
+            REQUIRE_NOTHROW(quantizerTestObject.list({NoteDS5, 75}));
             
             THEN("output should be sent") {
                 REQUIRE(!out0.empty());
@@ -73,7 +73,7 @@ SCENARIO("quantizer processes notes correctly") {
         }
         
         WHEN("processing a note with list message") {
-            REQUIRE_NOTHROW(quantizerTestObject.integerInput({ NoteDS5, 100 })); // NOLINT
+            REQUIRE_NOTHROW(quantizerTestObject.list({ NoteDS5, 100 })); // NOLINT
             
             THEN("both note and velocity outputs should be sent") {
                 REQUIRE(!out0.empty());
@@ -135,7 +135,7 @@ SCENARIO("quantizer handles range limits") {
         quantizerTestObject.quantizerAddNote({ NoteC5, NoteE5, NoteE6 });
         quantizerTestObject.quantizerRange({NoteC3, NoteC5});
 
-        REQUIRE_NOTHROW(quantizerTestObject.integerInput({ NoteB3, 63 }));
+        REQUIRE_NOTHROW(quantizerTestObject.list({ NoteB3, 63 }));
 
         auto &note_output = *max::object_getoutput(quantizerTestObject, 0);
         auto &velocity_output = *max::object_getoutput(quantizerTestObject, 1);
@@ -160,13 +160,13 @@ SCENARIO("adding notes to the quantizer") {
     GIVEN("the notes"){
         auto &note_output = *max::object_getoutput(quantizerTestObject, 0);
         
-        REQUIRE_NOTHROW(quantizerTestObject.integerInput({ NoteB3, 50 }));
+        REQUIRE_NOTHROW(quantizerTestObject.list({ NoteB3, 50 }));
         REQUIRE(note_output[0][1] == NoteB3);
 
         REQUIRE(!note_output.empty());
         REQUIRE_NOTHROW(quantizerTestObject.quantizerAddNote(NoteC4));
         
-        REQUIRE_NOTHROW(quantizerTestObject.integerInput({ NoteC4, 75 }));
+        REQUIRE_NOTHROW(quantizerTestObject.list({ NoteC4, 75 }));
         REQUIRE(!note_output.empty());
         REQUIRE(!note_output[0].empty());
         REQUIRE(note_output[1][1] == NoteC4);
@@ -194,7 +194,7 @@ SCENARIO("adding notes to the quantizer with velocity") {
         auto &note_output = *max::object_getoutput(quantizerTestObject, 0);
         auto &velocity_output = *max::object_getoutput(quantizerTestObject, 1);
 
-        REQUIRE_NOTHROW(quantizerTestObject.integerInput({ NoteB3, 127 })); // NOLINT
+        REQUIRE_NOTHROW(quantizerTestObject.list({ NoteB3, 127 })); // NOLINT
 
         REQUIRE(!note_output.empty());
         REQUIRE(!velocity_output.empty());
@@ -206,7 +206,7 @@ SCENARIO("adding notes to the quantizer with velocity") {
         REQUIRE(quantizerTestObject.noteCount() == 2);
         REQUIRE_NOTHROW(quantizerTestObject.quantizerAddNote(NoteC5));
         REQUIRE(quantizerTestObject.noteCount() == 3);
-        REQUIRE_NOTHROW(quantizerTestObject.integerInput({ NoteB4, 127 })); // NOLINT
+        REQUIRE_NOTHROW(quantizerTestObject.list({ NoteB4, 127 })); // NOLINT
         REQUIRE(!note_output.empty());
         REQUIRE(!velocity_output.empty());
         REQUIRE(!note_output[1].empty());
@@ -216,7 +216,7 @@ SCENARIO("adding notes to the quantizer with velocity") {
         REQUIRE_NOTHROW(quantizerTestObject.quantizerAddNote(NoteG4));
         REQUIRE(quantizerTestObject.noteCount() == 4);
         REQUIRE_NOTHROW(quantizerTestObject.quantizerRound(Quantizer::RoundDirection::DOWN));
-        REQUIRE_NOTHROW(quantizerTestObject.integerInput({ NoteB4, 127 }));
+        REQUIRE_NOTHROW(quantizerTestObject.list({ NoteB4, 127 }));
         REQUIRE(!note_output.empty());
         REQUIRE(!velocity_output.empty());
         REQUIRE(!note_output[2].empty());
@@ -297,7 +297,7 @@ SCENARIO("updating the quantized notes") { // NOLINT
         // Quantize our note - 1.
         for (const auto &noteArg : noteArgs0) {
             // Quantize note.
-            REQUIRE_NOTHROW(quantizerTestObject.integerInput({ static_cast<int> (noteArg) - 1, 42}));
+            REQUIRE_NOTHROW(quantizerTestObject.list({ static_cast<int> (noteArg) - 1, 42}));
         }
 
         REQUIRE(!note_output.empty());
@@ -316,7 +316,7 @@ SCENARIO("updating the quantized notes") { // NOLINT
         // Quantize our note - 1.
         for (const auto &noteArg : noteArgs1) {
             // Quantize note.
-            REQUIRE_NOTHROW(quantizerTestObject.integerInput({static_cast<int> (noteArg) - 1, 69}));
+            REQUIRE_NOTHROW(quantizerTestObject.list({static_cast<int> (noteArg) - 1, 69}));
         }
 
         REQUIRE(!note_output.empty());
@@ -342,7 +342,7 @@ SCENARIO("updating the quantized notes") { // NOLINT
         // Quantize our note - 1.
         for (const auto &noteArg : noteArgs0) {
             // Quantize note.
-            REQUIRE_NOTHROW(quantizerTestObject.integerInput({ static_cast<int> (noteArg) - 1, 99 }));
+            REQUIRE_NOTHROW(quantizerTestObject.list({ static_cast<int> (noteArg) - 1, 99 }));
         }
 
         REQUIRE(!note_output.empty());
@@ -361,7 +361,7 @@ SCENARIO("updating the quantized notes") { // NOLINT
         // Quantize our note - 1.
         for (const auto &noteArg : noteArgs1) {
             // Quantize note.
-            REQUIRE_NOTHROW(quantizerTestObject.integerInput({static_cast<int> (noteArg) - 1, 69}));
+            REQUIRE_NOTHROW(quantizerTestObject.list({static_cast<int> (noteArg) - 1, 69}));
         }
 
         REQUIRE(!note_output.empty());
