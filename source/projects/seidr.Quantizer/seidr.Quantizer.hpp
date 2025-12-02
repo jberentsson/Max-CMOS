@@ -78,9 +78,9 @@ public:
     message<threadsafe::yes> anything {
         this, "anything", "Process note messages",
         MIN_FUNCTION {
-            post("anything");
+            c74::max::object_post((c74::max::t_object*)this, "anything");
             if (!args.empty()){
-                post("ANYTHING: Arg.size(): " << args.size());
+                c74::max::object_post((c74::max::t_object*)this, "ANYTHING: Arg.size(): %d", args.size());
             }
             return {};
         }
@@ -89,7 +89,7 @@ public:
     message<threadsafe::yes> noteInput {
         this, "int", "Process note messages",
         MIN_FUNCTION {
-            post("int");
+            c74::max::object_post((c74::max::t_object*)this, "int");
             if (!args.empty()) {
                 int note = static_cast<int>(args[0]);
                 this->processNote(note, MIDI::RANGE_HIGH + 1);
@@ -101,7 +101,7 @@ public:
     message<threadsafe::yes> noteInputFloat {
         this, "float", "Process note messages",
         MIN_FUNCTION {
-            post("float");
+            c74::max::object_post((c74::max::t_object*)this, "float");
             if (!args.empty()) {
                 int note = static_cast<int>(args[0]);
                 this->processNote(note, MIDI::RANGE_HIGH + 1);
@@ -113,7 +113,7 @@ public:
     message<threadsafe::yes> list {
         this, "list", "Process note messages",
         MIN_FUNCTION {
-            post("list");
+            c74::max::object_post((c74::max::t_object*)this, "list");
             if (!args.empty() && args.size() == 2){
                 int note = static_cast<int>(args[0]);
                 int velocity = static_cast<int>(args[1]);
@@ -126,7 +126,7 @@ public:
     message<threadsafe::yes> quantizerAddNote {
         this, "add", "Add notes to quantizer",
         MIN_FUNCTION {
-            post("add");
+            c74::max::object_post((c74::max::t_object*)this, "add");
             if (!args.empty()) {
                 for (const auto &arg : args) {
                     int note = static_cast<int>(arg);
@@ -142,7 +142,7 @@ public:
     message<threadsafe::yes> quantizerThrough {
         this, "through", "Disable note through.",
         MIN_FUNCTION {
-            post("through");
+            c74::max::object_post((c74::max::t_object*)this, "through");
             if (!args.empty()) {
                 int quantizeFlag = static_cast<int>(args[0]);
 
@@ -164,7 +164,7 @@ public:
     message<threadsafe::yes> updateNotes {
         this, "update", "Clears all of the notes currently set and adds the new ones.",
         MIN_FUNCTION {
-            post("update");
+            c74::max::object_post((c74::max::t_object*)this, "update");
             if (!args.empty()) {
                 this->quantizer.clear();
                 
@@ -179,7 +179,7 @@ public:
     message<threadsafe::yes> quantizerClear {
         this, "clear", "Clear notes from the quantizer.",
         MIN_FUNCTION {
-            post("clear");
+            c74::max::object_post((c74::max::t_object*)this, "clear");
             if (!args.empty()) {
                     this->quantizer.clear();
             }

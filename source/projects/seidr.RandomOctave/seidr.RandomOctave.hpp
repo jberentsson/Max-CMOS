@@ -42,7 +42,7 @@ public:
     message<> anything {
         this, "anything", "Process note messages",
         MIN_FUNCTION {
-            post("anything");
+            c74::max::object_post((c74::max::t_object*)this, "anything");
             processNoteMessage(args);
             return {};
         }
@@ -51,7 +51,7 @@ public:
     message<> intInput {
         this, "int", "Process note messages",
         MIN_FUNCTION {
-            post("int");
+            c74::max::object_post((c74::max::t_object*)this, "int");
             processNoteMessage(args);
             return {};
         }
@@ -60,7 +60,7 @@ public:
     message<> floatInput {
         this, "float", "Process note messages",
         MIN_FUNCTION {
-            post("float");
+            c74::max::object_post((c74::max::t_object*)this, "float");
             processNoteMessage(args);
             return {};
         }
