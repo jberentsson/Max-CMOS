@@ -21,7 +21,7 @@ public:
     MIN_AUTHOR{"Jóhann Berentsson"};                  // NOLINT 
     MIN_RELATED{"seidr.*"};                           // NOLINT 
 
-    explicit QuantizerMax(const min::atoms &args = {}) {
+    explicit QuantizerMax(const min::atoms args = {}) {
         if (!args.empty()) {
             // QuantizeMode
             if (!args.empty()) {

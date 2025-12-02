@@ -22,7 +22,7 @@ public:
     MIN_AUTHOR{"Jóhann Berentsson"};                                 // NOLINT 
     MIN_RELATED{"seidr.*"};                                          // NOLINT 
 
-    explicit RandomOctaveMax(const min::atoms &args = {});
+    explicit RandomOctaveMax(const min::atoms args = {});
 
     auto processNoteMessage(int note, int velocity) -> void;
     auto clearAllNotesMessage() -> void;

@@ -4,14 +4,14 @@
 
 using namespace c74;
 
-RandomOctaveMax::RandomOctaveMax(const min::atoms &args) {
+RandomOctaveMax::RandomOctaveMax(const min::atoms args) {
     // Default range
     int low = MIDI::RANGE_LOW;
     int high = MIDI::RANGE_HIGH;
     
     if (args.size() >= 2) {
-        low = std::clamp(static_cast<int>(args[0]), MIDI::RANGE_LOW, MIDI::RANGE_HIGH);
-        high = std::clamp(static_cast<int>(args[1]), MIDI::RANGE_LOW, MIDI::RANGE_HIGH);
+        low = std::clamp(int(args[0]), MIDI::RANGE_LOW, MIDI::RANGE_HIGH);
+        high = std::clamp(int(args[1]), MIDI::RANGE_LOW, MIDI::RANGE_HIGH);
         
         if (low > high) {
             std::swap(low, high);
