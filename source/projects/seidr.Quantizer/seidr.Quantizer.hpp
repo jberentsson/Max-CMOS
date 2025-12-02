@@ -80,7 +80,7 @@ public:
         MIN_FUNCTION {
             std::cout << "anything" << std::endl;
             if (!args.empty()){
-                std::cout << "ANYTHING: Arg.size(): " << args.size() << endl;
+                std::cout << "ANYTHING: Arg.size(): " << args.size() << std::endl;
             }
             return {};
         }
