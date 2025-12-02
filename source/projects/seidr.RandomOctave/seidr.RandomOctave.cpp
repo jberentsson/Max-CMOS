@@ -6,7 +6,7 @@ using namespace c74::min;
 RandomOctaveMax::RandomOctaveMax(const c74::min::atoms &args) {
     if (!args.empty() && args.size() >= 2) {
         int rangeLow = args[0];
-        int rangeHigh= args[1];
+        int rangeHigh = args[1];
         this->randomOctave_.setRange(rangeLow, rangeHigh);
     }
 }
@@ -31,21 +31,16 @@ auto RandomOctaveMax::clearAllNotesMessage() -> void {
     randomOctave_.clearQueue();
 }
 
-auto RandomOctaveMax::processNoteMessage(atoms args) -> void { // NOLINT
+auto RandomOctaveMax::processNoteMessage(int note, int velocity) -> void { // NOLINT
     // The input needs to be an array with two integes.
-    if (args.size() >= 2) {
-        int note = args[0];
-        int velocity = args[1];
-
-        if(this->randomOctave_.note(note, velocity) == 0){ 
-            for (const auto &currentNote : randomOctave_.getNoteQueue()) {
-                // Send to outputs.
-                output_note.send(currentNote->pitch());
-                output_velocity.send(currentNote->velocity());
-            }
-
-            randomOctave_.clearQueue();
+    if(this->randomOctave_.note(note, velocity) == 0){ 
+        for (const auto &currentNote : randomOctave_.getNoteQueue()) {
+            // Send to outputs.
+            output_note.send(currentNote->pitch());
+            output_velocity.send(currentNote->velocity());
         }
+
+        randomOctave_.clearQueue();
     }
 }
 

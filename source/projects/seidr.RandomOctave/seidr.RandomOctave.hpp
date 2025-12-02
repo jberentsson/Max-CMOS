@@ -43,7 +43,12 @@ public:
         this, "anything", "Process note messages",
         MIN_FUNCTION {
             c74::max::object_post((c74::max::t_object*)this, "anything");
-            processNoteMessage(args);
+            if (args.size() >= 2) {
+                int note = args[0];
+                int velocity = args[1];
+                processNoteMessage(note, velocity);
+                return {};
+            }
             return {};
         }
     };
@@ -52,8 +57,12 @@ public:
         this, "int", "Process note messages",
         MIN_FUNCTION {
             c74::max::object_post((c74::max::t_object*)this, "int");
-            processNoteMessage(args);
-            return {};
+            if (args.size() >= 2) {
+                int note = args[0];
+                int velocity = args[1];
+                processNoteMessage(note, velocity);
+                return {};
+            }
         }
     };
     
@@ -61,7 +70,12 @@ public:
         this, "float", "Process note messages",
         MIN_FUNCTION {
             c74::max::object_post((c74::max::t_object*)this, "float");
-            processNoteMessage(args);
+            if (args.size() >= 2) {
+                int note = args[0];
+                int velocity = args[1];
+                processNoteMessage(note, velocity);
+                return {};
+            }
             return {};
         }
     };
