@@ -9,6 +9,7 @@
 #include "seidr.RandomOctave.hpp"
 #include <c74_min_unittest.h>
 
+using namespace c74;
 using namespace MIDI;
 using namespace MIDI::Notes;
 
@@ -16,7 +17,7 @@ SCENARIO("seidr.RandomOctaveMax object basic functionality") { // NOLINT
     ext_main(nullptr);
 
     GIVEN("An instance of RandomOctaveMax") {
-        test_wrapper<RandomOctaveMax> an_instance;
+        min::test_wrapper<RandomOctaveMax> an_instance;
         RandomOctaveMax &randomOctaveTestObject = an_instance;
         
         auto &note_output = *c74::max::object_getoutput(randomOctaveTestObject, 0);
@@ -141,7 +142,7 @@ SCENARIO("seidr.RandomOctaveMax stress and performance tests") { // NOLINT
     ext_main(nullptr);
 
     GIVEN("An instance under stress conditions") {
-        test_wrapper<RandomOctaveMax> an_instance;
+        min::test_wrapper<RandomOctaveMax> an_instance;
         RandomOctaveMax &randomOctaveTestObject = an_instance;
         
         auto &note_output = *c74::max::object_getoutput(randomOctaveTestObject, 0);
@@ -204,7 +205,7 @@ SCENARIO("seidr.RandomOctaveMax error handling tests") { // NOLINT
     ext_main(nullptr);
 
     GIVEN("An instance handling invalid input") {
-        test_wrapper<RandomOctaveMax> an_instance;
+        min::test_wrapper<RandomOctaveMax> an_instance;
         RandomOctaveMax &randomOctaveTestObject = an_instance;
 
         auto &note_output = *c74::max::object_getoutput(randomOctaveTestObject, 0);
@@ -277,7 +278,7 @@ SCENARIO("seidr.RandomOctaveMax musical scale tests") { // NOLINT
     ext_main(nullptr);
 
     GIVEN("An instance processing musical scales") {
-        test_wrapper<RandomOctaveMax> an_instance;
+        min::test_wrapper<RandomOctaveMax> an_instance;
         RandomOctaveMax &randomOctaveTestObject = an_instance;
 
         auto &note_output = *c74::max::object_getoutput(randomOctaveTestObject, 0);
@@ -388,7 +389,7 @@ SCENARIO("seidr.RandomOctaveMax musical scale tests") { // NOLINT
 SCENARIO("seidr.RandomOctaveMax test clear note functions") { // NOLINT
     ext_main(nullptr);
 
-    test_wrapper<RandomOctaveMax> an_instance;
+    min::test_wrapper<RandomOctaveMax> an_instance;
     RandomOctaveMax &randomOctaveTestObject = an_instance;
     
     GIVEN("add and clear a single note") {
@@ -425,7 +426,7 @@ SCENARIO("seidr.RandomOctaveMax test clear note functions") { // NOLINT
 SCENARIO("seidr.RandomOctaveMax test different types of inputs") { // NOLINT
     ext_main(nullptr);
 
-    test_wrapper<RandomOctaveMax> an_instance;
+    min::test_wrapper<RandomOctaveMax> an_instance;
     RandomOctaveMax &randomOctaveTestObject = an_instance;
     
     auto &note_output = *c74::max::object_getoutput(randomOctaveTestObject, 0);
@@ -473,7 +474,7 @@ SCENARIO("seidr.RandomOctaveMax test different types of inputs") { // NOLINT
 
         REQUIRE_NOTHROW(randomOctaveTestObject.clear("all"));
 
-        REQUIRE(randomOctaveTestObject.getActiveNotes().size() == 0);
+        REQUIRE(randomOctaveTestObject.getActiveNotes().empty());
         REQUIRE(randomOctaveTestObject.getQueuedNotes().empty());
     }
 }

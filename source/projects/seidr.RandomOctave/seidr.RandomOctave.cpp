@@ -1,13 +1,19 @@
 #include "seidr.RandomOctave.hpp"
 #include "Utils/MIDI.hpp"
 
-using namespace c74::min;
+using namespace c74;
 
-RandomOctaveMax::RandomOctaveMax(const c74::min::atoms &args) {
+RandomOctaveMax::RandomOctaveMax(const min::atoms &args) {
+    max::object_post((max::t_object*)this, "Constructor called with %d args", args.size());
+    
     if (!args.empty() && args.size() >= 2) {
-        int rangeLow = args[0];
-        int rangeHigh = args[1];
+        int rangeLow = static_cast<int>(args[0]);
+        int rangeHigh = static_cast<int>(args[1]);
+        
+        max::object_post((max::t_object*)this, "Setting range: %d to %d", rangeLow, rangeHigh);
         this->randomOctave_.setRange(rangeLow, rangeHigh);
+    } else {
+        max::object_post((max::t_object*)this, "Using default range");
     }
 }
 

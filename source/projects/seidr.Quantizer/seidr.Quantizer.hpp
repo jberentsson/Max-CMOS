@@ -9,9 +9,9 @@
 #include "Quantizer/Quantizer.hpp"
 #include <c74_min.h>
 
-using namespace c74::min;
+using namespace c74;
 
-class QuantizerMax : public object<QuantizerMax> {
+class QuantizerMax : public min::object<QuantizerMax> {
 private:
     Quantizer quantizer;
 
@@ -21,22 +21,22 @@ public:
     MIN_AUTHOR{"Jóhann Berentsson"};                  // NOLINT 
     MIN_RELATED{"seidr.*"};                           // NOLINT 
 
-    explicit QuantizerMax(const atoms &args = {}) {
+    explicit QuantizerMax(const min::atoms &args = {}) {
         if (!args.empty()) {
             // QuantizeMode
             if (!args.empty()) {
-                this->quantizer.setMode(Quantizer::QuantizeMode(args[0]));
+                this->quantizer.setMode(Quantizer::QuantizeMode(static_cast<int>(args[0])));
             }
 
             // RoundDirection
             if (args.size() >= 2) {
-                this->quantizer.setRoundDirection(Quantizer::RoundDirection(args[1]));
+                this->quantizer.setRoundDirection(Quantizer::RoundDirection(static_cast<int>(args[1])));
             }
 
             // Range
             if (args.size() == 4) { 
-                uint8_t rangeLow = int(args[2]);
-                uint8_t rangeHigh = int(args[3]);
+                uint8_t rangeLow = static_cast<int>(args[2]);
+                uint8_t rangeHigh = static_cast<int>(args[3]);
                 this->quantizer.setRange(Quantizer::Note(rangeLow), Quantizer::Note(rangeHigh));
             }
         }
@@ -63,33 +63,35 @@ public:
         }
     }
 
-    inlet<> input_note {this, "(anything | list | reset) input note"};
+    // Inlets
+    min::inlet<> input_note       {this, "(anything | list | reset) input note"};
 
-    outlet<> output_note     {this, "(int) output note"};
-    outlet<> output_velocity {this, "(int) output velocity"};
-    outlet<> output_invalid  {this, "(bang) note was not playaed"};
+    // Outlets
+    min::outlet<> output_note     {this, "(int) output note"};
+    min::outlet<> output_velocity {this, "(int) output velocity"};
+    min::outlet<> output_invalid  {this, "(bang) note was not playaed"};
 
-    message<threadsafe::yes> int_message { this, "int", "Post something to the Max console.",
+    min::message<min::threadsafe::yes> int_message { this, "int", "Post something to the Max console.",
         MIN_FUNCTION {
             return {};
         }
     };
 
-    message<threadsafe::yes> anything {
+    min::message<min::threadsafe::yes> anything {
         this, "anything", "Process note messages",
         MIN_FUNCTION {
-            c74::max::object_post((c74::max::t_object*)this, "anything");
+            max::object_post((c74::max::t_object*)this, "anything");
             if (!args.empty()){
-                c74::max::object_post((c74::max::t_object*)this, "ANYTHING: Arg.size(): %d", args.size());
+                max::object_post((c74::max::t_object*)this, "ANYTHING: Arg.size(): %d", args.size());
             }
             return {};
         }
     };
     
-    message<threadsafe::yes> noteInput {
+    min::message<min::threadsafe::yes> noteInput {
         this, "int", "Process note messages",
         MIN_FUNCTION {
-            c74::max::object_post((c74::max::t_object*)this, "int");
+            max::object_post((c74::max::t_object*)this, "int");
             if (!args.empty()) {
                 int note = static_cast<int>(args[0]);
                 this->processNote(note, MIDI::RANGE_HIGH + 1);
@@ -98,10 +100,10 @@ public:
         }
     };
     
-    message<threadsafe::yes> noteInputFloat {
+    min::message<min::threadsafe::yes> noteInputFloat {
         this, "float", "Process note messages",
         MIN_FUNCTION {
-            c74::max::object_post((c74::max::t_object*)this, "float");
+            max::object_post((c74::max::t_object*)this, "float");
             if (!args.empty()) {
                 int note = static_cast<int>(args[0]);
                 this->processNote(note, MIDI::RANGE_HIGH + 1);
@@ -110,10 +112,10 @@ public:
         }
     };
 
-    message<threadsafe::yes> list {
+    min::message<min::threadsafe::yes> list {
         this, "list", "Process note messages",
         MIN_FUNCTION {
-            c74::max::object_post((c74::max::t_object*)this, "list");
+            max::object_post((max::t_object*)this, "list");
             if (!args.empty() && args.size() == 2){
                 int note = static_cast<int>(args[0]);
                 int velocity = static_cast<int>(args[1]);
@@ -123,10 +125,10 @@ public:
         }
     };
 
-    message<threadsafe::yes> quantizerAddNote {
+    min::message<min::threadsafe::yes> quantizerAddNote {
         this, "add", "Add notes to quantizer",
         MIN_FUNCTION {
-            c74::max::object_post((c74::max::t_object*)this, "add");
+            max::object_post((max::t_object*)this, "add");
             if (!args.empty()) {
                 for (const auto &arg : args) {
                     int note = static_cast<int>(arg);
@@ -139,10 +141,10 @@ public:
         }
     };
 
-    message<threadsafe::yes> quantizerThrough {
+    min::message<min::threadsafe::yes> quantizerThrough {
         this, "through", "Disable note through.",
         MIN_FUNCTION {
-            c74::max::object_post((c74::max::t_object*)this, "through");
+            max::object_post((max::t_object*)this, "through");
             if (!args.empty()) {
                 int quantizeFlag = static_cast<int>(args[0]);
 
@@ -161,10 +163,10 @@ public:
         }
     };
 
-    message<threadsafe::yes> updateNotes {
+    min::message<min::threadsafe::yes> updateNotes {
         this, "update", "Clears all of the notes currently set and adds the new ones.",
         MIN_FUNCTION {
-            c74::max::object_post((c74::max::t_object*)this, "update");
+            max::object_post((max::t_object*)this, "update");
             if (!args.empty()) {
                 this->quantizer.clear();
                 
@@ -176,10 +178,10 @@ public:
         }
     };
 
-    message<threadsafe::yes> quantizerClear {
+    min::message<min::threadsafe::yes> quantizerClear {
         this, "clear", "Clear notes from the quantizer.",
         MIN_FUNCTION {
-            c74::max::object_post((c74::max::t_object*)this, "clear");
+            max::object_post((max::t_object*)this, "clear");
             if (!args.empty()) {
                     this->quantizer.clear();
             }
@@ -187,7 +189,7 @@ public:
         }
     };
 
-    message<threadsafe::yes> quantizerMode {
+    min::message<min::threadsafe::yes> quantizerMode {
         this, "mode", "Set quantizer mode.",
         MIN_FUNCTION {
             if (!args.empty()) {
@@ -210,7 +212,7 @@ public:
         }
     };
 
-    message<threadsafe::yes> quantizerRound {
+    min::message<min::threadsafe::yes> quantizerRound {
         this, "round", "Set quantizer mode.",
         MIN_FUNCTION {
             if (!args.empty()) {
@@ -245,7 +247,7 @@ public:
         }
     };
 
-    message<threadsafe::yes> quantizerRange {
+    min::message<min::threadsafe::yes> quantizerRange {
         this, "range", "Set quantizer range.",
         MIN_FUNCTION {
             if (!args.empty() && args.size() >= 2) {
@@ -257,7 +259,7 @@ public:
         }
     };
 
-    message<threadsafe::yes> quantizerDeleteNote {
+    min::message<min::threadsafe::yes> quantizerDeleteNote {
         this, "delete", "Delete notes from quantizer",
         MIN_FUNCTION {
             if (!args.empty()){

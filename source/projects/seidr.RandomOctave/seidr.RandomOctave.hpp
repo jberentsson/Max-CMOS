@@ -10,9 +10,9 @@
 #include "RandomOctave/RandomOctave.hpp"
 #include <string>
 
-using namespace c74::min;
+using namespace c74;
 
-class RandomOctaveMax : public object<RandomOctaveMax> {
+class RandomOctaveMax : public min::object<RandomOctaveMax> {
 private:
     RandomOctave randomOctave_;
 
@@ -22,7 +22,7 @@ public:
     MIN_AUTHOR{"Jóhann Berentsson"};                                 // NOLINT 
     MIN_RELATED{"seidr.*"};                                          // NOLINT 
 
-    explicit RandomOctaveMax(const c74::min::atoms &args = {});
+    explicit RandomOctaveMax(const min::atoms &args = {});
 
     auto processNoteMessage(int note, int velocity) -> void;
     auto clearAllNotesMessage() -> void;
@@ -33,45 +33,45 @@ public:
     auto getQueuedNotes() -> std::vector<std::shared_ptr<ActiveNote>> { return this->randomOctave_.getNoteQueue(); }
 
     // Inlets
-    inlet<> input_note_velcoty {this, "(anything) note, (anything) velocity"};
+    min::inlet<> input_note_velcoty {this, "(anything) note, (anything) velocity"};
 
     // Outlets
-    outlet<> output_note       {this, "(anything) pitch"};
-    outlet<> output_velocity   {this, "(anything) velocity"};
+    min::outlet<> output_note       {this, "(anything) pitch"};
+    min::outlet<> output_velocity   {this, "(anything) velocity"};
 
-    message<> anything {
+    min::message<> anything {
         this, "anything", "Process note messages",
         MIN_FUNCTION {
-            c74::max::object_post((c74::max::t_object*)this, "anything");
-            if (args.size() >= 2) {
-                int note = args[0];
-                int velocity = args[1];
+            max::object_post((max::t_object*)this, "anything");
+            if (static_cast<int>(args.size()) >= 2) {
+                int note = static_cast<int>(args[0]);
+                int velocity = static_cast<int>(args[1]);
                 processNoteMessage(note, velocity);
             }
             return {};
         }
     };
     
-    message<> intInput {
+    min::message<> intInput {
         this, "int", "Process note messages",
         MIN_FUNCTION {
-            c74::max::object_post((c74::max::t_object*)this, "int");
-            if (args.size() >= 2) {
-                int note = args[0];
-                int velocity = args[1];
+            max::object_post((max::t_object*)this, "int");
+            if (static_cast<int>(args.size()) >= 2) {
+                int note = static_cast<int>(args[0]);
+                int velocity = static_cast<int>(args[1]);
                 processNoteMessage(note, velocity);
             }
             return {};
         }
     };
     
-    message<> floatInput {
+    min::message<> floatInput {
         this, "float", "Process note messages",
         MIN_FUNCTION {
-            c74::max::object_post((c74::max::t_object*)this, "float");
+            max::object_post((max::t_object*)this, "float");
             if (args.size() >= 2) {
-                int note = args[0];
-                int velocity = args[1];
+                int note = static_cast<int>(args[0]);
+                int velocity = static_cast<int>(args[1]);
                 processNoteMessage(note, velocity);
                 return {};
             }
@@ -79,14 +79,14 @@ public:
         }
     };
 
-    c74::min::message<> clear{
+    min::message<> clear{
         this, "clear", "Clear specific note",
         MIN_FUNCTION {
             if (!args.empty()) {
-                if (static_cast<string>(args[0]) == "all") {
+                if (args[0] == "all") {
                     clearAllNotesMessage();
                 } else {
-                    int note = args[0];
+                    int note = static_cast<int>(args[0]);
                     clearNoteMessage(note);
                 }
             }
@@ -94,12 +94,12 @@ public:
         }
     };
 
-    c74::min::message<> range{
+    min::message<> range{
         this, "range", "Set range",
         MIN_FUNCTION {
-            if (!args.empty() && args.size() >= 2) {
-                int low = args[0];
-                int high = args[1];
+            if (!static_cast<int>(args.empty()) && static_cast<int>(args.size()) >= 2) {
+                int low = static_cast<int>(args[0]);
+                int high = static_cast<int>(args[1]);
                 this->randomOctave_.setRange(low, high);
             }
             return {};
