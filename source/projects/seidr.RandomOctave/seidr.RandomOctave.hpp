@@ -87,7 +87,7 @@ public:
             if (!args.empty() && args.size() >= 2) {
                 int low = args[0];
                 int high = args[1];
-                setRangeMessage(low, high);
+                this->randomOctave_.setRange(low, high);
             }
             return {};
         }

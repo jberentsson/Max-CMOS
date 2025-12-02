@@ -3,6 +3,14 @@
 
 using namespace c74::min;
 
+RandomOctaveMax::RandomOctaveMax(const c74::min::atoms &args) {
+    if (!args.empty() && args.size() >= 2) {
+        int rangeLow = args[0];
+        int rangeHigh= args[1];
+        this->randomOctave_.setRange(rangeLow, rangeHigh);
+    }
+}
+
 auto RandomOctaveMax::clearNoteMessage(int note) -> void {
     // Clear a single note.
     randomOctave_.note(note, 0);
@@ -21,14 +29,6 @@ auto RandomOctaveMax::clearAllNotesMessage() -> void {
     }
 
     randomOctave_.clearQueue();
-}
-
-auto RandomOctaveMax::setRangeMessage(int low, int high) -> void {
-    randomOctave_.setRange(low, high);
-}
-
-RandomOctaveMax::RandomOctaveMax(const c74::min::atoms &args) {
-    // Nothing here.
 }
 
 auto RandomOctaveMax::processNoteMessage(atoms args) -> void { // NOLINT
