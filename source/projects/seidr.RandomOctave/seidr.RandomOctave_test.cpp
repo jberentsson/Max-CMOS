@@ -419,3 +419,61 @@ SCENARIO("seidr.RandomOctaveMax test clear note functions") { // NOLINT
         REQUIRE(randomOctaveTestObject.getQueuedNotes().empty());
     }
 };
+
+
+
+SCENARIO("seidr.RandomOctaveMax test different types of inputs") { // NOLINT
+    ext_main(nullptr);
+
+    test_wrapper<RandomOctaveMax> an_instance;
+    RandomOctaveMax &randomOctaveTestObject = an_instance;
+    
+    auto &note_output = *c74::max::object_getoutput(randomOctaveTestObject, 0);
+    auto &velocity_output = *c74::max::object_getoutput(randomOctaveTestObject, 1);
+
+    GIVEN("add and clear a single note") {
+        // Make sure no notes are active.
+        REQUIRE(randomOctaveTestObject.getActiveNotes().empty());
+        REQUIRE(randomOctaveTestObject.getQueuedNotes().empty());
+        
+        // Integer List
+        REQUIRE_NOTHROW(randomOctaveTestObject.intInput({NoteC4, 100}));
+
+        // Float List
+        REQUIRE_NOTHROW(randomOctaveTestObject.floatInput({NoteC2, 100}));
+
+        // Anything
+        REQUIRE_NOTHROW(randomOctaveTestObject.anything({NoteC3, 100}));
+
+        // Check if the note data is there.
+        REQUIRE(!randomOctaveTestObject.getActiveNotes().empty());
+        REQUIRE(randomOctaveTestObject.getQueuedNotes().empty());
+
+        // Check outputs
+        REQUIRE(!note_output.empty());
+        REQUIRE(!velocity_output.empty());
+        REQUIRE(note_output.size() == 3);
+        REQUIRE(velocity_output.size() == 3);
+
+        // Notes
+        REQUIRE(RandomOctave::getPitchClass(note_output[0][1]) == RandomOctave::getPitchClass(0));
+        REQUIRE(RandomOctave::getPitchClass(note_output[0][1]) == RandomOctave::getPitchClass(0));
+        REQUIRE(RandomOctave::getPitchClass(note_output[0][1]) == RandomOctave::getPitchClass(0));
+        
+        // Velocity
+        REQUIRE(velocity_output[0][1] == 100);
+        REQUIRE(velocity_output[1][1] == 100);
+        REQUIRE(velocity_output[2][1] == 100);
+
+        // Clear
+        REQUIRE_NOTHROW(randomOctaveTestObject.clear(NoteC4));
+
+        REQUIRE(randomOctaveTestObject.getActiveNotes().size() == 2);
+        REQUIRE(randomOctaveTestObject.getQueuedNotes().empty());
+
+        REQUIRE_NOTHROW(randomOctaveTestObject.clear("all"));
+
+        REQUIRE(randomOctaveTestObject.getActiveNotes().size() == 0);
+        REQUIRE(randomOctaveTestObject.getQueuedNotes().empty());
+    }
+}

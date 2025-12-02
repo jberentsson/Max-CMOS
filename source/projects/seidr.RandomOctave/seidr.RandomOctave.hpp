@@ -33,7 +33,7 @@ public:
     auto getQueuedNotes() -> std::vector<std::shared_ptr<ActiveNote>> { return this->randomOctave_.getNoteQueue(); }
 
     // Inlets
-    inlet<> input_note_velcoty {this, "(int) note, (int) velocity"};
+    inlet<> input_note_velcoty {this, "(anything) note, (anything) velocity"};
 
     // Outlets
     outlet<> output_note       {this, "(anything) pitch"};
@@ -42,6 +42,7 @@ public:
     message<> anything {
         this, "anything", "Process note messages",
         MIN_FUNCTION {
+            cout << "anything\n";
             processNoteMessage(args);
             return {};
         }
@@ -50,6 +51,7 @@ public:
     message<> intInput {
         this, "int", "Process note messages",
         MIN_FUNCTION {
+            cout << "int\n";
             processNoteMessage(args);
             return {};
         }
@@ -58,6 +60,7 @@ public:
     message<> floatInput {
         this, "float", "Process note messages",
         MIN_FUNCTION {
+            cout << "float\n";
             processNoteMessage(args);
             return {};
         }
