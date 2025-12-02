@@ -47,7 +47,6 @@ public:
                 int note = args[0];
                 int velocity = args[1];
                 processNoteMessage(note, velocity);
-                return {};
             }
             return {};
         }
@@ -61,8 +60,8 @@ public:
                 int note = args[0];
                 int velocity = args[1];
                 processNoteMessage(note, velocity);
-                return {};
             }
+            return {};
         }
     };
     
