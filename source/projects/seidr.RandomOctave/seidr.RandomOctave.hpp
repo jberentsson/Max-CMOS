@@ -39,10 +39,22 @@ public:
     min::outlet<> output_note       {this, "(anything) pitch"};
     min::outlet<> output_velocity   {this, "(anything) velocity"};
 
-    min::message<> anything {
-        this, "anything", "Process note messages",
+    min::message<> integerInput {
+        this, "int", "Process note messages",
         MIN_FUNCTION {
-            max::object_post((max::t_object*) this, "anything");
+            max::object_post((max::t_object*) this, "integer");
+            if (args.size() >= 2) {
+                int note = static_cast<int> (args[0]);
+                int velocity = static_cast<int> (args[1]);
+                processNoteMessage(note, velocity);
+            }
+            return {};
+        }
+    };
+    min::message<> floatInput {
+        this, "float", "Process note messages",
+        MIN_FUNCTION {
+            max::object_post((max::t_object*) this, "float");
             if (args.size() >= 2) {
                 int note = static_cast<int> (args[0]);
                 int velocity = static_cast<int> (args[1]);

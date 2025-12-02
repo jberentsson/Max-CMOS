@@ -77,23 +77,39 @@ public:
         }
     };
 
-min::message<> anything {
-    this, "anything", "Process note messages",
-    MIN_FUNCTION {
-        max::object_post((max::t_object*) this, "anything with %d args", args.size());
-        
-        // Check we have enough arguments
-        if (args.size() >= 2) {
-            int note = args[0];
-            int velocity = args[1];
-            processNoteMessage(note, velocity);
-        } else {
-            max::object_error((max::t_object*) this, "Need 1 or 2 arguments (note, [velocity])");
+    min::message<> integerInput {
+        this, "int", "Process note messages",
+        MIN_FUNCTION {
+            max::object_post((max::t_object*) this, "anything with %d args", args.size());
+            
+            if (args.size() >= 2) {
+                int note = args[0];
+                int velocity = args[1];
+                processNoteMessage(note, velocity);
+            } else {
+                max::object_error((max::t_object*) this, "Need 1 or 2 arguments (note, [velocity])");
+            }
+            
+            return {};
         }
-        
-        return {};
-    }
-};
+    };
+
+    min::message<> floatInput {
+        this, "float", "Process note messages",
+        MIN_FUNCTION {
+            max::object_post((max::t_object*) this, "anything with %d args", args.size());
+            
+            if (args.size() >= 2) {
+                int note = args[0];
+                int velocity = args[1];
+                processNoteMessage(note, velocity);
+            } else {
+                max::object_error((max::t_object*) this, "Need 1 or 2 arguments (note, [velocity])");
+            }
+            
+            return {};
+        }
+    };
 
     min::message<min::threadsafe::yes> quantizerAddNote {
         this, "add", "Add notes to quantizer",
