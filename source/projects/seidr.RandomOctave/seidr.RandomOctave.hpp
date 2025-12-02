@@ -24,7 +24,7 @@ public:
 
     explicit RandomOctaveMax(const c74::min::atoms &args = {});
 
-    auto processNoteMessage(atoms args) -> void;
+    auto processNoteMessage(int note, int velocity) -> void;
     auto clearAllNotesMessage() -> void;
     auto clearNoteMessage(int note) -> void;
     auto setRangeMessage(int low, int high) -> void;
