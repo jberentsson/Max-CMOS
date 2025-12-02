@@ -71,12 +71,6 @@ public:
     min::outlet<> output_velocity {this, "(anything) output velocity"};
     min::outlet<> output_invalid  {this, "(bang) note was not playaed"};
 
-    min::message<min::threadsafe::yes> int_message { this, "int", "Post something to the Max console.",
-        MIN_FUNCTION {
-            return {};
-        }
-    };
-
     min::message<> anything {
         this, "anything", "Handle any input",
         MIN_FUNCTION {

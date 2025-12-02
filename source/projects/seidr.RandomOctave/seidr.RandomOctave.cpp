@@ -10,8 +10,8 @@ RandomOctaveMax::RandomOctaveMax(const min::atoms &args) {
     int high = MIDI::RANGE_HIGH;
     
     if (args.size() >= 2) {
-        low = std::clamp(static_cast<int>(args[0]), 0, 127);
-        high = std::clamp(static_cast<int>(args[1]), 0, 127);
+        low = std::clamp(static_cast<int>(args[0]), MIDI::RANGE_LOW, MIDI::RANGE_HIGH);
+        high = std::clamp(static_cast<int>(args[1]), MIDI::RANGE_LOW, MIDI::RANGE_HIGH);
         
         if (low > high) {
             std::swap(low, high);

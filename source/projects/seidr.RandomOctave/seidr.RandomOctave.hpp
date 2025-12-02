@@ -42,8 +42,10 @@ public:
     min::message<> anything {
         this, "anything", "Handle any input",
         MIN_FUNCTION {
+            max::object_post((max::t_object*) this, "anything");
             // Forward to list handler.
-            return list(args, inlet);
+            //return list(args, inlet);
+            return {};
         }
     };
 
