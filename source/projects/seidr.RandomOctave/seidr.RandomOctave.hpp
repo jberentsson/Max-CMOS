@@ -52,10 +52,12 @@ public:
     min::message<> list {
         this, "list", "Process note messages",
         MIN_FUNCTION {
-            max::object_post((max::t_object*) this, "integer");
+            max::object_post((max::t_object*) this, "list");
             if (args.size() >= 2) {
-                int note = static_cast<int> (args[0]);
-                int velocity = static_cast<int> (args[1]);
+                //int note = static_cast<int> (args[0]);
+                //int velocity = static_cast<int> (args[1]);
+                int note = int(args[0]);
+                int velocity = int(args[1]);
                 processNoteMessage(note, velocity);
             }
             return {};
