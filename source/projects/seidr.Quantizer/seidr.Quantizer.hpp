@@ -38,6 +38,31 @@ public:
     min::message<min::threadsafe::yes> anything {
         this, "anything", "Handle any input",
         MIN_FUNCTION {
+            max::object_post((max::t_object*)this, "anything\n");
+            return {};
+        }
+    };
+
+    min::message<min::threadsafe::yes> integerInput {
+        this, "int", "Handle integer input",
+        MIN_FUNCTION {
+            max::object_post((max::t_object*)this, "int\n");
+            return {};
+        }
+    };
+
+    min::message<min::threadsafe::yes> floatInput {
+        this, "float", "Handle float input",
+        MIN_FUNCTION {
+            max::object_post((max::t_object*)this, "float\n");
+            return {};
+        }
+    };
+
+    min::message<min::threadsafe::yes> bangInput {
+        this, "bang", "Handle bang input",
+        MIN_FUNCTION {
+            max::object_post((max::t_object*)this, "bang\n");
             return {};
         }
     };
@@ -46,11 +71,13 @@ public:
         this, "list", "Process note messages",
         MIN_FUNCTION {
             max::object_post((max::t_object*) this, "list\n");
+            
             if (args.size() >= 2) {
                 int note = static_cast<int> (args[0]);
                 int velocity = static_cast<int> (args[1]);
                 this->processNoteMessage(note, velocity);
             }
+            
             return {};
         }
     };
@@ -59,6 +86,7 @@ public:
         this, "add", "Add notes to quantizer",
         MIN_FUNCTION {
             max::object_post((max::t_object*)this, "add\n");
+            
             if (!args.empty()) {
                 for (const auto &arg : args) {
                     int note = static_cast<int> (arg);
@@ -67,6 +95,7 @@ public:
                     }
                 }                
             }
+            
             return {};
         }
     };
@@ -75,20 +104,12 @@ public:
         this, "through", "Disable note through.",
         MIN_FUNCTION {
             max::object_post((max::t_object*) this, "through\n");
+            
             if (!args.empty()) {
                 int quantizeFlag = static_cast<int> (args[0]);
-
-                switch(quantizeFlag){
-                    case 0:
-                        this->quantizer_.disableThrough();
-                        break;
-                    case 1:
-                        this->quantizer_.enableThrough();
-                        break;
-                    default:
-                        break;
-                }
+                this->quantizer_.setThrough(Quantizer::NoteThrough(quantizeFlag));
             }
+            
             return {};
         }
     };
@@ -114,9 +135,11 @@ public:
         this, "clear", "Clear notes from the quantizer.",
         MIN_FUNCTION {
             max::object_post((max::t_object*) this, "clear\n");
+            
             if (!args.empty()) {
                     this->quantizer_.clear();
             }
+
             return {};
         }
     };
@@ -125,12 +148,14 @@ public:
         this, "mode", "Set quantizer mode.",
         MIN_FUNCTION {
             max::object_post((max::t_object*) this, "mode\n");
+            
             if (!args.empty()) {
                 for (const auto &arg : args) {
                     int modeFlag = static_cast<int> (arg);
                     this->quantizer_.setMode(Quantizer::QuantizeMode(modeFlag));
                 }                
             }
+            
             return {};
         }
     };
@@ -139,12 +164,14 @@ public:
         this, "round", "Set quantizer mode.",
         MIN_FUNCTION {
             max::object_post((max::t_object*) this, "round\n");
+            
             if (!args.empty()) {
                 for (const auto &arg : args) {
                     int modeFlag = static_cast<int> (arg);
                     this->quantizer_.setRoundDirection(Quantizer::RoundDirection(modeFlag));
                 }
             }
+            
             return {};
         }
     };
@@ -157,6 +184,7 @@ public:
                 auto high = MIDI::Note(static_cast<int> (args[1]));
                 this->quantizer_.setRange(low, high);
             }
+            
             return {};
         }
     };
