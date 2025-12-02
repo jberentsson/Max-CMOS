@@ -395,7 +395,7 @@ SCENARIO("seidr.RandomOctaveMax test clear note functions") { // NOLINT
     GIVEN("add and clear a single note") {
         REQUIRE(randomOctaveTestObject.getActiveNotes().empty());
         REQUIRE(randomOctaveTestObject.getQueuedNotes().empty());
-        REQUIRE_NOTHROW(randomOctaveTestObject.intInput({ NoteC4, 100 }));
+        REQUIRE_NOTHROW(randomOctaveTestObject.anything({ NoteC4, 100 }));
         REQUIRE(randomOctaveTestObject.getActiveNotes().size() == 1);
         REQUIRE(randomOctaveTestObject.getQueuedNotes().empty());
         REQUIRE_NOTHROW(randomOctaveTestObject.clear(NoteC4));
@@ -406,13 +406,13 @@ SCENARIO("seidr.RandomOctaveMax test clear note functions") { // NOLINT
     GIVEN("add and clear multiple notes") {
         REQUIRE(randomOctaveTestObject.getActiveNotes().empty());
         REQUIRE(randomOctaveTestObject.getQueuedNotes().empty());
-        REQUIRE_NOTHROW(randomOctaveTestObject.intInput({ NoteC4, 100 }));
-        REQUIRE_NOTHROW(randomOctaveTestObject.intInput({ NoteE4, 100 }));
-        REQUIRE_NOTHROW(randomOctaveTestObject.intInput({ NoteBB2, 100 }));
-        REQUIRE_NOTHROW(randomOctaveTestObject.intInput({ NoteA4, 100 }));
-        REQUIRE_NOTHROW(randomOctaveTestObject.intInput({ NoteG4, 100 }));
-        REQUIRE_NOTHROW(randomOctaveTestObject.intInput({ NoteG5, 100 }));
-        REQUIRE_NOTHROW(randomOctaveTestObject.intInput({ NoteC7, 100 }));
+        REQUIRE_NOTHROW(randomOctaveTestObject.anything({ NoteC4, 100 }));
+        REQUIRE_NOTHROW(randomOctaveTestObject.anything({ NoteE4, 100 }));
+        REQUIRE_NOTHROW(randomOctaveTestObject.anything({ NoteBB2, 100 }));
+        REQUIRE_NOTHROW(randomOctaveTestObject.anything({ NoteA4, 100 }));
+        REQUIRE_NOTHROW(randomOctaveTestObject.anything({ NoteG4, 100 }));
+        REQUIRE_NOTHROW(randomOctaveTestObject.anything({ NoteG5, 100 }));
+        REQUIRE_NOTHROW(randomOctaveTestObject.anything({ NoteC7, 100 }));
         REQUIRE(randomOctaveTestObject.getActiveNotes().size() == 7);
         REQUIRE(randomOctaveTestObject.getQueuedNotes().empty());
         REQUIRE_NOTHROW(randomOctaveTestObject.clear("all"));
@@ -438,10 +438,10 @@ SCENARIO("seidr.RandomOctaveMax test different types of inputs") { // NOLINT
         REQUIRE(randomOctaveTestObject.getQueuedNotes().empty());
         
         // Integer List
-        REQUIRE_NOTHROW(randomOctaveTestObject.intInput({NoteC4, 100}));
+        REQUIRE_NOTHROW(randomOctaveTestObject.anything({NoteC4, 100}));
 
         // Float List
-        REQUIRE_NOTHROW(randomOctaveTestObject.floatInput({NoteC2, 100}));
+        REQUIRE_NOTHROW(randomOctaveTestObject.anything({NoteC2, 100}));
 
         // Anything
         REQUIRE_NOTHROW(randomOctaveTestObject.anything({NoteC3, 100}));

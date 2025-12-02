@@ -46,7 +46,7 @@ public:
     auto getRoundDirection() -> Quantizer::RoundDirection { return this->quantizer.getRoundDirection(); }
     
     // Process note implementation
-    auto processNote(int notePitch, int velocity) -> void { // NOLINT
+    auto processNoteMessage(int notePitch, int velocity) -> void { // NOLINT
         // Validate input.
         if ((notePitch < MIDI::RANGE_LOW )|| (notePitch > MIDI::RANGE_HIGH)) {
             return;
@@ -64,11 +64,11 @@ public:
     }
 
     // Inlets
-    min::inlet<> input_note       {this, "(anything | list | reset) input note"};
+    min::inlet<> input_note       {this, "(anything|add|delete|update|reset) input note"};
 
     // Outlets
-    min::outlet<> output_note     {this, "(int) output note"};
-    min::outlet<> output_velocity {this, "(int) output velocity"};
+    min::outlet<> output_note     {this, "(anything) output note"};
+    min::outlet<> output_velocity {this, "(anything) output velocity"};
     min::outlet<> output_invalid  {this, "(bang) note was not playaed"};
 
     min::message<min::threadsafe::yes> int_message { this, "int", "Post something to the Max console.",
@@ -77,58 +77,28 @@ public:
         }
     };
 
-    min::message<min::threadsafe::yes> anything {
-        this, "anything", "Process note messages",
-        MIN_FUNCTION {
-            max::object_post((c74::max::t_object*) this, "anything");
-            if (!args.empty()){
-                max::object_post((c74::max::t_object*) this, "ANYTHING: Arg.size(): %d", args.size());
-            }
-            return {};
+min::message<> anything {
+    this, "anything", "Process note messages",
+    MIN_FUNCTION {
+        max::object_post((max::t_object*) this, "anything with %d args", args.size());
+        
+        // Check we have enough arguments
+        if (args.size() >= 2) {
+            int note = args[0];
+            int velocity = args[1];
+            processNoteMessage(note, velocity);
+        } else {
+            max::object_error((max::t_object*) this, "Need 1 or 2 arguments (note, [velocity])");
         }
-    };
-    
-    min::message<min::threadsafe::yes> noteInput {
-        this, "int", "Process note messages",
-        MIN_FUNCTION {
-            max::object_post((c74::max::t_object*) this, "int");
-            if (!args.empty()) {
-                int note = static_cast<int> (args[0]);
-                this->processNote(note, MIDI::RANGE_HIGH + 1);
-            }
-            return {};
-        }
-    };
-    
-    min::message<min::threadsafe::yes> noteInputFloat {
-        this, "float", "Process note messages",
-        MIN_FUNCTION {
-            max::object_post((c74::max::t_object*) this, "float");
-            if (!args.empty()) {
-                int note = static_cast<int> (args[0]);
-                this->processNote(note, MIDI::RANGE_HIGH + 1);
-            }
-            return {};
-        }
-    };
-
-    min::message<min::threadsafe::yes> list {
-        this, "list", "Process note messages",
-        MIN_FUNCTION {
-            max::object_post((max::t_object*)this, "list");
-            if (!args.empty() && args.size() == 2){
-                int note = static_cast<int> (args[0]);
-                int velocity = static_cast<int> (args[1]);
-                this->processNote(note, velocity);
-            }
-            return {};
-        }
-    };
+        
+        return {};
+    }
+};
 
     min::message<min::threadsafe::yes> quantizerAddNote {
         this, "add", "Add notes to quantizer",
         MIN_FUNCTION {
-            max::object_post((max::t_object*)this, "add");
+            max::object_post((max::t_object*)this, "add\n");
             if (!args.empty()) {
                 for (const auto &arg : args) {
                     int note = static_cast<int> (arg);
@@ -144,7 +114,7 @@ public:
     min::message<min::threadsafe::yes> quantizerThrough {
         this, "through", "Disable note through.",
         MIN_FUNCTION {
-            max::object_post((max::t_object*) this, "through");
+            max::object_post((max::t_object*) this, "through\n");
             if (!args.empty()) {
                 int quantizeFlag = static_cast<int> (args[0]);
 
@@ -164,16 +134,18 @@ public:
     };
 
     min::message<min::threadsafe::yes> updateNotes {
-        this, "update", "Clears all of the notes currently set and adds the new ones.",
+        this, "update", "Clears all notes",
         MIN_FUNCTION {
-            max::object_post((max::t_object*) this, "update");
+            max::object_post((max::t_object*) this, "update\n");
             if (!args.empty()) {
                 this->quantizer.clear();
                 
                 for(const auto &argValue : args) {
-                    this->quantizer.addNote(MIDI::Note(static_cast<int> (argValue)));
+                    int noteValue = (int)argValue;
+                    this->quantizer.addNote(MIDI::Note(noteValue));  // <-- Or here?
                 }
             }
+
             return {};
         }
     };
@@ -181,7 +153,7 @@ public:
     min::message<min::threadsafe::yes> quantizerClear {
         this, "clear", "Clear notes from the quantizer.",
         MIN_FUNCTION {
-            max::object_post((max::t_object*) this, "clear");
+            max::object_post((max::t_object*) this, "clear\n");
             if (!args.empty()) {
                     this->quantizer.clear();
             }
@@ -192,6 +164,7 @@ public:
     min::message<min::threadsafe::yes> quantizerMode {
         this, "mode", "Set quantizer mode.",
         MIN_FUNCTION {
+            max::object_post((max::t_object*) this, "mode\n");
             if (!args.empty()) {
                 for (const auto &arg : args) {
                     int modeFlag = static_cast<int> (arg);
@@ -215,10 +188,12 @@ public:
     min::message<min::threadsafe::yes> quantizerRound {
         this, "round", "Set quantizer mode.",
         MIN_FUNCTION {
+            max::object_post((max::t_object*) this, "round\n");
             if (!args.empty()) {
                 for (const auto &arg : args) {
                     int modeFlag = static_cast<int> (arg);
-
+                    
+                    // TODO: Can this be made in couple of lines?
                     switch(modeFlag){
                         case 0:
                             this->quantizer.setRoundDirection(Quantizer::RoundDirection::UP);
@@ -262,6 +237,7 @@ public:
     min::message<min::threadsafe::yes> quantizerDeleteNote {
         this, "delete", "Delete notes from quantizer",
         MIN_FUNCTION {
+            max::object_post((max::t_object*) this, "delete\n");
             if (!args.empty()){
                 for(const auto &arg : args){
                     this->quantizer.deleteNote(MIDI::Note(static_cast<int> (arg)));

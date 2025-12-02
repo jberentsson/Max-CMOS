@@ -51,33 +51,6 @@ public:
             return {};
         }
     };
-    
-    min::message<> intInput {
-        this, "int", "Process note messages",
-        MIN_FUNCTION {
-            max::object_post((max::t_object*) this, "int");
-            if (args.size() >= 2) {
-                int note = static_cast<int> (args[0]);
-                int velocity = static_cast<int> (args[1]);
-                processNoteMessage(note, velocity);
-            }
-            return {};
-        }
-    };
-    
-    min::message<> floatInput {
-        this, "float", "Process note messages",
-        MIN_FUNCTION {
-            max::object_post((max::t_object*) this, "float");
-            if (args.size() >= 2) {
-                int note = static_cast<int> (args[0]);
-                int velocity = static_cast<int> (args[1]);
-                processNoteMessage(note, velocity);
-                return {};
-            }
-            return {};
-        }
-    };
 
     min::message<> clear{
         this, "clear", "Clear specific note",
