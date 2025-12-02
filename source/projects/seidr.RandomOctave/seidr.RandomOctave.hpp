@@ -14,7 +14,7 @@ using namespace c74;
 
 class RandomOctaveMax : public min::object<RandomOctaveMax> {
 private:
-    RandomOctave randomOctave_ = RandomOctave();
+    RandomOctave randomOctave_;
 
 public:
     MIN_DESCRIPTION{"Randomize the octave of a MIDI note message."}; // NOLINT 
@@ -31,7 +31,7 @@ public:
     auto getActiveNotes() -> std::vector<std::shared_ptr<ActiveNote>> { return this->randomOctave_.getActiveNotes(); }
     auto getQueuedNotes() -> std::vector<std::shared_ptr<ActiveNote>> { return this->randomOctave_.getNoteQueue(); }
     
-    bool isNoteNumber(const std::string& str, int& result) {
+    static auto isNoteNumber(const std::string& str, int& result) -> bool {
         try {
             size_t pos;
             result = std::stoi(str, &pos);
@@ -98,10 +98,10 @@ public:
                     this->clearAllNotesMessage();
                 } else {
                     int note;
-                    if (this->isNoteNumber(arg, note)) {
+                    if (RandomOctaveMax::isNoteNumber(arg, note)) {
                         this->clearNoteMessage(note);
                     } else {
-                        std::cerr << "Error: Invalid argument. Use 'all' or a note number." << std::endl;
+                        std::cerr << "Error: Invalid argument. Use 'all' or a note number.\n";
                     }
                 }
             }

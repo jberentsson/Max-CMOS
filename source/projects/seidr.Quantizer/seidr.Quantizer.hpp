@@ -13,7 +13,7 @@ using namespace c74;
 
 class QuantizerMax : public min::object<QuantizerMax> {
 private:
-    Quantizer quantizer_ = Quantizer();
+    Quantizer quantizer_;
 
 public:
     MIN_DESCRIPTION{"Quantize a MIDI note message."}; // NOLINT 
