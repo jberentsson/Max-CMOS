@@ -9,241 +9,203 @@
 #include "Quantizer/Quantizer.hpp"
 #include <c74_min.h>
 
-using namespace c74::min;
+using namespace c74;
 
-class QuantizerMax : public object<QuantizerMax> {
+class QuantizerMax : public min::object<QuantizerMax> {
 private:
-    Quantizer quantizer;
+    Quantizer quantizer_;
 
 public:
-    MIN_DESCRIPTION{"Quantize a MIDI note message."}; // NOLINT 
-    MIN_TAGS{"seidr"};                                // NOLINT 
-    MIN_AUTHOR{"Jóhann Berentsson"};                  // NOLINT 
-    MIN_RELATED{"seidr.*"};                           // NOLINT 
+    MIN_DESCRIPTION{"Quantize a MIDI note message."}; // NOLINT
+    MIN_TAGS{"seidr"};                                // NOLINT
+    MIN_AUTHOR{"Jóhann Berentsson"};                  // NOLINT
+    MIN_RELATED{"seidr.*"};                           // NOLINT
 
-    explicit QuantizerMax(const atoms &args = {}) {
-        if (!args.empty()) {
-            if (!args.empty()) {
-                this->quantizer.setMode(Quantizer::QuantizeMode(args[0]));
-            }
+    enum Inlets : uint8_t {
+        NOTE = 0,
+        ARGS = 1
+    };
 
-            if (args.size() >= 2) {
-                this->quantizer.setRoundDirection(Quantizer::RoundDirection(args[1]));
-            }
+    using RoundDirection = Quantizer::RoundDirection;
+    using QuantizeMode = Quantizer::QuantizeMode;
+    using NoteThrough = Quantizer::NoteThrough;
 
-            if (args.size() == 4) {
-                
-                uint8_t rangeLow = int(args[2]);
-                uint8_t rangeHigh = int(args[3]);
-                this->quantizer.setRange(Quantizer::Note(rangeLow), Quantizer::Note(rangeHigh));
-            }
-        }
-    }
+    explicit QuantizerMax(const min::atoms &args = {});
 
-    auto noteCount() -> int { return this->quantizer.noteCount(); }
-    auto getRoundDirection() -> Quantizer::RoundDirection { return this->quantizer.getRoundDirection(); }
-    
-    // Process note implementation
-    auto processNote(int notePitch, int velocity) -> void { // NOLINT
-        // Validate input.
-        if ((notePitch < MIDI::RANGE_LOW )|| (notePitch > MIDI::RANGE_HIGH)) {
-            return;
-        }
-        
-        // Quantize the note.
-        int quantizedNote = quantizer.quantize(MIDI::Note(notePitch));
-        
-        // Send to outlets.
-        output_note.send(quantizedNote);
-        
-        if (velocity <= MIDI::RANGE_HIGH) {
-            output_velocity.send(velocity);
-        }
-    }
+    auto noteCount() -> int { return this->quantizer_.noteCount(); }
+    auto getRoundDirection() -> RoundDirection { return this->quantizer_.getRoundDirection(); }
+    auto processNoteMessage(int notePitch, int velocity) -> void;
 
-    inlet<> input_note {this, "(anything | list | reset) input note"};
+    // Inlets
+    min::inlet<> input_note       {this, "(list) note and velocity"};
+    min::inlet<> input_arguments  {this, "(add|remove|update|mode|round|clear|through) input arguments"};
 
-    outlet<> output_note     {this, "(int) output note"};
-    outlet<> output_velocity {this, "(int) output velocity"};
-    outlet<> output_invalid  {this, "(bang) note was not playaed"};
+    // Outlets
+    min::outlet<> output_note     {this, "(anything) output note"};
+    min::outlet<> output_velocity {this, "(anything) output velocity"};
+    min::outlet<> output_invalid  {this, "(bang) note was not playaed"};
 
-    message<threadsafe::yes> int_message { this, "int", "Post something to the Max console.",
+    min::message<min::threadsafe::yes> anything {
+        this, "anything", "Handle any input",
         MIN_FUNCTION {
+            max::object_post((max::t_object*)this, "anything\n");
             return {};
         }
     };
 
-    message<threadsafe::yes> anything {
-        this, "anything", "Process note messages",
+    min::message<min::threadsafe::yes> integerInput {
+        this, "int", "Handle integer input",
         MIN_FUNCTION {
-            if (!args.empty()){
-                cout << "ANYTHING: Arg.size(): " << args.size() << endl;
-            }
-            return {};
-        }
-    };
-    
-    message<threadsafe::yes> noteInput {
-        this, "int", "Process note messages",
-        MIN_FUNCTION {
-            if (!args.empty()) {
-                int note = static_cast<int>(args[0]);
-                this->processNote(note, MIDI::RANGE_HIGH + 1);
-            }
+            max::object_post((max::t_object*)this, "int\n");
             return {};
         }
     };
 
-    message<threadsafe::yes> list {
+    min::message<min::threadsafe::yes> floatInput {
+        this, "float", "Handle float input",
+        MIN_FUNCTION {
+            max::object_post((max::t_object*)this, "float\n");
+            return {};
+        }
+    };
+
+    min::message<min::threadsafe::yes> bangInput {
+        this, "bang", "Handle bang input",
+        MIN_FUNCTION {
+            max::object_post((max::t_object*)this, "bang\n");
+            return {};
+        }
+    };
+
+    min::message<min::threadsafe::yes> list {
         this, "list", "Process note messages",
         MIN_FUNCTION {
-            if (!args.empty() && args.size() == 2){
-                int note = static_cast<int>(args[0]);
-                int velocity = static_cast<int>(args[1]);
-                this->processNote(note, velocity);
+            max::object_post((max::t_object*) this, "list\n");
+            
+            if (Inlets(inlet) == Inlets::NOTE && args.size() >= 2) {
+                int note = static_cast<int> (args[0]);
+                int velocity = static_cast<int> (args[1]);
+                this->processNoteMessage(note, velocity);
             }
+            
             return {};
         }
     };
 
-    message<threadsafe::yes> quantizerAddNote {
+    min::message<min::threadsafe::yes> quantizerAddNote {
         this, "add", "Add notes to quantizer",
         MIN_FUNCTION {
-            if (!args.empty()) {
+            max::object_post((max::t_object*)this, "add\n");
+            
+            if (Inlets(inlet) == Inlets::ARGS && !args.empty()) {
                 for (const auto &arg : args) {
-                    int note = static_cast<int>(arg);
-                    if(note >= MIDI::RANGE_LOW && note <= MIDI::RANGE_HIGH ) {
-                        this->quantizer.addNote(MIDI::Note(note));
+                    int note = static_cast<int> (arg);
+                    if((note >= MIDI::RANGE_LOW) && (note <= MIDI::RANGE_HIGH) ) {
+                        this->quantizer_.addNote(MIDI::Note(note));
                     }
                 }                
             }
+            
             return {};
         }
     };
 
-    message<threadsafe::yes> quantizerThrough {
+    min::message<min::threadsafe::yes> quantizerThrough {
         this, "through", "Disable note through.",
         MIN_FUNCTION {
-            if (!args.empty()) {
-                int quantizeFlag = static_cast<int>(args[0]);
-
-                switch(quantizeFlag){
-                    case 0:
-                        this->quantizer.disableThrough();
-                        break;
-                    case 1:
-                        this->quantizer.enableThrough();
-                        break;
-                    default:
-                        break;
-                }
+            max::object_post((max::t_object*) this, "through\n");
+            
+            if (Inlets(inlet) == Inlets::ARGS && !args.empty()) {
+                int quantizeFlag = static_cast<int> (args[0]);
+                this->quantizer_.setThrough(NoteThrough(quantizeFlag));
             }
+            
             return {};
         }
     };
 
-    message<threadsafe::yes> updateNotes {
-        this, "update", "Clears all of the notes currently set and adds the new ones.",
+    min::message<min::threadsafe::yes> updateNotes {
+        this, "update", "Clears all notes",
         MIN_FUNCTION {
-            if (!args.empty()) {
-                this->quantizer.clear();
+            max::object_post((max::t_object*) this, "update\n");
+            if (Inlets(inlet) == Inlets::ARGS && !args.empty()) {
+                this->quantizer_.clear();
                 
-                for(const auto &argValue : args) {
-                    this->quantizer.addNote(MIDI::Note(static_cast<int> (argValue)));
+                for (const auto &argValue : args) {
+                    int noteValue = static_cast<int> (argValue);
+                    this->quantizer_.addNote(MIDI::Note(noteValue));
                 }
             }
+
             return {};
         }
     };
 
-    message<threadsafe::yes> quantizerClear {
+    min::message<min::threadsafe::yes> quantizerClear {
         this, "clear", "Clear notes from the quantizer.",
         MIN_FUNCTION {
-            if (!args.empty()) {
-                    this->quantizer.clear();
+            max::object_post((max::t_object*) this, "clear\n");
+            
+            if (Inlets(inlet) == Inlets::ARGS && !args.empty()) {
+                    this->quantizer_.clear();
             }
+
             return {};
         }
     };
 
-    message<threadsafe::yes> quantizerMode {
+    min::message<min::threadsafe::yes> quantizerMode {
         this, "mode", "Set quantizer mode.",
         MIN_FUNCTION {
-            if (!args.empty()) {
+            max::object_post((max::t_object*) this, "mode\n");
+            
+            if (Inlets(inlet) == Inlets::ARGS && !args.empty()) {
                 for (const auto &arg : args) {
-                    int modeFlag = static_cast<int>(arg);
-
-                    switch(modeFlag){
-                        case 0:
-                            this->quantizer.setMode(Quantizer::QuantizeMode::TWELVE_NOTES);
-                            break; 
-                        case 1:
-                            this->quantizer.setMode(Quantizer::QuantizeMode::ALL_NOTES);
-                            break;
-                        default:
-                            break;
-                    }
+                    int modeFlag = static_cast<int> (arg);
+                    this->quantizer_.setMode(QuantizeMode(modeFlag));
                 }                
             }
+            
             return {};
         }
     };
 
-    message<threadsafe::yes> quantizerRound {
+    min::message<min::threadsafe::yes> quantizerRound {
         this, "round", "Set quantizer mode.",
         MIN_FUNCTION {
-            if (!args.empty()) {
+            max::object_post((max::t_object*) this, "round\n");
+            
+            if (Inlets(inlet) == Inlets::ARGS && !args.empty()) {
                 for (const auto &arg : args) {
-                    int modeFlag = static_cast<int>(arg);
-
-                    switch(modeFlag){
-                        case 0:
-                            this->quantizer.setRoundDirection(Quantizer::RoundDirection::UP);
-                            break; 
-                        case 1:
-                            this->quantizer.setRoundDirection(Quantizer::RoundDirection::DOWN);
-                            break;
-                        case 2:
-                            this->quantizer.setRoundDirection(Quantizer::RoundDirection::UP_OVERFLOW);
-                            break;
-                        case 3:
-                            this->quantizer.setRoundDirection(Quantizer::RoundDirection::DOWN_UNDERFLOW);
-                            break;
-                        case 4:
-                            this->quantizer.setRoundDirection(Quantizer::RoundDirection::NEAREST);
-                            break;
-                        case 5: // NOLINT
-                            this->quantizer.setRoundDirection(Quantizer::RoundDirection::FURTHEST);
-                            break;
-                        default:
-                            break;
-                    }
-                }                
+                    int modeFlag = static_cast<int> (arg);
+                    this->quantizer_.setRoundDirection(RoundDirection(modeFlag));
+                }
             }
+            
             return {};
         }
     };
 
-    message<threadsafe::yes> quantizerRange {
+    min::message<min::threadsafe::yes> quantizerRange {
         this, "range", "Set quantizer range.",
         MIN_FUNCTION {
-            if (!args.empty() && args.size() >= 2) {
-                //int low = static_cast<int>(args[0]);
-                //int high = static_cast<int>(args[1]);
+            if (Inlets(inlet) == Inlets::ARGS && !args.empty() && args.size() >= 2) {
                 auto low = MIDI::Note(static_cast<int> (args[0]));
                 auto high = MIDI::Note(static_cast<int> (args[1]));
-                this->quantizer.setRange(low, high);
+                this->quantizer_.setRange(low, high);
             }
+            
             return {};
         }
     };
 
-    message<threadsafe::yes> quantizerDeleteNote {
+    min::message<min::threadsafe::yes> quantizerDeleteNote {
         this, "delete", "Delete notes from quantizer",
         MIN_FUNCTION {
-            if (!args.empty()){
-                for(const auto &arg: args){
-                    this->quantizer.deleteNote(MIDI::Note(static_cast<int> (arg)));
+            max::object_post((max::t_object*) this, "delete\n");
+            if (Inlets(inlet) == Inlets::ARGS && !args.empty()){
+                for(const auto &arg : args){
+                    this->quantizer_.deleteNote(MIDI::Note(static_cast<int> (arg)));
                 }
             }
             return {};

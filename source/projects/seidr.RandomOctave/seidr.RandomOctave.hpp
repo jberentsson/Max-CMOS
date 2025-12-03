@@ -6,12 +6,13 @@
 
 #pragma once
 
-#include <c74_min.h>
 #include "RandomOctave/RandomOctave.hpp"
+#include <string>
+#include <c74_min.h>
 
-using namespace c74::min;
+using namespace c74;
 
-class RandomOctaveMax : public object<RandomOctaveMax> {
+class RandomOctaveMax : public min::object<RandomOctaveMax> {
 private:
     RandomOctave randomOctave_;
 
@@ -21,85 +22,105 @@ public:
     MIN_AUTHOR{"Jóhann Berentsson"};                                 // NOLINT 
     MIN_RELATED{"seidr.*"};                                          // NOLINT 
 
-    explicit RandomOctaveMax(const c74::min::atoms &args = {});
+    enum Inlets : uint8_t {
+        NOTE = 0,
+        ARGS = 1
+    };
+
+    explicit RandomOctaveMax(const min::atoms &args = {});
 
     auto processNoteMessage(int note, int velocity) -> void;
     auto clearAllNotesMessage() -> void;
     auto clearNoteMessage(int note) -> void;
-    auto setRangeMessage(int low, int high) -> void;
 
-    auto getActiveNotes() -> std::vector<std::shared_ptr<RandomOctave::ActiveNote>> { return this->randomOctave_.getActiveNotes(); }
-    auto getQueuedNotes() -> std::vector<std::shared_ptr<RandomOctave::ActiveNote>> { return this->randomOctave_.getNoteQueue(); }
+    auto getActiveNotes() -> std::vector<std::shared_ptr<ActiveNote>> { return this->randomOctave_.getActiveNotes(); }
+    auto getQueuedNotes() -> std::vector<std::shared_ptr<ActiveNote>> { return this->randomOctave_.getNoteQueue(); }
+    
+    static auto isNoteNumber(const std::string& str, int& result) -> bool {
+        try {
+            size_t pos;
+            result = std::stoi(str, &pos);
+            return pos == str.length();
+        } catch (...) {
+            return false;
+        }
+    }
 
     // Inlets
-    inlet<> input_note_velcoty {this, "(int) note, (int) velocity"};
+    min::inlet<> input_note_velcoty {this, "(list) note, velocity"};
+    min::inlet<> input_arguments    {this, "(range|clear) arguments"};
 
     // Outlets
-    outlet<> output_note       {this, "(anything) pitch"};
-    outlet<> output_velocity   {this, "(anything) velocity"};
+    min::outlet<> output_note       {this, "(anything) pitch"};
+    
+    min::message<min::threadsafe::yes> anything {
+        this, "anything", "Handle any input",
+        MIN_FUNCTION {
+            return {};
+        }
+    };
+    
+    min::message<min::threadsafe::yes> integerInput {
+        this, "int", "Handle integer input",
+        MIN_FUNCTION {
+            return {};
+        }
+    };
+    
+    min::message<min::threadsafe::yes> floatInput {
+        this, "float", "Handle integer input",
+        MIN_FUNCTION {
+            return {};
+        }
+    };
+    
+    min::message<min::threadsafe::yes> bangInput {
+        this, "bang", "Handle bang input",
+        MIN_FUNCTION {
+            return {};
+        }
+    };
 
-    message<> anything{
-        this, "anything", "Process note messages",
-        MIN_FUNCTION {
-            if (args.size() >= 2) {
-                int note = args[0];
-                int velocity = args[1];
-                processNoteMessage(note, velocity);
-            }
-            return {};
-        }
-    };
-    
-    message<> int_message {
-        this, "int", "Process note messages",
-        MIN_FUNCTION {
-            if (args.size() >= 2) {
-                int note = args[0];
-                int velocity = args[1];
-                processNoteMessage(note, velocity);
-            }
-            return {};
-        }
-    };
-    
-    c74::min::message<> list_message {
+    min::message<min::threadsafe::yes> list {
         this, "list", "Process note messages",
         MIN_FUNCTION {
-            if (args.size() >= 2) {
-                int note = args[0];
-                int velocity = args[1];
-                processNoteMessage(note, velocity);
+            if (Inlets(inlet) == Inlets::NOTE && args.size() >= 2) {
+                int note = static_cast<int> (args[0]);
+                int velocity = static_cast<int> (args[1]);
+                this->processNoteMessage(note, velocity);
             }
             return {};
         }
     };
 
-    c74::min::message<> clear{
+    min::message<min::threadsafe::yes> clear {
         this, "clear", "Clear specific note",
         MIN_FUNCTION {
-            if (!args.empty()) {
-                int note = args[0];
-                clearNoteMessage(note);
+            if (Inlets(inlet) == Inlets::ARGS && !args.empty()) {
+                const std::string& arg = args[0];
+                
+                if (arg == "all") {
+                    this->clearAllNotesMessage();
+                } else {
+                    int note;
+                    if (RandomOctaveMax::isNoteNumber(arg, note)) {
+                        this->clearNoteMessage(note);
+                    } else {
+                        std::cerr << "Error: Invalid argument. Use 'all' or a note number.\n";
+                    }
+                }
             }
             return {};
         }
     };
 
-    c74::min::message<> clearall{
-        this, "clearall", "Clear all notes",
-        MIN_FUNCTION {
-            clearAllNotesMessage();
-            return {};
-        }
-    };
-
-    c74::min::message<> range{
+    min::message<min::threadsafe::yes> range {
         this, "range", "Set range",
         MIN_FUNCTION {
-            if (!args.empty() && args.size() >= 2) {
-                int low = args[0];
-                int high = args[1];
-                setRangeMessage(low, high);
+            if (Inlets(inlet) == Inlets::ARGS && !args.empty() && args.size() >= 2) {
+                int low = static_cast<int> (args[0]);
+                int high = static_cast<int> (args[1]);
+                this->randomOctave_.setRange(low, high);
             }
             return {};
         }
