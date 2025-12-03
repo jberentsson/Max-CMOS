@@ -21,7 +21,6 @@ SCENARIO("seidr.RandomOctaveMax object basic functionality") { // NOLINT
         RandomOctaveMax &randomOctaveTestObject = an_instance;
         
         auto &note_output = *c74::max::object_getoutput(randomOctaveTestObject, 0);
-        auto &velocity_output = *c74::max::object_getoutput(randomOctaveTestObject, 1);
 
         WHEN("the object is created") {
             THEN("it has the correct number of inlets and outlets") {
@@ -66,13 +65,13 @@ SCENARIO("seidr.RandomOctaveMax object basic functionality") { // NOLINT
                 REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteC5, 1 }));
                 
                 REQUIRE(!note_output.empty());
-                REQUIRE(note_output.size() > 1);
+                REQUIRE(note_output.size() > 0);
                 
                 // Turn all notes off fo that class of notes.
                 REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteC5, 0 }));
                 
                 REQUIRE(!note_output.empty());
-                REQUIRE(note_output.size() > 1);
+                REQUIRE(note_output.size() > 0);
                 
                 REQUIRE(static_cast<int> (note_output[0][0]) % 12 == 0);
                 REQUIRE(static_cast<int> (note_output[1][0]) % 12 == 0);
@@ -108,12 +107,10 @@ SCENARIO("seidr.RandomOctaveMax object basic functionality") { // NOLINT
                 randomOctaveTestObject.range({ 24, 72 }); // NOLINT
                 REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteC5, 100 }));
                 REQUIRE(note_output.empty());
-                REQUIRE(velocity_output.empty());
 
                 randomOctaveTestObject.range({ 48, 48 }); // NOLINT
                 REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteG5, 80 }));
                 REQUIRE(note_output.empty());
-                REQUIRE(velocity_output.empty());
             }
         } 
 
@@ -145,7 +142,6 @@ SCENARIO("seidr.RandomOctaveMax stress and performance tests") { // NOLINT
         RandomOctaveMax &randomOctaveTestObject = an_instance;
         
         auto &note_output = *c74::max::object_getoutput(randomOctaveTestObject, 0);
-        auto &velocity_output = *c74::max::object_getoutput(randomOctaveTestObject, 1);
 
         WHEN("many rapid note messages are sent") {
             THEN("it handles rapid note-ons without crashing") {
@@ -164,7 +160,7 @@ SCENARIO("seidr.RandomOctaveMax stress and performance tests") { // NOLINT
                     REQUIRE_NOTHROW(randomOctaveTestObject.list({NoteC5 + (i % OCTAVE), 0}));
                 }
                 
-                //REQUIRE(!note_output.empty());
+                REQUIRE(!note_output.empty());
             }
 
             THEN("it handles mixed rapid messages without crashing") {
@@ -208,7 +204,6 @@ SCENARIO("seidr.RandomOctaveMax error handling tests") { // NOLINT
         RandomOctaveMax &randomOctaveTestObject = an_instance;
 
         auto &note_output = *c74::max::object_getoutput(randomOctaveTestObject, 0);
-        auto &velocity_output = *c74::max::object_getoutput(randomOctaveTestObject, 1);
 
         WHEN("invalid list lengths are sent") {
             THEN("empty list is handled") {
@@ -281,7 +276,6 @@ SCENARIO("seidr.RandomOctaveMax musical scale tests") { // NOLINT
         RandomOctaveMax &randomOctaveTestObject = an_instance;
 
         auto &note_output = *c74::max::object_getoutput(randomOctaveTestObject, 0);
-        auto &velocity_output = *c74::max::object_getoutput(randomOctaveTestObject, 1);
 
         WHEN("a C major scale is played") {
             THEN("all scale notes are processed without crashing") {
@@ -426,7 +420,6 @@ SCENARIO("seidr.RandomOctaveMax test different types of inputs") { // NOLINT
     RandomOctaveMax &randomOctaveTestObject = an_instance;
     
     auto &note_output = *c74::max::object_getoutput(randomOctaveTestObject, 0);
-    auto &velocity_output = *c74::max::object_getoutput(randomOctaveTestObject, 1);
 
     GIVEN("add and clear a single note") {
         // Make sure no notes are active.

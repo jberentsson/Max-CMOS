@@ -43,10 +43,10 @@ public:
 
     // Inlets
     min::inlet<> input_note_velcoty {this, "(list) note, velocity"};
+    min::inlet<> input_arguments    {this, "(range|clear) arguments"};
 
     // Outlets
-    min::outlet<> output_note       {this, "(anything) pitch"};
-    min::outlet<> output_velocity   {this, "(anything) velocity"};
+    min::outlet<> output_note_velocity       {this, "(anything) pitch"};
     
     min::message<min::threadsafe::yes> anything {
         this, "anything", "Handle any input",
