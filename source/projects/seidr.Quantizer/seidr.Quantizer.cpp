@@ -33,12 +33,13 @@ auto QuantizerMax::processNoteMessage(int notePitch, int velocity) -> void { // 
     // Quantize the note.
     int quantizedNote = this->quantizer_.quantize(MIDI::Note(notePitch));
     
-    // Send to outlets.
-    output_note.send(quantizedNote);
     
     if (velocity <= MIDI::RANGE_HIGH) {
         output_velocity.send(velocity);
     }
+
+    // Send to outlets.
+    output_note.send(quantizedNote);
 }
 
 MIN_EXTERNAL(QuantizerMax); // NOLINT
