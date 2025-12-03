@@ -46,8 +46,7 @@ auto RandomOctaveMax::processNoteMessage(int note, int velocity) -> void { // NO
     if (this->randomOctave_.note(note, velocity) == 0) { 
         for (const auto &currentNote : randomOctave_.getNoteQueue()) {
             // Send to outputs.
-            output_note.send(currentNote->pitch());
-            output_velocity.send(currentNote->velocity());
+            output_note.send({ currentNote->pitch(), currentNote->velocity() });
         }
 
         randomOctave_.clearQueue();
