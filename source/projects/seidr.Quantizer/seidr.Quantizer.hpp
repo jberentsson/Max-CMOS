@@ -83,8 +83,8 @@ public:
             max::object_post((max::t_object*) this, "list\n");
             
             if (Inlets(inlet) == Inlets::NOTE && args.size() >= 2) {
-                int note = static_cast<int> (args[0]);
-                int velocity = static_cast<int> (args[1]);
+                int note = static_cast<int>(args[0]);
+                int velocity = static_cast<int>(args[1]);
                 this->processNoteMessage(note, velocity);
             }
             
@@ -99,7 +99,7 @@ public:
             
             if (Inlets(inlet) == Inlets::ARGS && !args.empty()) {
                 for (const auto &arg : args) {
-                    int note = static_cast<int> (arg);
+                    int note = static_cast<int>(arg);
                     if((note >= MIDI::RANGE_LOW) && (note <= MIDI::RANGE_HIGH) ) {
                         this->quantizer_.addNote(MIDI::Note(note));
                     }
@@ -116,7 +116,7 @@ public:
             max::object_post((max::t_object*) this, "through\n");
             
             if (Inlets(inlet) == Inlets::ARGS && !args.empty()) {
-                int quantizeFlag = static_cast<int> (args[0]);
+                int quantizeFlag = static_cast<int>(args[0]);
                 this->quantizer_.setThrough(NoteThrough(quantizeFlag));
             }
             
@@ -132,7 +132,7 @@ public:
                 this->quantizer_.clear();
                 
                 for (const auto &argValue : args) {
-                    int noteValue = static_cast<int> (argValue);
+                    int noteValue = static_cast<int>(argValue);
                     this->quantizer_.addNote(MIDI::Note(noteValue));
                 }
             }
@@ -161,7 +161,7 @@ public:
             
             if (Inlets(inlet) == Inlets::ARGS && !args.empty()) {
                 for (const auto &arg : args) {
-                    int modeFlag = static_cast<int> (arg);
+                    int modeFlag = static_cast<int>(arg);
                     this->quantizer_.setMode(QuantizeMode(modeFlag));
                 }                
             }
@@ -177,7 +177,7 @@ public:
             
             if (Inlets(inlet) == Inlets::ARGS && !args.empty()) {
                 for (const auto &arg : args) {
-                    int modeFlag = static_cast<int> (arg);
+                    int modeFlag = static_cast<int>(arg);
                     this->quantizer_.setRoundDirection(RoundDirection(modeFlag));
                 }
             }
@@ -190,8 +190,8 @@ public:
         this, "range", "Set quantizer range.",
         MIN_FUNCTION {
             if (Inlets(inlet) == Inlets::ARGS && !args.empty() && args.size() >= 2) {
-                auto low = MIDI::Note(static_cast<int> (args[0]));
-                auto high = MIDI::Note(static_cast<int> (args[1]));
+                auto low = MIDI::Note(static_cast<int>(args[0]));
+                auto high = MIDI::Note(static_cast<int>(args[1]));
                 this->quantizer_.setRange(low, high);
             }
             
@@ -205,7 +205,7 @@ public:
             max::object_post((max::t_object*) this, "delete\n");
             if (Inlets(inlet) == Inlets::ARGS && !args.empty()){
                 for(const auto &arg : args){
-                    this->quantizer_.deleteNote(MIDI::Note(static_cast<int> (arg)));
+                    this->quantizer_.deleteNote(MIDI::Note(static_cast<int>(arg)));
                 }
             }
             return {};
