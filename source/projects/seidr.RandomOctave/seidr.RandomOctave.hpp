@@ -22,6 +22,11 @@ public:
     MIN_AUTHOR{"Jóhann Berentsson"};                                 // NOLINT 
     MIN_RELATED{"seidr.*"};                                          // NOLINT 
 
+    enum Inlets : uint8_t {
+        NOTE = 0,
+        ARGS = 1
+    };
+
     explicit RandomOctaveMax(const min::atoms &args = {});
 
     auto processNoteMessage(int note, int velocity) -> void;
@@ -46,7 +51,7 @@ public:
     min::inlet<> input_arguments    {this, "(range|clear) arguments"};
 
     // Outlets
-    min::outlet<> output_note_velocity       {this, "(anything) pitch"};
+    min::outlet<> output_note       {this, "(anything) pitch"};
     
     min::message<min::threadsafe::yes> anything {
         this, "anything", "Handle any input",
@@ -79,7 +84,7 @@ public:
     min::message<min::threadsafe::yes> list {
         this, "list", "Process note messages",
         MIN_FUNCTION {
-            if (args.size() >= 2) {
+            if (Inlets(inlet) == Inlets::NOTE && args.size() >= 2) {
                 int note = static_cast<int> (args[0]);
                 int velocity = static_cast<int> (args[1]);
                 this->processNoteMessage(note, velocity);
@@ -91,7 +96,7 @@ public:
     min::message<min::threadsafe::yes> clear {
         this, "clear", "Clear specific note",
         MIN_FUNCTION {
-            if (!args.empty()) {
+            if (Inlets(inlet) == Inlets::ARGS && !args.empty()) {
                 const std::string& arg = args[0];
                 
                 if (arg == "all") {
@@ -112,7 +117,7 @@ public:
     min::message<min::threadsafe::yes> range {
         this, "range", "Set range",
         MIN_FUNCTION {
-            if (!args.empty() && args.size() >= 2) {
+            if (Inlets(inlet) == Inlets::ARGS && !args.empty() && args.size() >= 2) {
                 int low = static_cast<int> (args[0]);
                 int high = static_cast<int> (args[1]);
                 this->randomOctave_.setRange(low, high);

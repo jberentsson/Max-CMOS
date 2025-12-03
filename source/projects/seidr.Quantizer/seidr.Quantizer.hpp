@@ -16,19 +16,29 @@ private:
     Quantizer quantizer_;
 
 public:
-    MIN_DESCRIPTION{"Quantize a MIDI note message."}; // NOLINT 
-    MIN_TAGS{"seidr"};                                // NOLINT 
-    MIN_AUTHOR{"Jóhann Berentsson"};                  // NOLINT 
-    MIN_RELATED{"seidr.*"};                           // NOLINT 
+    MIN_DESCRIPTION{"Quantize a MIDI note message."}; // NOLINT
+    MIN_TAGS{"seidr"};                                // NOLINT
+    MIN_AUTHOR{"Jóhann Berentsson"};                  // NOLINT
+    MIN_RELATED{"seidr.*"};                           // NOLINT
+
+    enum Inlets : uint8_t {
+        NOTE = 0,
+        ARGS = 1
+    };
+
+    using RoundDirection = Quantizer::RoundDirection;
+    using QuantizeMode = Quantizer::QuantizeMode;
+    using NoteThrough = Quantizer::NoteThrough;
 
     explicit QuantizerMax(const min::atoms &args = {});
 
     auto noteCount() -> int { return this->quantizer_.noteCount(); }
-    auto getRoundDirection() -> Quantizer::RoundDirection { return this->quantizer_.getRoundDirection(); }
+    auto getRoundDirection() -> RoundDirection { return this->quantizer_.getRoundDirection(); }
     auto processNoteMessage(int notePitch, int velocity) -> void;
 
     // Inlets
-    min::inlet<> input_note       {this, "(list) input note"};
+    min::inlet<> input_note       {this, "(list) note and velocity"};
+    min::inlet<> input_arguments  {this, "(add|remove|update|mode|round|clear|through) input arguments"};
 
     // Outlets
     min::outlet<> output_note     {this, "(anything) output note"};
@@ -72,7 +82,7 @@ public:
         MIN_FUNCTION {
             max::object_post((max::t_object*) this, "list\n");
             
-            if (args.size() >= 2) {
+            if (Inlets(inlet) == Inlets::NOTE && args.size() >= 2) {
                 int note = static_cast<int> (args[0]);
                 int velocity = static_cast<int> (args[1]);
                 this->processNoteMessage(note, velocity);
@@ -87,7 +97,7 @@ public:
         MIN_FUNCTION {
             max::object_post((max::t_object*)this, "add\n");
             
-            if (!args.empty()) {
+            if (Inlets(inlet) == Inlets::ARGS && !args.empty()) {
                 for (const auto &arg : args) {
                     int note = static_cast<int> (arg);
                     if((note >= MIDI::RANGE_LOW) && (note <= MIDI::RANGE_HIGH) ) {
@@ -105,9 +115,9 @@ public:
         MIN_FUNCTION {
             max::object_post((max::t_object*) this, "through\n");
             
-            if (!args.empty()) {
+            if (Inlets(inlet) == Inlets::ARGS && !args.empty()) {
                 int quantizeFlag = static_cast<int> (args[0]);
-                this->quantizer_.setThrough(Quantizer::NoteThrough(quantizeFlag));
+                this->quantizer_.setThrough(NoteThrough(quantizeFlag));
             }
             
             return {};
@@ -118,7 +128,7 @@ public:
         this, "update", "Clears all notes",
         MIN_FUNCTION {
             max::object_post((max::t_object*) this, "update\n");
-            if (!args.empty()) {
+            if (Inlets(inlet) == Inlets::ARGS && !args.empty()) {
                 this->quantizer_.clear();
                 
                 for (const auto &argValue : args) {
@@ -136,7 +146,7 @@ public:
         MIN_FUNCTION {
             max::object_post((max::t_object*) this, "clear\n");
             
-            if (!args.empty()) {
+            if (Inlets(inlet) == Inlets::ARGS && !args.empty()) {
                     this->quantizer_.clear();
             }
 
@@ -149,10 +159,10 @@ public:
         MIN_FUNCTION {
             max::object_post((max::t_object*) this, "mode\n");
             
-            if (!args.empty()) {
+            if (Inlets(inlet) == Inlets::ARGS && !args.empty()) {
                 for (const auto &arg : args) {
                     int modeFlag = static_cast<int> (arg);
-                    this->quantizer_.setMode(Quantizer::QuantizeMode(modeFlag));
+                    this->quantizer_.setMode(QuantizeMode(modeFlag));
                 }                
             }
             
@@ -165,10 +175,10 @@ public:
         MIN_FUNCTION {
             max::object_post((max::t_object*) this, "round\n");
             
-            if (!args.empty()) {
+            if (Inlets(inlet) == Inlets::ARGS && !args.empty()) {
                 for (const auto &arg : args) {
                     int modeFlag = static_cast<int> (arg);
-                    this->quantizer_.setRoundDirection(Quantizer::RoundDirection(modeFlag));
+                    this->quantizer_.setRoundDirection(RoundDirection(modeFlag));
                 }
             }
             
@@ -179,7 +189,7 @@ public:
     min::message<min::threadsafe::yes> quantizerRange {
         this, "range", "Set quantizer range.",
         MIN_FUNCTION {
-            if (!args.empty() && args.size() >= 2) {
+            if (Inlets(inlet) == Inlets::ARGS && !args.empty() && args.size() >= 2) {
                 auto low = MIDI::Note(static_cast<int> (args[0]));
                 auto high = MIDI::Note(static_cast<int> (args[1]));
                 this->quantizer_.setRange(low, high);
@@ -193,7 +203,7 @@ public:
         this, "delete", "Delete notes from quantizer",
         MIN_FUNCTION {
             max::object_post((max::t_object*) this, "delete\n");
-            if (!args.empty()){
+            if (Inlets(inlet) == Inlets::ARGS && !args.empty()){
                 for(const auto &arg : args){
                     this->quantizer_.deleteNote(MIDI::Note(static_cast<int> (arg)));
                 }

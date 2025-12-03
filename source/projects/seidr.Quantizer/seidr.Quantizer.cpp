@@ -1,4 +1,5 @@
 #include <c74_min.h>
+#include "Quantizer/Quantizer.hpp"
 #include "seidr.Quantizer.hpp"
 
 using namespace c74;

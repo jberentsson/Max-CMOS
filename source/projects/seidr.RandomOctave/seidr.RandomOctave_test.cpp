@@ -13,6 +13,8 @@ using namespace c74;
 using namespace MIDI;
 using namespace MIDI::Notes;
 
+using Inlets = RandomOctaveMax::Inlets;
+
 SCENARIO("seidr.RandomOctaveMax object basic functionality") { // NOLINT
     ext_main(nullptr);
 
@@ -65,13 +67,12 @@ SCENARIO("seidr.RandomOctaveMax object basic functionality") { // NOLINT
                 REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteC5, 1 }));
                 
                 REQUIRE(!note_output.empty());
-                REQUIRE(note_output.size() > 0);
+                REQUIRE(note_output.size() >= 2);
                 
                 // Turn all notes off fo that class of notes.
                 REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteC5, 0 }));
                 
-                REQUIRE(!note_output.empty());
-                REQUIRE(note_output.size() > 0);
+                REQUIRE(note_output.size() >= 3);
                 
                 REQUIRE(static_cast<int> (note_output[0][0]) % 12 == 0);
                 REQUIRE(static_cast<int> (note_output[1][0]) % 12 == 0);
@@ -98,18 +99,18 @@ SCENARIO("seidr.RandomOctaveMax object basic functionality") { // NOLINT
 
         WHEN("range messages are sent") {
             THEN("valid ranges are accepted") {
-                REQUIRE_NOTHROW(randomOctaveTestObject.range({ 0, 10 }));
-                REQUIRE_NOTHROW(randomOctaveTestObject.range({ 3, 5 }));
-                REQUIRE_NOTHROW(randomOctaveTestObject.range({ 4, 4 }));
+                REQUIRE_NOTHROW(randomOctaveTestObject.range({ 0, 10 }, Inlets::NOTE));
+                REQUIRE_NOTHROW(randomOctaveTestObject.range({ 3, 5 }, Inlets::NOTE));
+                REQUIRE_NOTHROW(randomOctaveTestObject.range({ 4, 4 }, Inlets::NOTE));
             }
 
             THEN("range changes don't crash subsequent note processing") {
-                randomOctaveTestObject.range({ 24, 72 }); // NOLINT
-                REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteC5, 100 }));
+                randomOctaveTestObject.range({ 24, 72 }, Inlets::ARGS); // NOLINT
+                REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteC5, 100 }, Inlets::NOTE));
                 REQUIRE(note_output.empty());
 
                 randomOctaveTestObject.range({ 48, 48 }); // NOLINT
-                REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteG5, 80 }));
+                REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteG5, 80 }, Inlets::NOTE));
                 REQUIRE(note_output.empty());
             }
         } 
@@ -119,14 +120,14 @@ SCENARIO("seidr.RandomOctaveMax object basic functionality") { // NOLINT
                 // Test a realistic usage pattern
                 REQUIRE(note_output.empty());
 
-                randomOctaveTestObject.range({ 36, 60 });     // NOLINT
-                randomOctaveTestObject.list({ NoteC5, 100 }); // NOLINT
-                randomOctaveTestObject.list({ NoteG5, 80 });  // NOLINT
-                randomOctaveTestObject.list({ NoteC5, 0 });
-                randomOctaveTestObject.list({ NoteG5, 100 }); // NOLINT
-                randomOctaveTestObject.range({ 24, 72 });     // NOLINT
-                randomOctaveTestObject.list({ NoteC6, 100 }); // NOLINT
-                randomOctaveTestObject.list({ NoteC6, 0 });
+                randomOctaveTestObject.range({ 36, 60 }, Inlets::ARGS);     // NOLINT
+                randomOctaveTestObject.list({ NoteC5, 100 }, Inlets::NOTE); // NOLINT
+                randomOctaveTestObject.list({ NoteG5, 80 }, Inlets::NOTE);  // NOLINT
+                randomOctaveTestObject.list({ NoteC5, 0 }, Inlets::NOTE);
+                randomOctaveTestObject.list({ NoteG5, 100 }, Inlets::NOTE); // NOLINT
+                randomOctaveTestObject.range({ 24, 72 }, Inlets::NOTE);     // NOLINT
+                randomOctaveTestObject.list({ NoteC6, 100 }, Inlets::NOTE); // NOLINT
+                randomOctaveTestObject.list({ NoteC6, 0 }, Inlets::NOTE);
 
                 REQUIRE(note_output.empty());
             }
@@ -354,17 +355,17 @@ SCENARIO("seidr.RandomOctaveMax musical scale tests") { // NOLINT
         WHEN("chords are played") {
             THEN("common chords are processed without crashing") {
                 // C major chord
-                REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteC5, 100 }));
-                REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteE5, 100 }));
-                REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteG5, 100 }));
+                REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteC5, 100 }, Inlets::NOTE));
+                REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteE5, 100 }, Inlets::NOTE));
+                REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteG5, 100 }, Inlets::NOTE));
 
                 REQUIRE(randomOctaveTestObject.getQueuedNotes().empty());
                 REQUIRE(randomOctaveTestObject.getActiveNotes().size() == 3);
 
                 // Release chord
-                REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteC5, 0 }));
-                REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteE5, 0 }));
-                REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteG5, 0 }));
+                REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteC5, 0 }, Inlets::NOTE));
+                REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteE5, 0 }, Inlets::NOTE));
+                REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteG5, 0 }, Inlets::NOTE));
              
                 REQUIRE(randomOctaveTestObject.getQueuedNotes().empty());
                 REQUIRE(randomOctaveTestObject.getActiveNotes().empty());
@@ -385,10 +386,10 @@ SCENARIO("seidr.RandomOctaveMax test clear note functions") { // NOLINT
     GIVEN("add and clear a single note") {
         REQUIRE(randomOctaveTestObject.getActiveNotes().empty());
         REQUIRE(randomOctaveTestObject.getQueuedNotes().empty());
-        REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteC4, 100 }));
+        REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteC4, 100 }, Inlets::NOTE));
         REQUIRE(randomOctaveTestObject.getActiveNotes().size() == 1);
         REQUIRE(randomOctaveTestObject.getQueuedNotes().empty());
-        REQUIRE_NOTHROW(randomOctaveTestObject.clear(NoteC4));
+        REQUIRE_NOTHROW(randomOctaveTestObject.clear(NoteC4, Inlets::ARGS));
         REQUIRE(randomOctaveTestObject.getActiveNotes().empty());
         REQUIRE(randomOctaveTestObject.getQueuedNotes().empty());
     }
@@ -396,22 +397,20 @@ SCENARIO("seidr.RandomOctaveMax test clear note functions") { // NOLINT
     GIVEN("add and clear multiple notes") {
         REQUIRE(randomOctaveTestObject.getActiveNotes().empty());
         REQUIRE(randomOctaveTestObject.getQueuedNotes().empty());
-        REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteC4, 100 }));
-        REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteE4, 100 }));
-        REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteBB2, 100 }));
-        REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteA4, 100 }));
-        REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteG4, 100 }));
-        REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteG5, 100 }));
-        REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteC7, 100 }));
+        REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteC4, 100 }, Inlets::NOTE));
+        REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteE4, 100 }, Inlets::NOTE));
+        REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteBB2, 100 }, Inlets::NOTE));
+        REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteA4, 100 }, Inlets::NOTE));
+        REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteG4, 100 }, Inlets::NOTE));
+        REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteG5, 100 }, Inlets::NOTE));
+        REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteC7, 100 }, Inlets::NOTE));
         REQUIRE(randomOctaveTestObject.getActiveNotes().size() == 7);
         REQUIRE(randomOctaveTestObject.getQueuedNotes().empty());
-        REQUIRE_NOTHROW(randomOctaveTestObject.clear("all"));
+        REQUIRE_NOTHROW(randomOctaveTestObject.clear("all", Inlets::ARGS));
         REQUIRE(randomOctaveTestObject.getActiveNotes().empty());
         REQUIRE(randomOctaveTestObject.getQueuedNotes().empty());
     }
 };
-
-
 
 SCENARIO("seidr.RandomOctaveMax test different types of inputs") { // NOLINT
     ext_main(nullptr);
@@ -427,9 +426,9 @@ SCENARIO("seidr.RandomOctaveMax test different types of inputs") { // NOLINT
         REQUIRE(randomOctaveTestObject.getQueuedNotes().empty());
 
         // Play a chord.
-        REQUIRE_NOTHROW(randomOctaveTestObject.list({NoteC4, 100}));
-        REQUIRE_NOTHROW(randomOctaveTestObject.list({NoteC2, 100}));
-        REQUIRE_NOTHROW(randomOctaveTestObject.list({NoteC3, 100}));
+        REQUIRE_NOTHROW(randomOctaveTestObject.list({NoteC4, 100}, Inlets::NOTE));
+        REQUIRE_NOTHROW(randomOctaveTestObject.list({NoteC2, 100}, Inlets::NOTE));
+        REQUIRE_NOTHROW(randomOctaveTestObject.list({NoteC3, 100}, Inlets::NOTE));
 
         // Check if the note data is there.
         REQUIRE(!randomOctaveTestObject.getActiveNotes().empty());
@@ -450,12 +449,12 @@ SCENARIO("seidr.RandomOctaveMax test different types of inputs") { // NOLINT
         REQUIRE(note_output[2][1] == 100);
 
         // Clear
-        REQUIRE_NOTHROW(randomOctaveTestObject.clear(NoteC4));
+        REQUIRE_NOTHROW(randomOctaveTestObject.clear(NoteC4, Inlets::ARGS));
 
         REQUIRE(randomOctaveTestObject.getActiveNotes().size() == 2);
         REQUIRE(randomOctaveTestObject.getQueuedNotes().empty());
 
-        REQUIRE_NOTHROW(randomOctaveTestObject.clear("all"));
+        REQUIRE_NOTHROW(randomOctaveTestObject.clear("all", Inlets::ARGS));
 
         REQUIRE(randomOctaveTestObject.getActiveNotes().empty());
         REQUIRE(randomOctaveTestObject.getQueuedNotes().empty());
