@@ -5,6 +5,8 @@ on:
     branches: [ main, develop ]
   pull_request:
     branches: [ main, develop ]
+  env:
+    BADGE_LABEL: ${{ github.ref == 'refs/heads/main' && 'main' || github.ref == 'refs/heads/develop' && 'develop' || 'ci' }}
 
 jobs:
   code-quality:
