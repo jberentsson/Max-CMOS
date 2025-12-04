@@ -3,6 +3,7 @@
 #include <algorithm>
 
 using namespace c74;
+using NoteReturnCodes = MIDI::NoteReturnCodes;
 
 RandomOctaveMax::RandomOctaveMax(const min::atoms &args) {
     // Default range
@@ -41,7 +42,7 @@ auto RandomOctaveMax::clearAllNotesMessage() -> void {
 
 auto RandomOctaveMax::processNoteMessage(int note, int velocity) -> void { // NOLINT
     // The input needs to be an array with two integes.
-    if (this->randomOctave_.note(note, velocity) == 0) { 
+    if (this->randomOctave_.note(note, velocity) == NoteReturnCodes::OK) { 
         for (const auto &currentNote : randomOctave_.getNoteQueue()) {
             // Send to outputs.
             output_note.send({ currentNote->pitch(), currentNote->velocity() });
