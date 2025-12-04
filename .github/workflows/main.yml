@@ -28,6 +28,7 @@ jobs:
         make tidy-ci
 
   package:
+    needs: [clang-tidy]  # Run after code quality checks
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -47,11 +48,17 @@ jobs:
 
     - name: configure_macos
       if: matrix.os == 'macos-latest'
-      run: mkdir build && cd build && cmake .. -G "Unix Makefiles" -DCMAKE_POLICY_VERSION_MINIMUM="3.5" -DCMAKE_BUILD_TYPE=${{ matrix.config }}
+      run: |
+        mkdir build
+        cd build
+        cmake .. -G "Unix Makefiles" -DCMAKE_POLICY_VERSION_MINIMUM="3.5" -DCMAKE_BUILD_TYPE=${{ matrix.config }}
  
     - name: configure_windows
       if: matrix.os == 'windows-latest'
-      run: mkdir build && cd build && cmake .. -G "Visual Studio 17 2022" -DCMAKE_POLICY_VERSION_MINIMUM="3.5"
+      run: |
+        mkdir build
+        cd build
+        cmake .. -G "Visual Studio 17 2022" -DCMAKE_POLICY_VERSION_MINIMUM="3.5"
 
     - name: build_debug
       if: matrix.config == 'debug'
