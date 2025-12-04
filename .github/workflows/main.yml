@@ -20,7 +20,7 @@ env:
 jobs:
   # Job 1: Code Quality Checks
   clang-tidy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-8core  # Use larger runner for faster builds
     
     steps:
     - uses: actions/checkout@v4
@@ -28,28 +28,59 @@ jobs:
         submodules: 'recursive'
         fetch-depth: 0  # Fetch all history for better analysis
     
+    - name: Cache dependencies
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cache/pip
+          ~/.npm
+          /tmp/build-deps
+        key: ${{ runner.os }}-deps-${{ hashFiles('**/CMakeLists.txt') }}
+    
     - name: Install dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y \
-          clang-tidy \
-          clang \
+          clang-tidy-15 \
+          clang-15 \
           cmake \
           make \
-          ninja-build
+          ninja-build \
+          lcov \
+          python3-pip
+        sudo pip3 install cpplint
     
-    - name: Generate compile_commands.json
+    - name: Run clang-tidy
       run: |
+        # Create compile_commands.json for clang-tidy
         mkdir -p ${{ env.BUILD_DIR }}
         cd ${{ env.BUILD_DIR }}
         cmake .. -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -G Ninja
+        
+        # Run clang-tidy on modified files for PRs, all files for pushes
+        if [ "${{ github.event_name }}" = "pull_request" ]; then
+          BASE_SHA=${{ github.event.pull_request.base.sha }}
+          HEAD_SHA=${{ github.event.pull_request.head.sha }}
+          # Handle empty output gracefully
+          CHANGED_FILES=$(git diff --name-only $BASE_SHA $HEAD_SHA -- '*.cpp' '*.hpp' '*.c' '*.h' 2>/dev/null || echo "")
+          if [ -n "$CHANGED_FILES" ]; then
+            echo "$CHANGED_FILES" | xargs -I {} clang-tidy-15 {} -- -I. -I./${{ env.BUILD_DIR }}
+          else
+            echo "No C/C++ files changed in this PR"
+          fi
+        else
+          find . -name '*.cpp' -o -name '*.hpp' -o -name '*.c' -o -name '*.h' | \
+            xargs clang-tidy-15 -- -I. -I./${{ env.BUILD_DIR }}
+        fi
     
-    - name: Run clang-tidy on all files
+    - name: Run cppcheck
       run: |
-        cd ${{ env.BUILD_DIR }}
-        # Find all C/C++ files in the source directory
-        find ../source -name '*.cpp' -o -name '*.hpp' -o -name '*.c' -o -name '*.h' | \
-          xargs clang-tidy --quiet 2>/dev/null || true
+        sudo apt-get install -y cppcheck
+        cppcheck --enable=all --suppress=missingIncludeSystem \
+          --language=c++ --std=c++17 --inline-suppr \
+          -I. -I./${{ env.BUILD_DIR }} \
+          --error-exitcode=1 \
+          source/
 
   # Job 2: Build and Test on Multiple Platforms
   build-test:
@@ -59,6 +90,18 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
         config: [Debug, Release]
+        include:
+          - os: ubuntu-latest
+            build-type: Debug
+            generator: "Unix Makefiles"
+          - os: macos-latest
+            build-type: Release
+            generator: "Unix Makefiles"
+          - os: windows-latest
+            build-type: Release
+            generator: "Visual Studio 17 2022"
+            arch: x64
+        #fail-fast: false  # Don't stop other matrix builds if one fails
     
     steps:
     - uses: actions/checkout@v4
@@ -71,34 +114,35 @@ jobs:
       with:
         cmake-version: ${{ env.CMAKE_VERSION }}
     
+    - name: Cache build artifacts
+      uses: actions/cache@v4
+      with:
+        path: ${{ env.BUILD_DIR }}
+        key: ${{ runner.os }}-${{ matrix.config }}-${{ hashFiles('**/CMakeLists.txt', '**/*.cpp', '**/*.hpp') }}
+        restore-keys: |
+          ${{ runner.os }}-${{ matrix.config }}-
+    
     - name: Configure CMake
       run: |
         mkdir -p ${{ env.BUILD_DIR }}
         cd ${{ env.BUILD_DIR }}
         
+        cmake .. \
+          -G "${{ matrix.generator }}" \
+          -DCMAKE_BUILD_TYPE=${{ matrix.config }} \
+          -DCMAKE_POLICY_VERSION_MINIMUM="3.5" \
+          -DBUILD_TESTING=ON \
+          -DCMAKE_CXX_FLAGS="${{ matrix.config == 'Debug' && '-g -O0 -fsanitize=address' || '-O3 -DNDEBUG' }}"
+        
+        # Windows-specific flags
         if [ "${{ runner.os }}" = "Windows" ]; then
-          cmake .. \
-            -G "Visual Studio 17 2022" \
-            -A x64 \
-            -DCMAKE_BUILD_TYPE=${{ matrix.config }} \
-            -DCMAKE_POLICY_VERSION_MINIMUM="3.5" \
-            -DBUILD_TESTING=ON
-        else
-          cmake .. \
-            -G "Unix Makefiles" \
-            -DCMAKE_BUILD_TYPE=${{ matrix.config }} \
-            -DCMAKE_POLICY_VERSION_MINIMUM="3.5" \
-            -DBUILD_TESTING=ON
+          cmake .. -A ${{ matrix.arch }}
         fi
     
     - name: Build
       run: |
         cd ${{ env.BUILD_DIR }}
-        if [ "${{ runner.os }}" = "Windows" ]; then
-          cmake --build . --config ${{ matrix.config }} --parallel 4
-        else
-          cmake --build . --config ${{ matrix.config }} --parallel 2
-        fi
+        cmake --build . --config ${{ matrix.config }} --parallel ${{ (runner.os == 'Windows' && 4) || (runner.os == 'macOS' && 3) || 2 }}
     
     - name: Run Tests
       run: |
@@ -108,6 +152,33 @@ jobs:
         else
           ctest -C ${{ matrix.config }} --output-on-failure --parallel 2
         fi
+    
+    - name: Upload Test Results
+      if: always()  # Upload even if tests fail
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-results-${{ runner.os }}-${{ matrix.config }}
+        path: |
+          ${{ env.BUILD_DIR }}/Testing/**/*.xml
+          ${{ env.BUILD_DIR }}/**/*.gcov
+          ${{ env.BUILD_DIR }}/**/*.gcda
+          ${{ env.BUILD_DIR }}/**/*.gcno
+    
+    - name: Generate Coverage Report (Linux/Debug only)
+      if: runner.os == 'Linux' && matrix.config == 'Debug'
+      run: |
+        cd ${{ env.BUILD_DIR }}
+        lcov --capture --directory . --output-file coverage.info
+        lcov --remove coverage.info '/usr/*' --output-file coverage.info
+        lcov --list coverage.info
+    
+    - name: Upload Coverage to Codecov
+      if: runner.os == 'Linux' && matrix.config == 'Debug'
+      uses: codecov/codecov-action@v3
+      with:
+        file: ${{ env.BUILD_DIR }}/coverage.info
+        flags: unittests
+        name: codecov-umbrella
 
   # Job 3: Package Release Builds
   package:
@@ -156,7 +227,7 @@ jobs:
         mkdir -p "${{ env.PACKAGE_NAME }}"
         
         # Copy essential files with proper structure
-        cp -r source "${{ env.PACKAGE_NAME }}/" 2>/dev/null || true
+        cp -r source "${{ env.PACKAGE_NAME }}/"
         cp -r externals "${{ env.PACKAGE_NAME }}/" 2>/dev/null || true
         cp -r support "${{ env.PACKAGE_NAME }}/" 2>/dev/null || true
         cp -r examples "${{ env.PACKAGE_NAME }}/" 2>/dev/null || true
@@ -167,29 +238,27 @@ jobs:
           [ -f "$file" ] && cp "$file" "${{ env.PACKAGE_NAME }}/"
         done
         
-        # Create package-info.json if it doesn't exist - FIXED INDENTATION
+        # Create package-info.json if it doesn't exist
         if [ ! -f "package-info.json" ]; then
-          cat > "${{ env.PACKAGE_NAME }}/package-info.json" << 'EOF'
-{
-  "name": "${{ env.PACKAGE_NAME }}",
-  "version": "${{ env.VERSION }}",
-  "description": "Max/MSP external built from ${{ github.repository }}",
-  "homepage": "https://github.com/${{ github.repository }}",
-  "author": "${{ github.actor }}",
-  "repository": "${{ github.repository_url }}"
-}
-EOF
+          cat > "${{ env.PACKAGE_NAME }}/package-info.json" << EOF
+        {
+          "name": "${{ env.PACKAGE_NAME }}",
+          "version": "${{ env.VERSION }}",
+          "description": "Max/MSP external built from ${{ github.repository }}",
+          "homepage": "https://github.com/${{ github.repository }}",
+          "author": "${{ github.actor }}",
+          "repository": "${{ github.repository_url }}"
+        }
+        EOF
         else
           cp package-info.json "${{ env.PACKAGE_NAME }}/"
         fi
         
         # Add build info file
-        {
-          echo "Build: ${{ env.VERSION }}"
-          echo "Commit: ${{ github.sha }}"
-          echo "Date: $(date -u)"
-          echo "Platform: ${{ runner.os }}"
-        } > "${{ env.PACKAGE_NAME }}/BUILD_INFO"
+        echo "Build: ${{ env.VERSION }}" > "${{ env.PACKAGE_NAME }}/BUILD_INFO"
+        echo "Commit: ${{ github.sha }}" >> "${{ env.PACKAGE_NAME }}/BUILD_INFO"
+        echo "Date: $(date -u)" >> "${{ env.PACKAGE_NAME }}/BUILD_INFO"
+        echo "Platform: ${{ runner.os }}" >> "${{ env.PACKAGE_NAME }}/BUILD_INFO"
     
     - name: Package for Distribution
       run: |
@@ -198,7 +267,7 @@ EOF
         if [ "${{ runner.os }}" = "macOS" ]; then
           # macOS: Create proper bundle structure
           mkdir -p "${{ env.PACKAGE_NAME }}.mxo"
-          cp -r "${{ env.PACKAGE_NAME }}"/* "${{ env.PACKAGE_NAME }}.mxo/" 2>/dev/null || true
+          cp -r "${{ env.PACKAGE_NAME }}"/* "${{ env.PACKAGE_NAME }}.mxo/"
           zip -r "$ZIP_NAME" "${{ env.PACKAGE_NAME }}.mxo"
         else
           # Windows: Simple zip
@@ -222,17 +291,18 @@ EOF
     
     permissions:
       contents: write
+      packages: write
     
     steps:
-    - name: Download macOS Artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: ${{ env.PACKAGE_NAME }}-${{ env.VERSION }}-macOS-latest
-        
-    - name: Download Windows Artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: ${{ env.PACKAGE_NAME }}-${{ env.VERSION }}-Windows-latest
+    - name: Download All Package Artifacts
+      run: |
+        mkdir -p packages
+        artifacts=$(gh api /repos/${{ github.repository }}/actions/artifacts --jq '.artifacts[] | select(.name | startswith("${{ env.PACKAGE_NAME }}")) | .id')
+        for artifact_id in $artifacts; do
+          gh run download $artifact_id --dir packages
+        done
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
     - name: Create Release
       uses: softprops/action-gh-release@v1
@@ -244,7 +314,10 @@ EOF
           **Build Information:**
           - Commit: ${{ github.sha }}
           - Built on: macOS, Windows
-          - Date: $(date -u +'%Y-%m-%d %H:%M:%S UTC')
+          - Date: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          
+          **Changes:**
+          ${{ github.event.head_commit.message }}
           
           **Download:** Attached packages for each platform.
           
@@ -256,9 +329,22 @@ EOF
           ### Supported Platforms
           - macOS (Apple Silicon + Intel)
           - Windows (64-bit)
-        draft: false
-        prerelease: ${{ contains(github.ref_name, '-') }}
+          
+          ### SHA256 Checksums
+          ```
+          ${{ steps.checksums.outputs.checksums }}
+          ```
+        #draft: false
+        prerelease: ${{ contains(github.ref_name, '-') }}  # Mark as pre-release if tag contains hyphen
         files: |
-          *-macOS-*.zip
-          *-Windows-*.zip
+          packages/*.zip
         token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Generate SHA256 Checksums
+      id: checksums
+      run: |
+        cd packages
+        for file in *.zip; do
+          sha256sum "$file" >> checksums.txt
+        done
+        echo "checksums=$(cat checksums.txt)" >> $GITHUB_OUTPUT
