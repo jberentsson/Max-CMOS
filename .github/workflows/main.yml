@@ -20,7 +20,7 @@ env:
 jobs:
   # Job 1: Code Quality Checks
   clang-tidy:
-    runs-on: ubuntu-latest-8core  # Use larger runner for faster builds
+    runs-on: ubuntu-latest  # Use larger runner for faster builds
     
     steps:
     - uses: actions/checkout@v4
