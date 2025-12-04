@@ -96,7 +96,7 @@ jobs:
             build-type: Release
             generator: "Visual Studio 17 2022"
             arch: x64
-        fail-fast: false  # Don't stop other matrix builds if one fails
+        #fail-fast: false  # Don't stop other matrix builds if one fails
     
     steps:
     - uses: actions/checkout@v4
