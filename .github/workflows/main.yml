@@ -136,6 +136,7 @@ jobs:
         path: ${{ github.event.repository.name }}
 
   release:
+    name: Build (${{ env.BADGE_LABEL }})
     runs-on: ubuntu-latest
     needs: package
     if: ${{ contains( github.ref, 'refs/tags/' ) }}
