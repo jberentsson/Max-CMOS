@@ -28,7 +28,7 @@ jobs:
         make tidy-ci
 
   package:
-    needs: [clang-tidy]  # Run after code quality checks
+    needs: [code-quality]  # Run after code quality checks
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
