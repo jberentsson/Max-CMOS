@@ -3,8 +3,11 @@
 This package was created using the Min-DevKit for Max, an API and supporting tools for writing externals in modern C++.
 
 ## Build Status
-![CI/CD Main](https://github.com/username/repo/actions/workflows/ci-cd.yml/badge.svg?branch=main)
-![CI/CD Develop](https://github.com/username/repo/actions/workflows/ci-cd.yml/badge.svg?branch=develop)
+![CI/CD Main](https://github.com/jberentsson/seidr/actions/workflows/ci-cd.yml/badge.svg?branch=main)
+![CI/CD Develop](https://github.com/jberentsson/seidr/actions/workflows/ci-cd.yml/badge.svg?branch=develop)
+
+| **Main** | ![Main Branch](https://github.com/jberentsson/seidr/actions/workflows/release.yml/badge.svg?branch=main) |
+| **Develop** | ![Develop Branch](https://github.com/jberentsson/seidr/actions/workflows/release.yml/badge.svg?branch=develop) |
 
 ## Build
 ```bash

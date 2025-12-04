@@ -6,9 +6,6 @@ on:
   pull_request:
     branches: [ main, develop ]
 
-env:
-  BADGE_LABEL: ${{ github.ref == 'refs/heads/main' && 'main' || github.ref == 'refs/heads/develop' && 'develop' || 'ci' }}
-
 jobs:
   code-quality:
     name: Code Quality Checks
@@ -136,7 +133,6 @@ jobs:
         path: ${{ github.event.repository.name }}
 
   release:
-    name: Build (${{ env.BADGE_LABEL }})
     runs-on: ubuntu-latest
     needs: package
     if: ${{ contains( github.ref, 'refs/tags/' ) }}
