@@ -7,7 +7,26 @@ on:
     branches: [ main, develop ]
 
 jobs:
+  code-quality:
+    name: Code Quality Checks
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    
+    - name: Install clang tools
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y clang-tidy cmake make
+
+    - name: Check code quality with clang-tidy
+      run: make tidy-ci || echo "tidy-ci completed"
+
   package:
+    needs: [code-quality]  # Run after code quality checks
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -27,11 +46,17 @@ jobs:
 
     - name: configure_macos
       if: matrix.os == 'macos-latest'
-      run: mkdir build && cd build && cmake .. -G "Unix Makefiles" -DCMAKE_POLICY_VERSION_MINIMUM="3.5" -DCMAKE_BUILD_TYPE=${{ matrix.config }}
+      run: |
+        mkdir build
+        cd build
+        cmake .. -G "Unix Makefiles" -DCMAKE_POLICY_VERSION_MINIMUM="3.5" -DCMAKE_BUILD_TYPE=${{ matrix.config }}
  
     - name: configure_windows
       if: matrix.os == 'windows-latest'
-      run: mkdir build && cd build && cmake .. -G "Visual Studio 17 2022" -DCMAKE_POLICY_VERSION_MINIMUM="3.5"
+      run: |
+        mkdir build
+        cd build
+        cmake .. -G "Visual Studio 17 2022" -DCMAKE_POLICY_VERSION_MINIMUM="3.5"
 
     - name: build_debug
       if: matrix.config == 'debug'

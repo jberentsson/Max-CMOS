@@ -303,7 +303,7 @@ SCENARIO("updating the quantized notes") { // NOLINT
         // Quantize our note - 1.
         for (const auto &noteArg : noteArgs0) {
             // Quantize note.
-            REQUIRE_NOTHROW(quantizerTestObject.list({ static_cast<int> (noteArg) - 1, 42}));
+            REQUIRE_NOTHROW(quantizerTestObject.list({ static_cast<int>(noteArg) - 1, 42}));
         }
 
         REQUIRE(!note_output.empty());
@@ -322,7 +322,7 @@ SCENARIO("updating the quantized notes") { // NOLINT
         // Quantize our note - 1.
         for (const auto &noteArg : noteArgs1) {
             // Quantize note.
-            REQUIRE_NOTHROW(quantizerTestObject.list({static_cast<int> (noteArg) - 1, 69}, Inlets::NOTE));
+            REQUIRE_NOTHROW(quantizerTestObject.list({static_cast<int>(noteArg) - 1, 69}, Inlets::NOTE));
         }
 
         REQUIRE(!note_output.empty());
@@ -348,7 +348,7 @@ SCENARIO("updating the quantized notes") { // NOLINT
         // Quantize our note - 1.
         for (const auto &noteArg : noteArgs0) {
             // Quantize note.
-            REQUIRE_NOTHROW(quantizerTestObject.list({ static_cast<int> (noteArg) - 1, 99 }, Inlets::NOTE));
+            REQUIRE_NOTHROW(quantizerTestObject.list({ static_cast<int>(noteArg) - 1, 99 }, Inlets::NOTE));
         }
 
         REQUIRE(!note_output.empty());
@@ -367,7 +367,7 @@ SCENARIO("updating the quantized notes") { // NOLINT
         // Quantize our note - 1.
         for (const auto &noteArg : noteArgs1) {
             // Quantize note.
-            REQUIRE_NOTHROW(quantizerTestObject.list({static_cast<int> (noteArg) - 1, 69}));
+            REQUIRE_NOTHROW(quantizerTestObject.list({static_cast<int>(noteArg) - 1, 69}));
         }
 
         REQUIRE(!note_output.empty());

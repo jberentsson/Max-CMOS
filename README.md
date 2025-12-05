@@ -1,10 +1,9 @@
-# Max Modules
+# Seidr
+
+[![Developent](https://github.com/jberentsson/seidr/actions/workflows/main.yml/badge.svg?brach=develop&label=Tests)](https://github.com/jberentsson/seidr/actions/workflows/main.yml) [![Main](https://github.com/jberentsson/seidr/actions/workflows/main.yml/badge.svg?brach=main&label=Main)](https://github.com/jberentsson/seidr/actions/workflows/main.yml)
+
 ## Description
 This package was created using the Min-DevKit for Max, an API and supporting tools for writing externals in modern C++.
-
-## Build Status
-[![Main](https://github.com/jberentsson/seidr/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/jberentsson/seidr/actions/workflows/test.yml)
-[![Develop](https://github.com/jberentsson/seidr/actions/workflows/test.yml/badge.svg?branch=develop)](https://github.com/jberentsson/seidr/actions/workflows/test.yml)
 
 ## Build
 ```bash
@@ -43,4 +42,5 @@ cmake --build build --config Release --clean-first --target <TARGET_NAME>
 - RandomNoteOctave_test
 - ShiftRegister
 - ShiftRegister_test
+
 
