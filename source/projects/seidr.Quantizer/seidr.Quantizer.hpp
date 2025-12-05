@@ -48,7 +48,7 @@ public:
     min::message<min::threadsafe::yes> anything {
         this, "anything", "Handle any input",
         MIN_FUNCTION {
-            max::object_post((max::t_object*)this, "anything\n");
+            max::object_post(*this, "anything\n");
             return {};
         }
     };
@@ -56,7 +56,7 @@ public:
     min::message<min::threadsafe::yes> integerInput {
         this, "int", "Handle integer input",
         MIN_FUNCTION {
-            max::object_post((max::t_object*)this, "int\n");
+            max::object_post(*this, "int\n");
             return {};
         }
     };
@@ -64,7 +64,7 @@ public:
     min::message<min::threadsafe::yes> floatInput {
         this, "float", "Handle float input",
         MIN_FUNCTION {
-            max::object_post((max::t_object*)this, "float\n");
+            max::object_post(*this, "float\n");
             return {};
         }
     };
@@ -72,7 +72,7 @@ public:
     min::message<min::threadsafe::yes> bangInput {
         this, "bang", "Handle bang input",
         MIN_FUNCTION {
-            max::object_post((max::t_object*)this, "bang\n");
+            max::object_post(*this, "bang\n");
             return {};
         }
     };
@@ -81,7 +81,7 @@ public:
         this, "list", "Process note messages",
         MIN_FUNCTION {
             if (Inlets(inlet) == Inlets::NOTE && args.size() >= 2) {
-                max::object_post((max::t_object*) this, "list\n");
+                max::object_post(*this, "list\n");
                 int note = static_cast<int>(args[0]);
                 int velocity = static_cast<int>(args[1]);
                 this->processNoteMessage(note, velocity);
@@ -95,7 +95,7 @@ public:
         this, "add", "Add notes to quantizer",
         MIN_FUNCTION {
             if (Inlets(inlet) == Inlets::ARGS && !args.empty()) {
-                max::object_post((max::t_object*)this, "add\n");
+                max::object_post(*this, "add\n");
                 for (const auto &arg : args) {
                     int note = static_cast<int>(arg);
                     if((note >= MIDI::RANGE_LOW) && (note <= MIDI::RANGE_HIGH) ) {
@@ -112,7 +112,7 @@ public:
         this, "through", "Disable note through.",
         MIN_FUNCTION {
             if (Inlets(inlet) == Inlets::ARGS && !args.empty()) {
-                max::object_post((max::t_object*) this, "through\n");
+                max::object_post(*this, "through\n");
                 int quantizeFlag = static_cast<int>(args[0]);
                 this->quantizer_.setThrough(NoteThrough(quantizeFlag));
             }
