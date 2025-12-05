@@ -1,13 +1,9 @@
-# Max Modules
+# Seidr
+
+[![Developent](https://github.com/jberentsson/seidr/actions/workflows/main.yml/badge.svg?brach=develop&label=Tests)](https://github.com/jberentsson/seidr/actions/workflows/main.yml) [![Main](https://github.com/jberentsson/seidr/actions/workflows/main.yml/badge.svg?brach=main&label=Main)](https://github.com/jberentsson/seidr/actions/workflows/main.yml)
+
 ## Description
 This package was created using the Min-DevKit for Max, an API and supporting tools for writing externals in modern C++.
-
-## Build Status
-![CI/CD Main](https://github.com/jberentsson/seidr/actions/workflows/ci-cd.yml/badge.svg?branch=main)
-![CI/CD Develop](https://github.com/jberentsson/seidr/actions/workflows/ci-cd.yml/badge.svg?branch=develop)
-
-| **Main** | ![Main Branch](https://github.com/jberentsson/seidr/actions/workflows/release.yml/badge.svg?branch=main) |
-| **Develop** | ![Develop Branch](https://github.com/jberentsson/seidr/actions/workflows/release.yml/badge.svg?branch=develop) |
 
 ## Build
 ```bash
