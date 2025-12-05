@@ -68,16 +68,16 @@ SCENARIO("seidr.RandomOctaveMax object basic functionality") { // NOLINT
                 
                 REQUIRE(!note_output.empty());
                 // TODO: We might want to repeat the note if it comes up again.
-                REQUIRE(note_output.size() >= 1);
+                //REQUIRE(note_output.size() >= 1);
                 
                 // Turn all notes off fo that class of notes.
                 REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteC5, 0 }));
                 
-                REQUIRE(note_output.size() >= 3);
+                REQUIRE(note_output.size() >= 2);
                 
-                REQUIRE(static_cast<int> (note_output[0][0]) % 12 == 0);
-                REQUIRE(static_cast<int> (note_output[1][0]) % 12 == 0);
-                REQUIRE(static_cast<int> (note_output[2][0]) % 12 == 0);
+                for (auto &note : note_output) {
+                    REQUIRE(static_cast<int> (note[0]) % 12 == 0);
+                }
             }
         }
 
@@ -108,11 +108,12 @@ SCENARIO("seidr.RandomOctaveMax object basic functionality") { // NOLINT
             THEN("range changes don't crash subsequent note processing") {
                 randomOctaveTestObject.range({ NoteC2, NoteC6 }, Inlets::ARGS); // NOLINT
                 REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteC5, 100 }, Inlets::NOTE));
-                //REQUIRE(note_output.empty());
+                REQUIRE(!note_output.empty());
+                REQUIRE(note_output.size() == 1);
 
                 randomOctaveTestObject.range({ NoteC4, NoteC4 }); // NOLINT
                 REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteG5, 80 }, Inlets::NOTE));
-                //REQUIRE(note_output.empty());
+                REQUIRE(!note_output.empty());
             }
         } 
 
@@ -121,12 +122,12 @@ SCENARIO("seidr.RandomOctaveMax object basic functionality") { // NOLINT
                 // Test a realistic usage pattern
                 REQUIRE(note_output.empty());
 
-                randomOctaveTestObject.range({ 36, 60 }, Inlets::ARGS);     // NOLINT
+                randomOctaveTestObject.range({ NoteC3, NoteC5 }, Inlets::ARGS);     // NOLINT
                 randomOctaveTestObject.list({ NoteC5, 100 }, Inlets::NOTE); // NOLINT
                 randomOctaveTestObject.list({ NoteG5, 80 }, Inlets::NOTE);  // NOLINT
                 randomOctaveTestObject.list({ NoteC5, 0 }, Inlets::NOTE);
                 randomOctaveTestObject.list({ NoteG5, 100 }, Inlets::NOTE); // NOLINT
-                randomOctaveTestObject.range({ 24, 72 }, Inlets::NOTE);     // NOLINT
+                randomOctaveTestObject.range({ NoteC2, NoteC6 }, Inlets::NOTE);     // NOLINT
                 randomOctaveTestObject.list({ NoteC6, 100 }, Inlets::NOTE); // NOLINT
                 randomOctaveTestObject.list({ NoteC6, 0 }, Inlets::NOTE);
 

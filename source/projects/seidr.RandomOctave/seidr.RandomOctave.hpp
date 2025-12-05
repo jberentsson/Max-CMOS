@@ -85,8 +85,8 @@ public:
         this, "list", "Process note messages",
         MIN_FUNCTION {
             if (Inlets(inlet) == Inlets::NOTE && args.size() >= 2) {
-                int note = static_cast<int> (args[0]);
-                int velocity = static_cast<int> (args[1]);
+                int note = static_cast<int>(args[0]);
+                int velocity = static_cast<int>(args[1]);
                 this->processNoteMessage(note, velocity);
             }
             return {};
@@ -118,8 +118,8 @@ public:
         this, "range", "Set range",
         MIN_FUNCTION {
             if (Inlets(inlet) == Inlets::ARGS && !args.empty() && args.size() >= 2) {
-                int low = static_cast<int> (args[0]);
-                int high = static_cast<int> (args[1]);
+                int low = static_cast<int>(args[0]);
+                int high = static_cast<int>(args[1]);
                 this->randomOctave_.setRange(low, high);
             }
             return {};

@@ -1,4 +1,3 @@
-#include <c74_min.h>
 #include "Quantizer/Quantizer.hpp"
 #include "seidr.Quantizer.hpp"
 
@@ -20,7 +19,7 @@ QuantizerMax::QuantizerMax(const min::atoms &args) {
         if (args.size() == 4) { 
             uint8_t rangeLow = static_cast<int>(args[2]);
             uint8_t rangeHigh = static_cast<int>(args[3]);
-            this->quantizer_.setRange(Quantizer::Note(rangeLow), Quantizer::Note(rangeHigh));
+            this->quantizer_.setRange(rangeLow, rangeHigh);
         }
     }
 }
