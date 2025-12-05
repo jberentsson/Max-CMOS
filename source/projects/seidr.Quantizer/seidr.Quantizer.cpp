@@ -31,8 +31,7 @@ auto QuantizerMax::processNoteMessage(int notePitch, int velocity) -> void { // 
     }
     
     // Quantize the note.
-    int quantizedNote = this->quantizer_.quantize(MIDI::Note(notePitch));
-    
+    int quantizedNote = this->quantizer_.quantize(MIDI::Note(notePitch, velocity));
     
     if (velocity <= MIDI::RANGE_HIGH) {
         output_velocity.send(velocity);

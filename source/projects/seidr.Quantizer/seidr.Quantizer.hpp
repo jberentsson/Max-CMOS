@@ -81,7 +81,6 @@ public:
         this, "list", "Process note messages",
         MIN_FUNCTION {
             if (Inlets(inlet) == Inlets::NOTE && args.size() >= 2) {
-                max::object_post(*this, "list\n");
                 int note = static_cast<int>(args[0]);
                 int velocity = static_cast<int>(args[1]);
                 this->processNoteMessage(note, velocity);
@@ -95,7 +94,6 @@ public:
         this, "add", "Add notes to quantizer",
         MIN_FUNCTION {
             if (Inlets(inlet) == Inlets::ARGS && !args.empty()) {
-                max::object_post(*this, "add\n");
                 for (const auto &arg : args) {
                     int note = static_cast<int>(arg);
                     if((note >= MIDI::RANGE_LOW) && (note <= MIDI::RANGE_HIGH) ) {
@@ -112,7 +110,6 @@ public:
         this, "through", "Disable note through.",
         MIN_FUNCTION {
             if (Inlets(inlet) == Inlets::ARGS && !args.empty()) {
-                max::object_post(*this, "through\n");
                 int quantizeFlag = static_cast<int>(args[0]);
                 this->quantizer_.setThrough(NoteThrough(quantizeFlag));
             }
@@ -197,6 +194,7 @@ public:
                     this->quantizer_.deleteNote(MIDI::Note(static_cast<int>(arg)));
                 }
             }
+            
             return {};
         }
     };
