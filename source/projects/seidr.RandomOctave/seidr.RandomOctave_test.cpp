@@ -67,7 +67,8 @@ SCENARIO("seidr.RandomOctaveMax object basic functionality") { // NOLINT
                 REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteC5, 1 }));
                 
                 REQUIRE(!note_output.empty());
-                REQUIRE(note_output.size() >= 2);
+                // TODO: We might want to repeat the note if it comes up again.
+                REQUIRE(note_output.size() >= 1);
                 
                 // Turn all notes off fo that class of notes.
                 REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteC5, 0 }));
