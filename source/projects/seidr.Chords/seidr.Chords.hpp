@@ -25,17 +25,33 @@ public:
     
     ChordsMax(const min::atoms &args = {}) {};
 
-    min::message<min::threadsafe::yes> list {this, "list", "Recive note input.",
+    min::message<min::threadsafe::yes> floatInput {this, "float", "Recive note input.",
+        MIN_FUNCTION{
+            return this->listInput(args);
+        }
+    };
+
+    min::message<min::threadsafe::yes> intInput {this, "int", "Recive note input.",
+        MIN_FUNCTION{
+            return this->listInput(args);
+        }
+    };
+
+    min::message<min::threadsafe::yes> listInput {this, "list", "Recive note input.",
         MIN_FUNCTION{
             int pitchValue = static_cast<int>(args[0]);
             int velocityValue = static_cast<int>(args[1]);
 
             this->chords_.note(pitchValue, velocityValue);
 
+            // TODO: Make it handle legato playing.
+
             // Send out the notes on the note queue.
             for(const auto &currentNote : this->chords_.noteQueue()) {
-                output_velocity.send(currentNote->velocity());
-                output_note.send(currentNote->pitch());
+                output_velocity.send(velocityValue);
+
+                // TODO: Move this into  the library.
+                output_note.send(static_cast<int>(currentNote->pitch()));
             }
 
             this->chords_.noteQueue().clear();

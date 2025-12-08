@@ -34,8 +34,8 @@ SCENARIO("create an instance of ChordsMax") { // NOLINT
         auto &velocity_output = *max::object_getoutput(myObject, 1);
 
         for (int note = 0; note < MIDI::KEYBOARD_SIZE; note++) {
-            myObject.list({ note, NOTE_ON });
-            myObject.list({ note, NOTE_OFF });
+            myObject.listInput({ note, NOTE_ON });
+            myObject.listInput({ note, NOTE_OFF });
         }
 
         REQUIRE(note_output.empty());
@@ -59,41 +59,41 @@ SCENARIO("ChordsMax object produces correct output") { // NOLINT
         REQUIRE(velocity_output.empty());
 
         // Pick a note.
-        myObject.list({NoteC4, NOTE_ON});
+        myObject.listInput({NoteC4, NOTE_ON});
 
         // A C Major chord.
-        REQUIRE_NOTHROW(myObject.list({NoteC4, NOTE_ON}));
-        REQUIRE_NOTHROW(myObject.list({NoteE4, NOTE_ON}));
-        REQUIRE_NOTHROW(myObject.list({NoteG4, NOTE_ON}));
+        REQUIRE_NOTHROW(myObject.listInput({NoteC4, NOTE_ON}));
+        REQUIRE_NOTHROW(myObject.listInput({NoteE4, NOTE_ON}));
+        REQUIRE_NOTHROW(myObject.listInput({NoteG4, NOTE_ON}));
 
         REQUIRE(note_output.empty());
         REQUIRE(velocity_output.empty());
 
         // Release the chord.
-        REQUIRE_NOTHROW(myObject.list({NoteC4, NOTE_OFF}));
-        REQUIRE_NOTHROW(myObject.list({NoteE4, NOTE_OFF}));
-        REQUIRE_NOTHROW(myObject.list({NoteG4, NOTE_OFF}));
+        REQUIRE_NOTHROW(myObject.listInput({NoteC4, NOTE_OFF}));
+        REQUIRE_NOTHROW(myObject.listInput({NoteE4, NOTE_OFF}));
+        REQUIRE_NOTHROW(myObject.listInput({NoteG4, NOTE_OFF}));
 
         // Make sure there was no output.
         REQUIRE(note_output.empty());
         REQUIRE(velocity_output.empty());
 
         // The key we assigned the notes to.
-        REQUIRE_NOTHROW(myObject.list({NoteC4, NOTE_ON}));
+        REQUIRE_NOTHROW(myObject.listInput({NoteC4, NOTE_ON}));
 
         // Check if the notes were outputed.
         REQUIRE(!note_output.empty());
         REQUIRE(!velocity_output.empty());
 
         // Nothing has been assigned to this key.
-        REQUIRE_NOTHROW(myObject.list({NoteC5, NOTE_ON}));
+        REQUIRE_NOTHROW(myObject.listInput({NoteC5, NOTE_ON}));
 
         // Make sure the the empty key didn't trigger anything.
         REQUIRE(note_output.size() == 3);
         REQUIRE(velocity_output.size() == 3);
 
         // The key we assigned the notes to.
-        REQUIRE_NOTHROW(myObject.list({NoteC4, NOTE_OFF}));
+        REQUIRE_NOTHROW(myObject.listInput({NoteC4, NOTE_OFF}));
 
         // Make sure the notes are released.
         REQUIRE(note_output.size() == 6);
