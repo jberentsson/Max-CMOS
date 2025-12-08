@@ -12,8 +12,8 @@ using namespace c74;
 
 class ChordsMax : public min::object<ChordsMax> {
 public:
-    MIN_DESCRIPTION{"Chords"};     // NOLINT 
-    MIN_TAGS{"seidr"};         // NOLINT 
+    MIN_DESCRIPTION{"Chords"};       // NOLINT 
+    MIN_TAGS{"seidr"};               // NOLINT 
     MIN_AUTHOR{"Jóhann Berentsson"}; // NOLINT 
     MIN_RELATED{"seidr.*"};          // NOLINT 
 
@@ -25,23 +25,26 @@ public:
     
     ChordsMax(const min::atoms &args = {}) {};
 
-    min::message<min::threadsafe::yes> anything {this, "anything", "Recive note input.",
+    min::message<min::threadsafe::yes> list {this, "list", "Recive note input.",
         MIN_FUNCTION{
-            int pitchValue = args[0];
-            int velocityValue = args[1];
+            int pitchValue = static_cast<int>(args[0]);
+            int velocityValue = static_cast<int>(args[1]);
 
             this->chords_.note(pitchValue, velocityValue);
 
+            // Send out the notes on the note queue.
             for(const auto &currentNote : this->chords_.noteQueue()) {
-                output_note.send(currentNote->pitch());
                 output_velocity.send(currentNote->velocity());
+                output_note.send(currentNote->pitch());
             }
+
+            this->chords_.noteQueue().clear();
 
             return {};
         }
     };
 
-    min::message<min::threadsafe::yes> recordNotes {this, "set", "record",
+    min::message<min::threadsafe::yes> recordNotes {this, "record", "record",
         MIN_FUNCTION{
             this->chords_.reciveNotes();
             return {};
