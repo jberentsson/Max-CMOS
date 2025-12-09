@@ -44,13 +44,9 @@ public:
 
             this->chords_.note(pitchValue, velocityValue);
 
-            // TODO: Make it handle legato playing.
-
             // Send out the notes on the note queue.
             for(const auto &currentNote : this->chords_.noteQueue()) {
-                output_velocity.send(velocityValue);
-
-                // TODO: Move this into  the library.
+                output_velocity.send(static_cast<int>(currentNote->velocity()));
                 output_note.send(static_cast<int>(currentNote->pitch()));
             }
 

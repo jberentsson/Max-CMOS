@@ -99,5 +99,24 @@ SCENARIO("ChordsMax object produces correct output") { // NOLINT
         REQUIRE(note_output.size() == 6);
         REQUIRE(velocity_output.size() == 6);
 
+        // Make sure the output is correct
+
+        // NOTE ON
+        REQUIRE(note_output[0][1] == NoteC4);
+        REQUIRE(note_output[1][1] == NoteE4);
+        REQUIRE(note_output[2][1] == NoteG4);
+
+        REQUIRE(velocity_output[0][1] == NOTE_ON);
+        REQUIRE(velocity_output[1][1] == NOTE_ON);
+        REQUIRE(velocity_output[2][1] == NOTE_ON);
+        
+        // NOTE OFF
+        REQUIRE(note_output[3][1] == NoteC4);
+        REQUIRE(note_output[4][1] == NoteE4);
+        REQUIRE(note_output[5][1] == NoteG4);
+
+        REQUIRE(velocity_output[3][1] == NOTE_OFF);
+        REQUIRE(velocity_output[4][1] == NOTE_OFF);
+        REQUIRE(velocity_output[5][1] == NOTE_OFF);
     }
 }
