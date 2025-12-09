@@ -39,18 +39,20 @@ public:
 
     min::message<min::threadsafe::yes> listInput {this, "list", "Recive note input.",
         MIN_FUNCTION{
-            int pitchValue = static_cast<int>(args[0]);
-            int velocityValue = static_cast<int>(args[1]);
+            if(!args.empty() && args.size() == 2) {
+                int pitchValue = static_cast<int>(args[0]);
+                int velocityValue = static_cast<int>(args[1]);
 
-            this->chords_.note(pitchValue, velocityValue);
+                this->chords_.note(pitchValue, velocityValue);
 
-            // Send out the notes on the note queue.
-            for(const auto &currentNote : this->chords_.noteQueue()) {
-                output_velocity.send(static_cast<int>(currentNote->velocity()));
-                output_note.send(static_cast<int>(currentNote->pitch()));
+                // Send out the notes on the note queue.
+                for(const auto &currentNote : this->chords_.noteQueue()) {
+                    output_velocity.send(static_cast<int>(currentNote->velocity()));
+                    output_note.send(static_cast<int>(currentNote->pitch()));
+                }
+
+                this->chords_.noteQueue().clear();
             }
-
-            this->chords_.noteQueue().clear();
 
             return {};
         }
