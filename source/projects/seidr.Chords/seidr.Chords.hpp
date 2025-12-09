@@ -43,15 +43,20 @@ public:
                 int pitchValue = static_cast<int>(args[0]);
                 int velocityValue = static_cast<int>(args[1]);
 
-                this->chords_.note(pitchValue, velocityValue);
+                if(this->enabled_) {
+                    this->chords_.note(pitchValue, velocityValue);
 
-                // Send out the notes on the note queue.
-                for(const auto &currentNote : this->chords_.noteQueue()) {
-                    output_velocity.send(static_cast<int>(currentNote->velocity()));
-                    output_note.send(static_cast<int>(currentNote->pitch()));
+                    // Send out the notes on the note queue.
+                    for(const auto &currentNote : this->chords_.noteQueue()) {
+                        output_velocity.send(static_cast<int>(currentNote->velocity()));
+                        output_note.send(static_cast<int>(currentNote->pitch()));
+                    }
+
+                    this->chords_.noteQueue().clear();
+                } else {
+                    output_velocity.send(velocityValue);
+                    output_note.send(pitchValue);
                 }
-
-                this->chords_.noteQueue().clear();
             }
 
             return {};
@@ -65,6 +70,21 @@ public:
         }
     };
 
+    min::message<min::threadsafe::yes> enable {this, "enable", "enable the object",
+        MIN_FUNCTION{
+            this->enabled_ = true;
+            return {};
+        }
+    };
+
+    min::message<min::threadsafe::yes> disable {this, "disable", "disable the object",
+        MIN_FUNCTION{
+            this->enabled_ = false;;
+            return {};
+        }
+    };
+
 private:
     Chords chords_;
+    bool enabled_ = true;
 };
