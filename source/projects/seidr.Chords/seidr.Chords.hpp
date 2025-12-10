@@ -5,11 +5,13 @@
 
 #pragma once
 
-#include <iostream>
 #include "Chords/Chords.hpp"
 #include <c74_min.h>
 
 using namespace c74;
+
+constexpr int NOTE_OFF = 0;
+constexpr int NOTE_ON = 127;
 
 class ChordsMax : public min::object<ChordsMax> {
 public:
@@ -34,21 +36,21 @@ public:
 
     min::message<min::threadsafe::yes> floatInput {this, "float", "Recive note input.",
         MIN_FUNCTION{
-            std::cout << "inlet " << inlet << "\n";
+            max::object_post(*this, "inlet ", inlet);
             return this->listInput(args);
         }
     };
 
     min::message<min::threadsafe::yes> intInput {this, "int", "Recive note input.",
         MIN_FUNCTION{
-            std::cout << "inlet " << inlet << "\n";
+            max::object_post(*this, "inlet ", inlet);
             return this->listInput(args);
         }
     };
 
     min::message<min::threadsafe::yes> listInput {this, "list", "Recive note input.",
         MIN_FUNCTION{
-            if(!args.empty() && (args.size() == 2) && (inlet == 0)) {
+            if(!args.empty() && (args.size() == 2) && (inlet == 0) && this->inputEnabled_) {
                 int pitchValue = static_cast<int>(args[0]);
                 int velocityValue = static_cast<int>(args[1]);
 
@@ -121,9 +123,14 @@ public:
     min::message<min::threadsafe::yes> setKey {this, "set", "assign notes to a key",
         MIN_FUNCTION{
             // Set the notes for a specific key.
-            std::cout << "set" << "\n";
+            max::object_post(*this, "set");
             if (inlet == 1 && !args.empty() && 2 >= args.size()) {
-                // TODO
+                for (int i = 0; i < (args.size() - 1); i++) {
+                    this->chords_.reciveNotes();
+                    this->inputEnabled_ = false;
+                    this->chords_.note(args[i], NOTE_ON);
+                    this->inputEnabled_ = true;
+                }
             }
 
             return {};
@@ -133,13 +140,41 @@ public:
     min::message<min::threadsafe::yes> clearKey {this, "clear", "clear notes from a key",
         MIN_FUNCTION{
             // Clear notes from all or a specific keys.
-            std::cout << "clear" << "\n";
+            max::object_post(*this, "clear");
             if (inlet == 1) {
+                this->inputEnabled_ = false;
+
                 if (args.empty()) {
-                    // Clear all keys.
+                    this->chords_.clear();
                 } else {
-                    // Clear specified keys.
+                    this->chords_.clear(static_cast<int>(args[0]));
                 }
+
+                this->inputEnabled_ = true;
+            }
+
+            return {};
+        }
+    };
+
+    min::message<min::threadsafe::yes> noteMode {this, "mode", "0 = retrigger, 1 = legato",
+        MIN_FUNCTION{
+            // Set the note mode.
+            max::object_post(*this, "note mode");
+            if (inlet == 1 && !args.empty() && args.size() == 1) {
+                this->chords_.setNoteMode(Chords::NoteMode(static_cast<int>(args[0])));
+            }
+
+            return {};
+        }
+    };
+
+    min::message<min::threadsafe::yes> noteOrder {this, "order", "0 = as played, 1 = random",
+        MIN_FUNCTION{
+            // Set the note order.
+            max::object_post(*this, "note order");
+            if (inlet == 1 && !args.empty() && args.size() == 1) {
+                this->chords_.setNoteOrder(Chords::NoteOrder(static_cast<int>(args[0])));
             }
 
             return {};
@@ -149,4 +184,5 @@ public:
 private:
     Chords chords_;
     bool enabled_ = true;
+    bool inputEnabled_ = true;
 };

@@ -13,9 +13,6 @@
 using namespace c74;
 using namespace MIDI::Notes;
 
-constexpr int NOTE_ON = 100;
-constexpr int NOTE_OFF = 0;
-
 SCENARIO("create an instance of ChordsMax") { // NOLINT
     ext_main(nullptr);
 
@@ -153,34 +150,39 @@ SCENARIO("ChordsMax object produces correct output") { // NOLINT
 
         REQUIRE_NOTHROW(chordsTest.listInput({NoteD4, NOTE_OFF}));
 
-        REQUIRE(note_output[12][1] == NoteF4);
-        REQUIRE(note_output[13][1] == NoteA4);
+        REQUIRE(note_output[12][1] == NoteC4);
+        REQUIRE(note_output[13][1] == NoteF4);
+        REQUIRE(note_output[14][1] == NoteA4);
 
         REQUIRE(velocity_output[12][1] == NOTE_OFF);
         REQUIRE(velocity_output[13][1] == NOTE_OFF);
+        REQUIRE(velocity_output[14][1] == NOTE_OFF);
         
         REQUIRE_NOTHROW(chordsTest.listInput({NoteC4, NOTE_OFF}));
 
-        REQUIRE(note_output[14][1] == NoteC4);
-        REQUIRE(note_output[15][1] == NoteE4);
-        REQUIRE(note_output[16][1] == NoteG4);
+        REQUIRE(note_output[15][1] == NoteC4);
+        REQUIRE(note_output[16][1] == NoteE4);
+        REQUIRE(note_output[17][1] == NoteG4);
 
-        REQUIRE(velocity_output[14][1] == NOTE_OFF);
         REQUIRE(velocity_output[15][1] == NOTE_OFF);
         REQUIRE(velocity_output[16][1] == NOTE_OFF);
+        REQUIRE(velocity_output[17][1] == NOTE_OFF);
+
+        REQUIRE(velocity_output.size() == 18);
+        REQUIRE(note_output.size() == 18);
     }
 }
 
 SCENARIO("ChordsMax object produces correct output second try") { // NOLINT
     ext_main(nullptr);
 
+    min::test_wrapper<ChordsMax> an_instance;
+    ChordsMax &chordsTest = an_instance;
+
+    auto &note_output = *max::object_getoutput(chordsTest, 0);
+    auto &velocity_output = *max::object_getoutput(chordsTest, 1);
+
     GIVEN("An instance of our object") {
-        min::test_wrapper<ChordsMax> an_instance;
-        ChordsMax &chordsTest = an_instance;
-
-        auto &note_output = *max::object_getoutput(chordsTest, 0);
-        auto &velocity_output = *max::object_getoutput(chordsTest, 1);
-
         REQUIRE_NOTHROW(chordsTest.recordNotes("record", 1));
 
         REQUIRE(note_output.empty());
@@ -224,132 +226,135 @@ SCENARIO("ChordsMax object produces correct output second try") { // NOLINT
         REQUIRE(note_output.empty());
         REQUIRE(velocity_output.empty());
 
-        REQUIRE_NOTHROW(chordsTest.listInput({NoteD4, NOTE_ON}));
+        WHEN("xx"){
+            REQUIRE_NOTHROW(chordsTest.listInput({NoteD4, NOTE_ON}));
 
-        REQUIRE(note_output.size() == 3);
-        REQUIRE(velocity_output.size() == 3);
+            REQUIRE(note_output.size() == 3);
+            REQUIRE(velocity_output.size() == 3);
 
-        REQUIRE(note_output[0][1] == NoteC4);
-        REQUIRE(note_output[1][1] == NoteF4);
-        REQUIRE(note_output[2][1] == NoteA4);
+            REQUIRE(note_output[0][1] == NoteC4);
+            REQUIRE(note_output[1][1] == NoteF4);
+            REQUIRE(note_output[2][1] == NoteA4);
 
-        REQUIRE(velocity_output[0][1] == NOTE_ON);
-        REQUIRE(velocity_output[1][1] == NOTE_ON);
-        REQUIRE(velocity_output[2][1] == NOTE_ON);
+            REQUIRE(velocity_output[0][1] == NOTE_ON);
+            REQUIRE(velocity_output[1][1] == NOTE_ON);
+            REQUIRE(velocity_output[2][1] == NOTE_ON);
 
-        REQUIRE_NOTHROW(chordsTest.listInput({NoteC4, NOTE_ON}));
+            REQUIRE_NOTHROW(chordsTest.listInput({NoteC4, NOTE_ON}));
 
-        // We are retriggering even if note has already been sent.
-        REQUIRE(note_output.size() == 6);
-        REQUIRE(velocity_output.size() == 6);
+            // We are retriggering even if note has already been sent.
+            REQUIRE(note_output.size() == 6);
+            REQUIRE(velocity_output.size() == 6);
 
-        REQUIRE(note_output[4][1] == NoteE4);
-        REQUIRE(note_output[5][1] == NoteG4);
+            REQUIRE(note_output[4][1] == NoteE4);
+            REQUIRE(note_output[5][1] == NoteG4);
 
-        REQUIRE(velocity_output[4][1] == NOTE_ON);
-        REQUIRE(velocity_output[5][1] == NOTE_ON);
+            REQUIRE(velocity_output[4][1] == NOTE_ON);
+            REQUIRE(velocity_output[5][1] == NOTE_ON);
 
-        REQUIRE_NOTHROW(chordsTest.listInput({NoteD4, NOTE_OFF}));
+            REQUIRE_NOTHROW(chordsTest.listInput({NoteD4, NOTE_OFF}));
 
-        REQUIRE(note_output.size() == 8);
-        REQUIRE(velocity_output.size() == 8);
+            REQUIRE(note_output.size() == 9);
+            REQUIRE(velocity_output.size() == 9);
 
-        REQUIRE(note_output[6][1] == NoteF4);
-        REQUIRE(note_output[7][1] == NoteA4);
+            REQUIRE(note_output[6][1] == NoteC4);
+            REQUIRE(note_output[7][1] == NoteF4);
 
-        REQUIRE(velocity_output[6][1] == NOTE_OFF);
-        REQUIRE(velocity_output[7][1] == NOTE_OFF);
+            REQUIRE(velocity_output[6][1] == NOTE_OFF);
+            REQUIRE(velocity_output[7][1] == NOTE_OFF);
 
-        REQUIRE_NOTHROW(chordsTest.listInput({NoteD4, NOTE_ON}));
+            REQUIRE_NOTHROW(chordsTest.listInput({NoteD4, NOTE_ON}));
 
-        REQUIRE(note_output.size() == 11);
-        REQUIRE(velocity_output.size() == 11);
+            REQUIRE(note_output.size() == 12);
+            REQUIRE(velocity_output.size() == 12);
 
-        REQUIRE(note_output[8][1] == NoteC4);
-        REQUIRE(note_output[9][1] == NoteF4);
-        REQUIRE(note_output[10][1] == NoteA4);
+            REQUIRE(note_output[8][1] == NoteA4);
+            REQUIRE(note_output[9][1] == NoteC4);
+            REQUIRE(note_output[10][1] == NoteF4);
 
-        REQUIRE(velocity_output[8][1] == NOTE_ON);
-        REQUIRE(velocity_output[9][1] == NOTE_ON);
-        REQUIRE(velocity_output[10][1] == NOTE_ON);
+            REQUIRE(velocity_output[8][1] == NOTE_OFF);
+            REQUIRE(velocity_output[9][1] == NOTE_ON);
+            REQUIRE(velocity_output[10][1] == NOTE_ON);
 
-        REQUIRE_NOTHROW(chordsTest.listInput({NoteD4, NOTE_OFF}));
+            REQUIRE_NOTHROW(chordsTest.listInput({NoteD4, NOTE_OFF}));
 
-        REQUIRE(note_output.size() == 13);
-        REQUIRE(velocity_output.size() == 13);
+            REQUIRE(note_output.size() == 15);
+            REQUIRE(velocity_output.size() == 15);
 
-        REQUIRE(note_output[11][1] == NoteF4);
-        REQUIRE(note_output[12][1] == NoteA4);
+            REQUIRE(note_output[11][1] == NoteA4);
+            REQUIRE(note_output[12][1] == NoteC4);
 
-        REQUIRE(velocity_output[11][1] == NOTE_OFF);
-        REQUIRE(velocity_output[12][1] == NOTE_OFF);
+            REQUIRE(velocity_output[11][1] == NOTE_ON);
+            REQUIRE(velocity_output[12][1] == NOTE_OFF);
 
-        REQUIRE_NOTHROW(chordsTest.recordNotes("record", 1));
-        REQUIRE_NOTHROW(chordsTest.listInput({NoteE4, NOTE_ON}));  // C chord
+            THEN("axax"){
+                REQUIRE_NOTHROW(chordsTest.recordNotes("record", 1));
+                REQUIRE_NOTHROW(chordsTest.listInput({NoteE4, NOTE_ON}));  // C chord
 
-        // Test this additional scenario:
-        REQUIRE_NOTHROW(chordsTest.listInput({NoteC4, NOTE_ON}));  // C chord
-        REQUIRE_NOTHROW(chordsTest.listInput({NoteE4, NOTE_ON}));
-        REQUIRE_NOTHROW(chordsTest.listInput({NoteG4, NOTE_ON}));
+                // Test this additional scenario:
+                REQUIRE_NOTHROW(chordsTest.listInput({NoteC4, NOTE_ON}));  // C chord
+                REQUIRE_NOTHROW(chordsTest.listInput({NoteE4, NOTE_ON}));
+                REQUIRE_NOTHROW(chordsTest.listInput({NoteG4, NOTE_ON}));
 
-        REQUIRE_NOTHROW(chordsTest.listInput({NoteC4, NOTE_OFF}));  // C chord
-        REQUIRE_NOTHROW(chordsTest.listInput({NoteE4, NOTE_OFF}));
-        REQUIRE_NOTHROW(chordsTest.listInput({NoteG4, NOTE_OFF}));
+                REQUIRE_NOTHROW(chordsTest.listInput({NoteC4, NOTE_OFF}));  // C chord
+                REQUIRE_NOTHROW(chordsTest.listInput({NoteE4, NOTE_OFF}));
+                REQUIRE_NOTHROW(chordsTest.listInput({NoteG4, NOTE_OFF}));
 
-        REQUIRE_NOTHROW(chordsTest.listInput({NoteF4, NOTE_ON}));  // C chord
+                REQUIRE_NOTHROW(chordsTest.listInput({NoteF4, NOTE_ON}));  // C chord
 
-        REQUIRE_NOTHROW(chordsTest.listInput({NoteD4, NOTE_ON}));  // D chord (adds F, A)
-        REQUIRE_NOTHROW(chordsTest.listInput({NoteF4, NOTE_ON}));
-        REQUIRE_NOTHROW(chordsTest.listInput({NoteA4, NOTE_ON}));
+                REQUIRE_NOTHROW(chordsTest.listInput({NoteD4, NOTE_ON}));  // D chord (adds F, A)
+                REQUIRE_NOTHROW(chordsTest.listInput({NoteF4, NOTE_ON}));
+                REQUIRE_NOTHROW(chordsTest.listInput({NoteA4, NOTE_ON}));
 
-        REQUIRE_NOTHROW(chordsTest.listInput({NoteD4, NOTE_OFF}));  // D chord (adds F, A)
-        REQUIRE_NOTHROW(chordsTest.listInput({NoteF4, NOTE_OFF}));
-        REQUIRE_NOTHROW(chordsTest.listInput({NoteA4, NOTE_OFF}));
+                REQUIRE_NOTHROW(chordsTest.listInput({NoteD4, NOTE_OFF}));  // D chord (adds F, A)
+                REQUIRE_NOTHROW(chordsTest.listInput({NoteF4, NOTE_OFF}));
+                REQUIRE_NOTHROW(chordsTest.listInput({NoteA4, NOTE_OFF}));
 
-        REQUIRE_NOTHROW(chordsTest.listInput({NoteE4, NOTE_ON}));
-        REQUIRE_NOTHROW(chordsTest.listInput({NoteF4, NOTE_ON}));
+                REQUIRE_NOTHROW(chordsTest.listInput({NoteE4, NOTE_ON}));
+                REQUIRE_NOTHROW(chordsTest.listInput({NoteF4, NOTE_ON}));
 
-        // Now release C4 - what happens to the shared F note?
-        REQUIRE_NOTHROW(chordsTest.listInput({NoteC4, NOTE_OFF}));
-        // Should F4 and A4 stay ON (from D chord)!
-        // But your current implementation might turn them OFF
-        REQUIRE(note_output[13][1] == NoteC4);
-        REQUIRE(note_output[14][1] == NoteF4);
-        REQUIRE(note_output[15][1] == NoteA4);
+                // Now release C4.
+                REQUIRE_NOTHROW(chordsTest.listInput({NoteC4, NOTE_OFF}));
 
-        REQUIRE(velocity_output[13][1] == NOTE_ON);
-        REQUIRE(velocity_output[14][1] == NOTE_ON);
-        REQUIRE(velocity_output[15][1] == NOTE_ON);
+                REQUIRE(note_output[13][1] == NoteF4);
+                REQUIRE(note_output[14][1] == NoteA4);
+                REQUIRE(note_output[15][1] == NoteC4);
 
-        REQUIRE(note_output[16][1] == NoteF4);
-        REQUIRE(note_output[17][1] == NoteA4);
+                REQUIRE(velocity_output[13][1] == NOTE_OFF);
+                REQUIRE(velocity_output[14][1] == NOTE_OFF);
+                REQUIRE(velocity_output[15][1] == NOTE_ON);
 
-        REQUIRE(velocity_output[16][1] == NOTE_OFF);
-        REQUIRE(velocity_output[17][1] == NOTE_OFF);
+                REQUIRE(note_output[16][1] == NoteF4);
+                REQUIRE(note_output[17][1] == NoteA4);
 
-        REQUIRE(note_output[18][1] == NoteC4);
-        REQUIRE(note_output[19][1] == NoteE4);
-        REQUIRE(note_output[20][1] == NoteG4);
+                REQUIRE(velocity_output[16][1] == NOTE_ON);
+                REQUIRE(velocity_output[17][1] == NOTE_ON);
 
-        REQUIRE(velocity_output[18][1] == NOTE_ON);
-        REQUIRE(velocity_output[19][1] == NOTE_ON);
-        REQUIRE(velocity_output[20][1] == NOTE_ON);
+                REQUIRE(note_output[18][1] == NoteC4);
+                REQUIRE(note_output[19][1] == NoteF4);
+                REQUIRE(note_output[20][1] == NoteA4);
 
+                REQUIRE(velocity_output[18][1] == NOTE_OFF);
+                REQUIRE(velocity_output[19][1] == NOTE_OFF);
+                REQUIRE(velocity_output[20][1] == NOTE_OFF);
+
+                REQUIRE(note_output.size() == 27);
+                REQUIRE(velocity_output.size() == 27);
+            }
+        }
     }
 }
 
 SCENARIO("Shared notes in different order") {
     ext_main(nullptr);
 
+    min::test_wrapper<ChordsMax> an_instance;
+    ChordsMax &chordsTest = an_instance;
+
+    auto &note_output = *max::object_getoutput(chordsTest, 0);
+    auto &velocity_output = *max::object_getoutput(chordsTest, 1);
+
     GIVEN("An instance of our object") {
-        min::test_wrapper<ChordsMax> an_instance;
-        ChordsMax &chordsTest = an_instance;
-
-        auto &note_output = *max::object_getoutput(chordsTest, 0);
-        auto &velocity_output = *max::object_getoutput(chordsTest, 1);
-
-        // Test the reverse order
-
         // C Major
         REQUIRE_NOTHROW(chordsTest.recordNotes("record", 1));
         REQUIRE_NOTHROW(chordsTest.listInput({NoteC4, NOTE_ON}));
@@ -388,32 +393,46 @@ SCENARIO("Shared notes in different order") {
         REQUIRE_NOTHROW(chordsTest.listInput({NoteC4, NOTE_OFF}));
         REQUIRE_NOTHROW(chordsTest.listInput({NoteE4, NOTE_OFF}));
         REQUIRE_NOTHROW(chordsTest.listInput({NoteA4, NOTE_OFF}));
-        
-        // Play in opposite order
-        REQUIRE_NOTHROW(chordsTest.listInput({NoteC4, NOTE_ON}));  // C chord first
-        
-        REQUIRE(!note_output.empty());
 
-        REQUIRE(note_output[0][1] == NoteC4);
-        REQUIRE(note_output[1][1] == NoteE4);
-        REQUIRE(note_output[2][1] == NoteG4);
+        WHEN("ad") {    
+            // Play in opposite order
+            REQUIRE_NOTHROW(chordsTest.listInput({NoteC4, NOTE_ON}));  // C chord first
+            
+            REQUIRE(!note_output.empty());
 
-        REQUIRE_NOTHROW(chordsTest.listInput({NoteD4, NOTE_ON}));  // F chord second
+            REQUIRE(note_output[0][1] == NoteC4);
+            REQUIRE(note_output[1][1] == NoteE4);
+            REQUIRE(note_output[2][1] == NoteG4);
 
-        REQUIRE(note_output[3][1] == NoteC4);
-        REQUIRE(note_output[4][1] == NoteF4);
-        REQUIRE(note_output[5][1] == NoteA4);
-        
-        REQUIRE_NOTHROW(chordsTest.listInput({NoteC4, NOTE_OFF}));  // Release C chord
-        
-        REQUIRE(note_output[6][1] == NoteE4);
-        REQUIRE(note_output[7][1] == NoteG4);
+            REQUIRE(velocity_output[0][1] == NOTE_ON);
+            REQUIRE(velocity_output[1][1] == NOTE_ON);
+            REQUIRE(velocity_output[2][1] == NOTE_ON);
 
-        REQUIRE_NOTHROW(chordsTest.listInput({NoteD4, NOTE_OFF}));  // Release F chord
+            REQUIRE_NOTHROW(chordsTest.listInput({NoteD4, NOTE_ON}));  // F chord second
 
-        REQUIRE(note_output[8][1] == NoteC4);
-        REQUIRE(note_output[9][1] == NoteF4);
-        REQUIRE(note_output[10][1] == NoteA4);
+            REQUIRE(note_output[3][1] == NoteC4);
+            REQUIRE(note_output[4][1] == NoteF4);
+            REQUIRE(note_output[5][1] == NoteA4);
+
+            REQUIRE(velocity_output[0][1] == NOTE_ON);
+            REQUIRE(velocity_output[1][1] == NOTE_ON);
+            REQUIRE(velocity_output[2][1] == NOTE_ON);
+            
+            REQUIRE_NOTHROW(chordsTest.listInput({NoteE4, NOTE_ON}));  // A chord
+            
+            REQUIRE(note_output[6][1] == NoteC4);
+            REQUIRE(note_output[7][1] == NoteE4);
+            REQUIRE(note_output[8][1] == NoteA4);
+
+            REQUIRE(velocity_output[0][1] == NOTE_ON);
+            REQUIRE(velocity_output[1][1] == NOTE_ON);
+            REQUIRE(velocity_output[2][1] == NOTE_ON);
+
+            REQUIRE_NOTHROW(chordsTest.listInput({NoteE4, NOTE_OFF}));  // Release A chord
+
+            REQUIRE(note_output.size() == 12);
+            REQUIRE(velocity_output.size() == 12);
+        }
     }
 }
 
