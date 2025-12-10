@@ -13,18 +13,18 @@ using namespace c74;
 
 class ChordsMax : public min::object<ChordsMax> {
 public:
-    MIN_DESCRIPTION{"Chords"};       // NOLINT 
-    MIN_TAGS{"seidr"};               // NOLINT 
-    MIN_AUTHOR{"Jóhann Berentsson"}; // NOLINT 
-    MIN_RELATED{"seidr.*"};          // NOLINT 
+    MIN_DESCRIPTION {"Chords"};            // NOLINT 
+    MIN_TAGS        {"seidr"};             // NOLINT 
+    MIN_AUTHOR      {"Jóhann Berentsson"}; // NOLINT 
+    MIN_RELATED     {"seidr.*"};           // NOLINT 
 
     enum Inlets : int { // NOLINT
         NOTES = 0,
         ARGS = 1
     };
 
-    min::inlet<> input_notes{this, "(list) note velocity"};
-    min::inlet<> input_args{this, "(record) arguments"};
+    min::inlet<> input_notes           {this, "(list) note velocity"};
+    min::inlet<> input_args            {this, "(clear|record|set) arguments"};
     
     min::outlet<> output_note          {this, "(anything) output note"};
     min::outlet<> output_velocity      {this, "(anything) output velocity"};
@@ -48,8 +48,6 @@ public:
 
     min::message<min::threadsafe::yes> listInput {this, "list", "Recive note input.",
         MIN_FUNCTION{
-            std::cout << "inlet " << inlet << "\n";
-
             if(!args.empty() && (args.size() == 2) && (inlet == 0)) {
                 int pitchValue = static_cast<int>(args[0]);
                 int velocityValue = static_cast<int>(args[1]);
@@ -86,7 +84,8 @@ public:
 
     min::message<min::threadsafe::yes> recordNotes {this, "record", "record",
         MIN_FUNCTION{
-            std::cout << "inlet " << inlet << "\n";
+            // Record notes for a specific key.
+
             if (inlet == 1) {
                 this->chords_.reciveNotes();
             }
@@ -95,9 +94,10 @@ public:
         }
     };
 
-    min::message<min::threadsafe::yes> enable {this, "enable", "enable the object",
+    min::message<min::threadsafe::yes> enableChords {this, "enable", "enable the object",
         MIN_FUNCTION{
-            std::cout << "inlet " << inlet << "\n";
+            // Enable the chord mode.
+
             if (inlet == 1) {
                 this->enabled_ = true;
             }
@@ -106,11 +106,40 @@ public:
         }
     };
 
-    min::message<min::threadsafe::yes> disable {this, "disable", "disable the object",
+    min::message<min::threadsafe::yes> disableChords {this, "disable", "disable the object",
         MIN_FUNCTION{
-            std::cout << "inlet " << inlet << "\n";
+            // Disable the chord mode and allow notes to go through.
+
             if (inlet == 1) {
                 this->enabled_ = false;;
+            }
+
+            return {};
+        }
+    };
+
+    min::message<min::threadsafe::yes> setKey {this, "set", "assign notes to a key",
+        MIN_FUNCTION{
+            // Set the notes for a specific key.
+            std::cout << "set" << "\n";
+            if (inlet == 1 && !args.empty() && 2 >= args.size()) {
+                // TODO
+            }
+
+            return {};
+        }
+    };
+
+    min::message<min::threadsafe::yes> clearKey {this, "clear", "clear notes from a key",
+        MIN_FUNCTION{
+            // Clear notes from all or a specific keys.
+            std::cout << "clear" << "\n";
+            if (inlet == 1) {
+                if (args.empty()) {
+                    // Clear all keys.
+                } else {
+                    // Clear specified keys.
+                }
             }
 
             return {};

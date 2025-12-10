@@ -351,33 +351,46 @@ SCENARIO("Shared notes in different order") {
         // Test the reverse order
 
         // C Major
-        chordsTest.recordNotes("record", 1);
-        chordsTest.listInput({NoteC4, NOTE_ON});  // C chord first
-        chordsTest.listInput({NoteC4, NOTE_OFF});
+        REQUIRE_NOTHROW(chordsTest.recordNotes("record", 1));
+        REQUIRE_NOTHROW(chordsTest.listInput({NoteC4, NOTE_ON}));
+        REQUIRE_NOTHROW(chordsTest.listInput({NoteC4, NOTE_OFF}));
 
-        chordsTest.listInput({NoteC4, NOTE_ON});  // Record C chord
-        chordsTest.listInput({NoteE4, NOTE_ON});
-        chordsTest.listInput({NoteG4, NOTE_ON});
+        REQUIRE_NOTHROW(chordsTest.listInput({NoteC4, NOTE_ON}));
+        REQUIRE_NOTHROW(chordsTest.listInput({NoteE4, NOTE_ON}));
+        REQUIRE_NOTHROW(chordsTest.listInput({NoteG4, NOTE_ON}));
 
-        chordsTest.listInput({NoteC4, NOTE_OFF});  // Record C chord
-        chordsTest.listInput({NoteE4, NOTE_OFF});
-        chordsTest.listInput({NoteG4, NOTE_OFF});
+        REQUIRE_NOTHROW(chordsTest.listInput({NoteC4, NOTE_OFF}));
+        REQUIRE_NOTHROW(chordsTest.listInput({NoteE4, NOTE_OFF}));
+        REQUIRE_NOTHROW(chordsTest.listInput({NoteG4, NOTE_OFF}));
         
         // F Major
-        chordsTest.recordNotes("record", 1);
-        chordsTest.listInput({NoteD4, NOTE_ON});  // F chord second
-        chordsTest.listInput({NoteD4, NOTE_OFF});
+        REQUIRE_NOTHROW(chordsTest.recordNotes("record", 1));
+        REQUIRE_NOTHROW(chordsTest.listInput({NoteD4, NOTE_ON}));
+        REQUIRE_NOTHROW(chordsTest.listInput({NoteD4, NOTE_OFF}));
 
-        chordsTest.listInput({NoteC4, NOTE_ON});  // Record F chord
-        chordsTest.listInput({NoteF4, NOTE_ON});
-        chordsTest.listInput({NoteA4, NOTE_ON});
+        REQUIRE_NOTHROW(chordsTest.listInput({NoteC4, NOTE_ON}));
+        REQUIRE_NOTHROW(chordsTest.listInput({NoteF4, NOTE_ON}));
+        REQUIRE_NOTHROW(chordsTest.listInput({NoteA4, NOTE_ON}));
 
-        chordsTest.listInput({NoteC4, NOTE_OFF});  // Record F chord
-        chordsTest.listInput({NoteF4, NOTE_OFF});
-        chordsTest.listInput({NoteA4, NOTE_OFF});
+        REQUIRE_NOTHROW(chordsTest.listInput({NoteC4, NOTE_OFF}));
+        REQUIRE_NOTHROW(chordsTest.listInput({NoteF4, NOTE_OFF}));
+        REQUIRE_NOTHROW(chordsTest.listInput({NoteA4, NOTE_OFF}));
+        
+        // A Major
+        REQUIRE_NOTHROW(chordsTest.recordNotes("record", 1));
+        REQUIRE_NOTHROW(chordsTest.listInput({NoteE4, NOTE_ON}));
+        REQUIRE_NOTHROW(chordsTest.listInput({NoteE4, NOTE_OFF}));
+
+        REQUIRE_NOTHROW(chordsTest.listInput({NoteC4, NOTE_ON}));
+        REQUIRE_NOTHROW(chordsTest.listInput({NoteE4, NOTE_ON}));
+        REQUIRE_NOTHROW(chordsTest.listInput({NoteA4, NOTE_ON}));
+
+        REQUIRE_NOTHROW(chordsTest.listInput({NoteC4, NOTE_OFF}));
+        REQUIRE_NOTHROW(chordsTest.listInput({NoteE4, NOTE_OFF}));
+        REQUIRE_NOTHROW(chordsTest.listInput({NoteA4, NOTE_OFF}));
         
         // Play in opposite order
-        chordsTest.listInput({NoteC4, NOTE_ON});  // C chord first
+        REQUIRE_NOTHROW(chordsTest.listInput({NoteC4, NOTE_ON}));  // C chord first
         
         REQUIRE(!note_output.empty());
 
@@ -385,18 +398,18 @@ SCENARIO("Shared notes in different order") {
         REQUIRE(note_output[1][1] == NoteE4);
         REQUIRE(note_output[2][1] == NoteG4);
 
-        chordsTest.listInput({NoteD4, NOTE_ON});  // F chord second
+        REQUIRE_NOTHROW(chordsTest.listInput({NoteD4, NOTE_ON}));  // F chord second
 
         REQUIRE(note_output[3][1] == NoteC4);
         REQUIRE(note_output[4][1] == NoteF4);
         REQUIRE(note_output[5][1] == NoteA4);
         
-        chordsTest.listInput({NoteC4, NOTE_OFF});  // Release C chord
+        REQUIRE_NOTHROW(chordsTest.listInput({NoteC4, NOTE_OFF}));  // Release C chord
         
         REQUIRE(note_output[6][1] == NoteE4);
         REQUIRE(note_output[7][1] == NoteG4);
 
-        chordsTest.listInput({NoteD4, NOTE_OFF});  // Release F chord
+        REQUIRE_NOTHROW(chordsTest.listInput({NoteD4, NOTE_OFF}));  // Release F chord
 
         REQUIRE(note_output[8][1] == NoteC4);
         REQUIRE(note_output[9][1] == NoteF4);
@@ -414,7 +427,7 @@ SCENARIO("enable/disable") { // NOLINT
     auto &velocity_output = *max::object_getoutput(chordsTest, 1);
 
     GIVEN("sending a note in when enabled") {
-        REQUIRE_NOTHROW(chordsTest.enable("enable", 1));
+        REQUIRE_NOTHROW(chordsTest.enableChords("enable", 1));
 
         REQUIRE_NOTHROW(chordsTest.listInput({NoteB5, NOTE_ON}, 0));
         REQUIRE_NOTHROW(chordsTest.listInput({NoteB5, NOTE_OFF}, 0));
@@ -424,7 +437,7 @@ SCENARIO("enable/disable") { // NOLINT
     }
 
     GIVEN("sending a note in when disabled") {
-        REQUIRE_NOTHROW(chordsTest.disable("disable", 1));
+        REQUIRE_NOTHROW(chordsTest.disableChords("disable", 1));
 
         REQUIRE_NOTHROW(chordsTest.listInput({NoteB5, NOTE_ON}, 0));
 
