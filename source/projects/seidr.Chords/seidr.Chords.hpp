@@ -20,12 +20,12 @@ public:
     MIN_AUTHOR      { "Jóhann Berentsson" }; // NOLINT 
     MIN_RELATED     { "seidr.*" };           // NOLINT 
 
-    enum Inlets : int { // NOLINT
+    enum Inlets : uint8_t { // NOLINT
         NOTES = 0,
         ARGS = 1
     };
 
-    enum Outlets : int {
+    enum Outlets : uint8_t {
         NOTE = 0,
         VELOCITY = 1,
         OTHER = 2
@@ -84,7 +84,7 @@ public:
                             static_cast<int>(currentNote->velocity())
                         });
 
-                        max::object_post(*this, "--- note sent %d %d\n", MIDI::human((uint8_t) currentNote->pitch()), MIDI::human((uint8_t) currentNote->velocity()));
+                        max::object_post(*this, "--- note sent %d %d\n", MIDI::human(currentNote->pitch()), MIDI::human(currentNote->velocity()));
                     }
 
                     this->chords_.noteQueue().clear();
@@ -200,7 +200,7 @@ public:
         MIN_FUNCTION{
             // Set the note mode.
             if (inlet == 1 && !args.empty()) {
-                Chords::NoteMode newMode = Chords::NoteMode(static_cast<int>(args[1]));
+                auto newMode = Chords::NoteMode(static_cast<int>(args[1]));
                 max::object_post(*this, "--------------------------- note mode %d\n", newMode);
                 newMode = this->chords_.setNoteMode(newMode);
                 max::object_post(*this, "--------------------------- note mode %d\n", newMode);
@@ -214,7 +214,7 @@ public:
         MIN_FUNCTION{
             // Set the note order.
             if (inlet == 1 && !args.empty()) {
-                Chords::NoteOrder newOrder =  Chords::NoteOrder(static_cast<int>(args[1]));
+                auto newOrder =  Chords::NoteOrder(static_cast<int>(args[1]));
                 max::object_post(*this, "--------------------------- note order %d\n", newOrder);
                 newOrder = this->chords_.setNoteOrder(newOrder);
                 max::object_post(*this, "--------------------------- note order %d\n", newOrder);
