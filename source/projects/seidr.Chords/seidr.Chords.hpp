@@ -15,24 +15,41 @@ constexpr int NOTE_ON = 127;
 
 class ChordsMax : public min::object<ChordsMax> {
 public:
-    MIN_DESCRIPTION {"Chords"};            // NOLINT 
-    MIN_TAGS        {"seidr"};             // NOLINT 
-    MIN_AUTHOR      {"Jóhann Berentsson"}; // NOLINT 
-    MIN_RELATED     {"seidr.*"};           // NOLINT 
+    MIN_DESCRIPTION { "Chords" };            // NOLINT 
+    MIN_TAGS        { "seidr" };             // NOLINT 
+    MIN_AUTHOR      { "Jóhann Berentsson" }; // NOLINT 
+    MIN_RELATED     { "seidr.*" };           // NOLINT 
 
     enum Inlets : int { // NOLINT
         NOTES = 0,
         ARGS = 1
     };
 
-    min::inlet<> input_notes           {this, "(list) note velocity"};
-    min::inlet<> input_args            {this, "(clear|record|set) arguments"};
+    enum Outlets : int {
+        NOTE = 0,
+        VELOCITY = 1,
+        OTHER = 2
+    };
+
+    using NoteMode = Chords::NoteMode;
+    using NoteOrder = Chords::NoteOrder;
+
+    min::inlet<> input_notes           { this, "(list) note velocity" };
+    min::inlet<> input_args            { this, "(clear|record|set) arguments" };
     
-    min::outlet<> output_note          {this, "(anything) output note"};
-    min::outlet<> output_velocity      {this, "(anything) output velocity"};
-    min::outlet<> output_note_velocity {this, "(anything) output note and velocity"};
+    min::outlet<> output_note          { this, "(anything) output note" };
+    min::outlet<> output_velocity      { this, "(anything) output velocity" };
+    min::outlet<> output_note_velocity { this, "(anything) output note and velocity" };
     
     ChordsMax(const min::atoms &args = {}) {};
+
+    auto getNoteMode() -> Chords::NoteMode {
+        return this->chords_.getNoteMode();
+    }
+    
+    auto getNoteOrder() -> Chords::NoteOrder {
+        return this->chords_.getNoteOrder();
+    }
 
     min::message<min::threadsafe::yes> floatInput {this, "float", "Recive note input.",
         MIN_FUNCTION{
@@ -54,7 +71,7 @@ public:
                 int pitchValue = static_cast<int>(args[0]);
                 int velocityValue = static_cast<int>(args[1]);
 
-                if(this->enabled_) {
+                if(this->chordsEnabled_) {
                     // If the chord memory is enabled.
                     this->chords_.note(pitchValue, velocityValue);
 
@@ -66,6 +83,8 @@ public:
                             static_cast<int>(currentNote->pitch()),
                             static_cast<int>(currentNote->velocity())
                         });
+
+                        max::object_post(*this, "--- note sent %d %d\n", MIDI::human((uint8_t) currentNote->pitch()), MIDI::human((uint8_t) currentNote->velocity()));
                     }
 
                     this->chords_.noteQueue().clear();
@@ -89,6 +108,7 @@ public:
             // Record notes for a specific key.
 
             if (inlet == 1) {
+                max::object_post(*this, "record\n");
                 this->chords_.reciveNotes();
             }
 
@@ -101,7 +121,7 @@ public:
             // Enable the chord mode.
 
             if (inlet == 1) {
-                this->enabled_ = true;
+                this->chordsEnabled_ = true;
             }
 
             return {};
@@ -113,7 +133,7 @@ public:
             // Disable the chord mode and allow notes to go through.
 
             if (inlet == 1) {
-                this->enabled_ = false;;
+                this->chordsEnabled_ = false;;
             }
 
             return {};
@@ -123,14 +143,30 @@ public:
     min::message<min::threadsafe::yes> setKey {this, "set", "assign notes to a key",
         MIN_FUNCTION{
             // Set the notes for a specific key.
-            max::object_post(*this, "set");
-            if (inlet == 1 && !args.empty() && 2 >= args.size()) {
-                for (int i = 0; i < (args.size() - 1); i++) {
-                    this->chords_.reciveNotes();
-                    this->inputEnabled_ = false;
-                    this->chords_.note(args[i], NOTE_ON);
-                    this->inputEnabled_ = true;
+
+            if (inlet == 1 && !args.empty() && args.size() >= 3) {
+                this->inputEnabled_ = false;
+                int key = static_cast<int>(args[0]);
+
+                this->chords_.clear(key);
+                this->chords_.reciveNotes();
+                
+                for (int i = 0; i < args.size(); i++) {
+                    int note = static_cast<int>(args[i]);
+
+                    this->chords_.note(note, NOTE_ON);
+
+                    if (i == 0) {
+                        this->chords_.note(note, NOTE_OFF);
+                    }
                 }
+
+                for (int i = 1; i < args.size(); i++) {
+                    int note = static_cast<int>(args[i]);
+                    this->chords_.note(note, NOTE_OFF);
+                }
+
+                this->inputEnabled_ = true;
             }
 
             return {};
@@ -140,14 +176,17 @@ public:
     min::message<min::threadsafe::yes> clearKey {this, "clear", "clear notes from a key",
         MIN_FUNCTION{
             // Clear notes from all or a specific keys.
-            max::object_post(*this, "clear");
+
             if (inlet == 1) {
                 this->inputEnabled_ = false;
 
                 if (args.empty()) {
                     this->chords_.clear();
+                    max::object_post(*this, "clear all\n");
                 } else {
-                    this->chords_.clear(static_cast<int>(args[0]));
+                    int keyValue = static_cast<int>(args[1]);
+                    this->chords_.clear(keyValue);
+                    max::object_post(*this, "clear %d\n", keyValue);
                 }
 
                 this->inputEnabled_ = true;
@@ -160,9 +199,11 @@ public:
     min::message<min::threadsafe::yes> noteMode {this, "mode", "0 = retrigger, 1 = legato",
         MIN_FUNCTION{
             // Set the note mode.
-            max::object_post(*this, "note mode");
-            if (inlet == 1 && !args.empty() && args.size() == 1) {
-                this->chords_.setNoteMode(Chords::NoteMode(static_cast<int>(args[0])));
+            if (inlet == 1 && !args.empty()) {
+                Chords::NoteMode newMode = Chords::NoteMode(static_cast<int>(args[1]));
+                max::object_post(*this, "--------------------------- note mode %d\n", newMode);
+                newMode = this->chords_.setNoteMode(newMode);
+                max::object_post(*this, "--------------------------- note mode %d\n", newMode);
             }
 
             return {};
@@ -172,9 +213,11 @@ public:
     min::message<min::threadsafe::yes> noteOrder {this, "order", "0 = as played, 1 = random",
         MIN_FUNCTION{
             // Set the note order.
-            max::object_post(*this, "note order");
-            if (inlet == 1 && !args.empty() && args.size() == 1) {
-                this->chords_.setNoteOrder(Chords::NoteOrder(static_cast<int>(args[0])));
+            if (inlet == 1 && !args.empty()) {
+                Chords::NoteOrder newOrder =  Chords::NoteOrder(static_cast<int>(args[1]));
+                max::object_post(*this, "--------------------------- note order %d\n", newOrder);
+                newOrder = this->chords_.setNoteOrder(newOrder);
+                max::object_post(*this, "--------------------------- note order %d\n", newOrder);
             }
 
             return {};
@@ -183,6 +226,7 @@ public:
 
 private:
     Chords chords_;
-    bool enabled_ = true;
+    
+    bool chordsEnabled_ = true;
     bool inputEnabled_ = true;
 };
