@@ -84,8 +84,6 @@ public:
                             static_cast<int>(currentNote->pitch()),
                             static_cast<int>(currentNote->velocity())
                         });
-
-                        //max::object_post(*this, "--- note sent %d %d\n", (int) currentNote->pitch(), (int) currentNote->velocity());
                     }
 
                     this->chords_.noteQueue().clear();
@@ -109,7 +107,6 @@ public:
             // Record notes for a specific key.
 
             if (inlet == 1) {
-                max::object_post(*this, "record\n");
                 this->chords_.reciveNotes();
             }
 
@@ -152,6 +149,8 @@ public:
                 this->chords_.clear(key);
                 this->chords_.reciveNotes();
                 
+                // Send NOTE ON/OFF for the first note.
+                // Send NOTE ON for the rest.
                 for (int i = 0; i < args.size(); i++) {
                     int note = static_cast<int>(args[i]);
 
@@ -162,6 +161,7 @@ public:
                     }
                 }
 
+                // Send NOTE OFF for the rest of the notes.
                 for (int i = 1; i < args.size(); i++) {
                     int note = static_cast<int>(args[i]);
                     this->chords_.note(note, NOTE_OFF);
@@ -183,11 +183,9 @@ public:
 
                 if (args.empty()) {
                     this->chords_.clear();
-                    max::object_post(*this, "clear all\n");
                 } else {
-                    int keyValue = static_cast<int>(args[1]);
+                    int keyValue = static_cast<int>(args[0]);
                     this->chords_.clear(keyValue);
-                    max::object_post(*this, "clear %d\n", keyValue);
                 }
 
                 this->inputEnabled_ = true;
@@ -201,10 +199,8 @@ public:
         MIN_FUNCTION{
             // Set the note mode.
             if (inlet == 1 && !args.empty()) {
-                auto newMode = Chords::NoteMode(static_cast<int>(args[1]));
-                max::object_post(*this, "--------------------------- note mode %d\n", newMode);
+                auto newMode = Chords::NoteMode(static_cast<int>(args[0]));
                 newMode = this->chords_.setNoteMode(newMode);
-                max::object_post(*this, "--------------------------- note mode %d\n", newMode);
             }
 
             return {};
@@ -215,10 +211,8 @@ public:
         MIN_FUNCTION{
             // Set the note order.
             if (inlet == 1 && !args.empty()) {
-                auto newOrder =  Chords::NoteOrder(static_cast<int>(args[1]));
-                max::object_post(*this, "--------------------------- note order %d\n", newOrder);
+                auto newOrder =  Chords::NoteOrder(static_cast<int>(args[0]));
                 newOrder = this->chords_.setNoteOrder(newOrder);
-                max::object_post(*this, "--------------------------- note order %d\n", newOrder);
             }
 
             return {};
