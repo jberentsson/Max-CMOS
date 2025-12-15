@@ -7,6 +7,7 @@
 
 #include "Chords/Chords.hpp"
 #include <c74_min.h>
+#include <string>
 
 using namespace c74;
 
@@ -84,7 +85,7 @@ public:
                             static_cast<int>(currentNote->velocity())
                         });
 
-                        max::object_post(*this, "--- note sent %d %d\n", MIDI::human(currentNote->pitch()), MIDI::human(currentNote->velocity()));
+                        //max::object_post(*this, "--- note sent %d %d\n", (int) currentNote->pitch(), (int) currentNote->velocity());
                     }
 
                     this->chords_.noteQueue().clear();
