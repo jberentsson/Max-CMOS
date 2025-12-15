@@ -1,4 +1,3 @@
-#include <c74_min.h>
 #include "Quantizer/Quantizer.hpp"
 #include "seidr.Quantizer.hpp"
 
@@ -20,7 +19,7 @@ QuantizerMax::QuantizerMax(const min::atoms &args) {
         if (args.size() == 4) { 
             uint8_t rangeLow = static_cast<int>(args[2]);
             uint8_t rangeHigh = static_cast<int>(args[3]);
-            this->quantizer_.setRange(Quantizer::Note(rangeLow), Quantizer::Note(rangeHigh));
+            this->quantizer_.setRange(rangeLow, rangeHigh);
         }
     }
 }
@@ -32,8 +31,7 @@ auto QuantizerMax::processNoteMessage(int notePitch, int velocity) -> void { // 
     }
     
     // Quantize the note.
-    int quantizedNote = this->quantizer_.quantize(MIDI::Note(notePitch));
-    
+    int quantizedNote = this->quantizer_.quantize(MIDI::Note(notePitch, velocity));
     
     if (velocity <= MIDI::RANGE_HIGH) {
         output_velocity.send(velocity);

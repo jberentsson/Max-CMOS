@@ -17,10 +17,10 @@ private:
     RandomOctave randomOctave_;
 
 public:
-    MIN_DESCRIPTION{"Randomize the octave of a MIDI note message."}; // NOLINT 
-    MIN_TAGS{"seidr"};                                               // NOLINT 
-    MIN_AUTHOR{"Jóhann Berentsson"};                                 // NOLINT 
-    MIN_RELATED{"seidr.*"};                                          // NOLINT 
+    MIN_DESCRIPTION {"Randomize the octave of a MIDI note message."}; // NOLINT 
+    MIN_TAGS        {"seidr"};                                        // NOLINT 
+    MIN_AUTHOR      {"Jóhann Berentsson"};                            // NOLINT 
+    MIN_RELATED     {"seidr.*"};                                      // NOLINT 
 
     enum Inlets : uint8_t {
         NOTE = 0,
@@ -85,8 +85,8 @@ public:
         this, "list", "Process note messages",
         MIN_FUNCTION {
             if (Inlets(inlet) == Inlets::NOTE && args.size() >= 2) {
-                int note = static_cast<int> (args[0]);
-                int velocity = static_cast<int> (args[1]);
+                int note = static_cast<int>(args[0]);
+                int velocity = static_cast<int>(args[1]);
                 this->processNoteMessage(note, velocity);
             }
             return {};
@@ -118,8 +118,8 @@ public:
         this, "range", "Set range",
         MIN_FUNCTION {
             if (Inlets(inlet) == Inlets::ARGS && !args.empty() && args.size() >= 2) {
-                int low = static_cast<int> (args[0]);
-                int high = static_cast<int> (args[1]);
+                int low = static_cast<int>(args[0]);
+                int high = static_cast<int>(args[1]);
                 this->randomOctave_.setRange(low, high);
             }
             return {};
