@@ -7,7 +7,6 @@
 #include <cassert>
 #include <c74_min_unittest.h>
 #include "Utils/MIDI.hpp"
-#include "build/_deps/catch2-src/single_include/catch2/catch.hpp"
 #include "seidr.Chords.cpp" // NOLINT
 #include "seidr.Chords.hpp"
 #include "Utils/TestHelpers.hpp"
