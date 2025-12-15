@@ -74,7 +74,7 @@ public:
 
                 if(this->chordsEnabled_) {
                     // If the chord memory is enabled.
-                    this->chords_.note(pitchValue, velocityValue);
+                    this->chords_.note(MIDI::Note(pitchValue, velocityValue));
 
                     // Send out the notes on the note queue.
                     for(const auto &currentNote : this->chords_.noteQueue()) {
@@ -154,17 +154,17 @@ public:
                 for (int i = 0; i < args.size(); i++) {
                     int note = static_cast<int>(args[i]);
 
-                    this->chords_.note(note, NOTE_ON);
+                    this->chords_.note(MIDI::Note(note, NOTE_ON));
 
                     if (i == 0) {
-                        this->chords_.note(note, NOTE_OFF);
+                        this->chords_.note(MIDI::Note(note, NOTE_OFF));
                     }
                 }
 
                 // Send NOTE OFF for the rest of the notes.
                 for (int i = 1; i < args.size(); i++) {
                     int note = static_cast<int>(args[i]);
-                    this->chords_.note(note, NOTE_OFF);
+                    this->chords_.note(MIDI::Note(note, NOTE_OFF));
                 }
 
                 this->inputEnabled_ = true;

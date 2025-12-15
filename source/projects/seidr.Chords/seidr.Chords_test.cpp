@@ -177,7 +177,6 @@ SCENARIO("ChordsMax object produces correct output second try") { // NOLINT
 }
 
 SCENARIO("Shared notes in different order NoteMode::RETRIGGER") {
-    std::cout << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n";
     ext_main(nullptr);
 
     min::test_wrapper<ChordsMax> an_instance;
@@ -235,7 +234,6 @@ SCENARIO("Shared notes in different order NoteMode::RETRIGGER") {
             }
         }
     }
-    std::cout << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n";
 }
 
 SCENARIO("Shared notes in different order NoteMode::LEGATO") {
