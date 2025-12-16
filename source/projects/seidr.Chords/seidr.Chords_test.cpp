@@ -133,44 +133,59 @@ SCENARIO("ChordsMax object produces correct output second try") { // NOLINT
             REQUIRE_NOTHROW(chordsTest.listInput({ NoteF4, NOTE_ON  }, 0)); // D Major OFF
             REQUIRE_NOTHROW(chordsTest.listInput({ NoteC4, NOTE_OFF }, 0));  // C Major OFF
 
-            //REQUIRE(note_output.size() == 20);
-            //REQUIRE(velocity_output.size() == 20);
+            REQUIRE(note_output.size() == 20);
+            REQUIRE(velocity_output.size() == 20);
 
             THEN("axax"){
-                int expectedOutput[][2] = {
-                    { NoteC4, NOTE_ON  },  // F Major ON  C4
-                    { NoteF4, NOTE_ON  },  //             C4 F4
-                    { NoteA4, NOTE_ON  },  //             C4 F4 A4
-                    { NoteC4, NOTE_ON  },  // C Major ON  C4 F4 A4 C4
-                    { NoteE4, NOTE_ON  },  //             C4 F4 A4 C4 E4
-                    { NoteG4, NOTE_ON  },  //             C4 F4 A4 C4 E4 G4
-                    { NoteC4, NOTE_OFF },  // F Major OFF F4 A4 E4 G4
-                    { NoteF4, NOTE_OFF },  //             A4 E4 G4
-                    { NoteA4, NOTE_OFF },  //             E4 G4
-                    { NoteC4, NOTE_ON  },  // F Major ON  E4 G4 C4
-                    { NoteF4, NOTE_ON  }, //             E4 G4 C4 F4
-                    { NoteA4, NOTE_ON  }, //             E4 G4 C4 F4 A4
-                    { NoteC4, NOTE_OFF }, // F Major OFF E4 G4 F4 A4
-                    { NoteF4, NOTE_OFF }, //             E4 G4 A4
-                    { NoteA4, NOTE_OFF }, //             E4 G4
-                    { NoteC4, NOTE_ON  }, // A Major ON  E4 G4 C4
-                    { NoteE4, NOTE_ON  }, //             E4 G4 C4 E4
-                    { NoteA4, NOTE_ON  }, //             E4 G4 C4 E4 A4
-                    { NoteD4, NOTE_ON  }, // D Major OFF E4 G4 C4 E4 A4 D4
-                    { NoteF4, NOTE_ON  }, //             E4 G4 C4 E4 A4 D4 F4
-                    { NoteA4, NOTE_ON  }, //             E4 G4 C4 E4 A4 D4 F4 A4
-                    { NoteC4, NOTE_OFF }, // C Major OFF E4 G4 E4 A4 D4 F4 A4
-                    { NoteE4, NOTE_OFF }, //             E4 G4 E4 A4 D4 F4 A4
-                    { NoteG4, NOTE_OFF }  //             E4 E4 A4 D4 F4 A4
-                };
+                REQUIRE(note_output[0][1] == NoteC4); // F Major ON
+                REQUIRE(note_output[1][1] == NoteF4);
+                REQUIRE(note_output[2][1] == NoteA4);
+                REQUIRE(note_output[3][1] == NoteC4); // C Major ON
+                REQUIRE(note_output[4][1] == NoteE4);
+                REQUIRE(note_output[5][1] == NoteG4);
+                REQUIRE(note_output[6][1] == NoteF4); // F Major OFF
+                REQUIRE(note_output[7][1] == NoteA4);
+                REQUIRE(note_output[8][1] == NoteC4); // F Major ON
+                REQUIRE(note_output[9][1] == NoteF4);
+                REQUIRE(note_output[10][1] == NoteA4);
+                REQUIRE(note_output[11][1] == NoteF4); // F Major OFF
+                REQUIRE(note_output[12][1] == NoteA4);
+                REQUIRE(note_output[13][1] == NoteC4); // A Major ON
+                REQUIRE(note_output[14][1] == NoteE4);
+                REQUIRE(note_output[15][1] == NoteA4);
+                REQUIRE(note_output[16][1] == NoteD4); // D Minor OFF
+                REQUIRE(note_output[17][1] == NoteF4);
+                REQUIRE(note_output[18][1] == NoteA4);
+                REQUIRE(note_output[19][1] == NoteG4); // C Major OFF
+                //REQUIRE(note_output[20][1] == NoteE4);
+                //REQUIRE(note_output[21][1] == NoteG4);
+                //REQUIRE(note_output[22][1] == NoteE4);
+                //REQUIRE(note_output[23][1] == NoteG4);
 
-                for (int i = 0; i < note_output.size(); i++) {
-                    //REQUIRE(note_output[i][1] == expectedOutput[i][0]);
-                    //REQUIRE(velocity_output[i][1] == expectedOutput[i][1]);
-                }
-
-                //REQUIRE(note_output.size() == 24);
-                //REQUIRE(velocity_output.size() == 24);
+                REQUIRE(velocity_output[0][1] == NOTE_ON); // F Major ON
+                REQUIRE(velocity_output[1][1] == NOTE_ON);
+                REQUIRE(velocity_output[2][1] == NOTE_ON);
+                REQUIRE(velocity_output[3][1] == NOTE_ON); // C Major ON
+                REQUIRE(velocity_output[4][1] == NOTE_ON);
+                REQUIRE(velocity_output[5][1] == NOTE_ON);
+                REQUIRE(velocity_output[6][1] == NOTE_OFF); // F Major OFF
+                REQUIRE(velocity_output[7][1] == NOTE_OFF);
+                REQUIRE(velocity_output[8][1] == NOTE_ON); // F Major ON
+                REQUIRE(velocity_output[9][1] == NOTE_ON);
+                REQUIRE(velocity_output[10][1] == NOTE_ON);
+                REQUIRE(velocity_output[11][1] == NOTE_OFF); // F Major OFF
+                REQUIRE(velocity_output[12][1] == NOTE_OFF);
+                REQUIRE(velocity_output[13][1] == NOTE_ON); // A Major ON
+                REQUIRE(velocity_output[14][1] == NOTE_ON);
+                REQUIRE(velocity_output[15][1] == NOTE_ON);
+                REQUIRE(velocity_output[16][1] == NOTE_ON); // D Minor OFF
+                REQUIRE(velocity_output[17][1] == NOTE_ON);
+                REQUIRE(velocity_output[18][1] == NOTE_ON);
+                REQUIRE(velocity_output[19][1] == NOTE_OFF); // C Major OFF
+                //REQUIRE(velocity_output[20][1] == NOTE_ON);
+                //REQUIRE(velocity_output[21][1] == NOTE_OFF);
+                //REQUIRE(velocity_output[22][1] == NOTE_OFF);
+                //REQUIRE(velocity_output[23][1] == NOTE_OFF);
             }
         }
     }
@@ -281,7 +296,7 @@ SCENARIO("Shared notes in different order NoteMode::LEGATO") {
             //REQUIRE(velocity_output.size() == 6);
         }
     }
-}
+};
 
 SCENARIO("enable/disable") { // NOLINT
     ext_main(nullptr);
@@ -315,7 +330,7 @@ SCENARIO("enable/disable") { // NOLINT
         REQUIRE(velocity_output.size() == 2);
         REQUIRE(note_output.size() == 2);
     }
-}
+};
 
 SCENARIO("set key notes") { // NOLINT
     ext_main(nullptr);
@@ -345,4 +360,4 @@ SCENARIO("set key notes") { // NOLINT
         REQUIRE(note_output.size() == 8);
         REQUIRE(velocity_output.size() == 8);
     }
-}
+};
