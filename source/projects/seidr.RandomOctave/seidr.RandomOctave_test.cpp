@@ -22,7 +22,8 @@ SCENARIO("seidr.RandomOctaveMax object basic functionality") { // NOLINT
         min::test_wrapper<RandomOctaveMax> an_instance;
         RandomOctaveMax &randomOctaveTestObject = an_instance;
         
-        auto &note_output = *c74::max::object_getoutput(randomOctaveTestObject, 0);
+        auto &note_output = *max::object_getoutput(randomOctaveTestObject, 0);
+        auto &velocity_output = *max::object_getoutput(randomOctaveTestObject, 1);
 
         WHEN("the object is created") {
             THEN("it has the correct number of inlets and outlets") {
@@ -30,8 +31,8 @@ SCENARIO("seidr.RandomOctaveMax object basic functionality") { // NOLINT
                 
                 REQUIRE(!note_output.empty());
         
-                REQUIRE(static_cast<int> (note_output[0][0]) % 12 == 0);
-                REQUIRE(note_output[0][1] == 100);
+                REQUIRE(static_cast<int> (note_output[0][1]) % 12 == 0);
+                REQUIRE(velocity_output[0][1] == 100);
             }
         }
 
@@ -41,9 +42,9 @@ SCENARIO("seidr.RandomOctaveMax object basic functionality") { // NOLINT
                 REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteG5, 80 }));
                 REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteC6, 100 }));
 
-                REQUIRE(static_cast<int> (note_output[0][0]) % 12 == 0);
-                REQUIRE(static_cast<int> (note_output[1][0]) % 12 == 7);
-                REQUIRE(static_cast<int> (note_output[2][0]) % 12 == 0);
+                REQUIRE(static_cast<int> (note_output[0][1]) % 12 == 0);
+                REQUIRE(static_cast<int> (note_output[1][1]) % 12 == 7);
+                REQUIRE(static_cast<int> (note_output[2][1]) % 12 == 0);
                 
             }
 
@@ -53,8 +54,8 @@ SCENARIO("seidr.RandomOctaveMax object basic functionality") { // NOLINT
 
                 REQUIRE(!note_output.empty());
 
-                REQUIRE(static_cast<int> (note_output[0][0]) % 12 == NoteC0);
-                REQUIRE(static_cast<int> (note_output[1][0]) % 12 == NoteG0);
+                REQUIRE(static_cast<int> (note_output[0][1]) % 12 == NoteC0);
+                REQUIRE(static_cast<int> (note_output[1][1]) % 12 == NoteG0);
             }
 
             THEN("velocity values are processed correctly") {
@@ -76,7 +77,7 @@ SCENARIO("seidr.RandomOctaveMax object basic functionality") { // NOLINT
                 REQUIRE(note_output.size() >= 2);
                 
                 for (auto &note : note_output) {
-                    REQUIRE(static_cast<int> (note[0]) % 12 == 0);
+                    REQUIRE((int) note[1] % 12 == 0);
                 }
             }
         }
@@ -84,17 +85,17 @@ SCENARIO("seidr.RandomOctaveMax object basic functionality") { // NOLINT
         WHEN("edge case MIDI notes are processed") {
             THEN("lowest MIDI note (C0) is handled") {
                 REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteC0, 100 }));
-                REQUIRE(static_cast<int> (note_output[0][0]) % 12 == 0);
+                REQUIRE(static_cast<int> (note_output[0][1]) % 12 == 0);
             }
 
             THEN("highest MIDI note (G10) is handled") {
                 REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteG10, 100 }));
-                REQUIRE(static_cast<int> (note_output[0][0]) % 12 == 7);
+                REQUIRE(static_cast<int> (note_output[0][1]) % 12 == 7);
             }
 
             THEN("middle C (C5) is handled") {
                 REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteC5, 100 }));
-                REQUIRE(static_cast<int> (note_output[0][0]) % 12 == 0);
+                REQUIRE(static_cast<int> (note_output[0][1]) % 12 == 0);
             }
         }
 
@@ -144,7 +145,8 @@ SCENARIO("seidr.RandomOctaveMax stress and performance tests") { // NOLINT
         min::test_wrapper<RandomOctaveMax> an_instance;
         RandomOctaveMax &randomOctaveTestObject = an_instance;
         
-        auto &note_output = *c74::max::object_getoutput(randomOctaveTestObject, 0);
+        auto &note_output = *max::object_getoutput(randomOctaveTestObject, 0);
+        auto &velocity_output = *max::object_getoutput(randomOctaveTestObject, 1);
 
         WHEN("many rapid note messages are sent") {
             THEN("it handles rapid note-ons without crashing") {
@@ -206,7 +208,7 @@ SCENARIO("seidr.RandomOctaveMax error handling tests") { // NOLINT
         min::test_wrapper<RandomOctaveMax> an_instance;
         RandomOctaveMax &randomOctaveTestObject = an_instance;
 
-        auto &note_output = *c74::max::object_getoutput(randomOctaveTestObject, 0);
+        auto &note_output = *max::object_getoutput(randomOctaveTestObject, 0);
 
         WHEN("invalid list lengths are sent") {
             THEN("empty list is handled") {
@@ -278,7 +280,8 @@ SCENARIO("seidr.RandomOctaveMax musical scale tests") { // NOLINT
         min::test_wrapper<RandomOctaveMax> an_instance;
         RandomOctaveMax &randomOctaveTestObject = an_instance;
 
-        auto &note_output = *c74::max::object_getoutput(randomOctaveTestObject, 0);
+        auto &note_output = *max::object_getoutput(randomOctaveTestObject, 0);
+        auto &velocity_output = *max::object_getoutput(randomOctaveTestObject, 1);
 
         WHEN("a C major scale is played") {
             THEN("all scale notes are processed without crashing") {
@@ -327,8 +330,8 @@ SCENARIO("seidr.RandomOctaveMax musical scale tests") { // NOLINT
                 
                 int index = 0;
                 for (int note = NoteC5; note <= NoteC6; note++) {
-                    REQUIRE(MIDI::getPitchClass(note_output[index][0]) == MIDI::getPitchClass(note));
-                    REQUIRE(note_output[index][1] == 100);
+                    REQUIRE(MIDI::getPitchClass(note_output[index][1]) == MIDI::getPitchClass(note));
+                    REQUIRE(velocity_output[index][1] == 100);
                     index++;
                 }
             }
@@ -420,7 +423,8 @@ SCENARIO("seidr.RandomOctaveMax test different types of inputs") { // NOLINT
     min::test_wrapper<RandomOctaveMax> an_instance;
     RandomOctaveMax &randomOctaveTestObject = an_instance;
     
-    auto &note_output = *c74::max::object_getoutput(randomOctaveTestObject, 0);
+    auto &note_output = *max::object_getoutput(randomOctaveTestObject, 0);
+    auto &velocity_output = *max::object_getoutput(randomOctaveTestObject, 1);
 
     GIVEN("add and clear a single note") {
         // Make sure no notes are active.
@@ -441,14 +445,14 @@ SCENARIO("seidr.RandomOctaveMax test different types of inputs") { // NOLINT
         REQUIRE(note_output.size() == 3);
 
         // Notes
-        REQUIRE(MIDI::getPitchClass(note_output[0][0]) == 0);
-        REQUIRE(MIDI::getPitchClass(note_output[1][0]) == 0);
-        REQUIRE(MIDI::getPitchClass(note_output[2][0]) == 0);
+        REQUIRE(MIDI::getPitchClass(note_output[0][1]) == 0);
+        REQUIRE(MIDI::getPitchClass(note_output[1][1]) == 0);
+        REQUIRE(MIDI::getPitchClass(note_output[2][1]) == 0);
         
         // Velocity
-        REQUIRE(note_output[0][1] == 100);
-        REQUIRE(note_output[1][1] == 100);
-        REQUIRE(note_output[2][1] == 100);
+        REQUIRE(velocity_output[0][1] == 100);
+        REQUIRE(velocity_output[1][1] == 100);
+        REQUIRE(velocity_output[2][1] == 100);
 
         // Clear
         REQUIRE_NOTHROW(randomOctaveTestObject.clear(NoteC4, Inlets::ARGS));
