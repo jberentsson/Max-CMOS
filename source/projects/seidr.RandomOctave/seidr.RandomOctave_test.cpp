@@ -15,6 +15,9 @@ using namespace MIDI::Notes;
 
 using Inlets = RandomOctaveMax::Inlets;
 
+//constexpr int NOTE_ON = 127;
+//constexpr int NOTE_OFF = 0;
+
 SCENARIO("seidr.RandomOctaveMax object basic functionality") { // NOLINT
     ext_main(nullptr);
 
@@ -466,3 +469,36 @@ SCENARIO("seidr.RandomOctaveMax test different types of inputs") { // NOLINT
         REQUIRE(randomOctaveTestObject.getQueuedNotes().empty());
     }
 }
+
+SCENARIO("seidr.RandomOctaveMax ENABLE/DISABLE") { // NOLINT
+    ext_main(nullptr);
+
+    min::test_wrapper<RandomOctaveMax> an_instance;
+    RandomOctaveMax &randomOctaveTestObject = an_instance;
+    
+    auto &note_output = *max::object_getoutput(randomOctaveTestObject, 0);
+    auto &velocity_output = *max::object_getoutput(randomOctaveTestObject, 1);
+    
+    REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteC4, NOTE_ON }, 0));
+    REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteC4, NOTE_OFF }, 0));
+    REQUIRE_NOTHROW(randomOctaveTestObject.disable(0));
+    REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteC4, NOTE_ON }, 0));
+    REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteC4, NOTE_OFF }, 0));
+    REQUIRE_NOTHROW(randomOctaveTestObject.enable(0));
+    REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteC4, NOTE_ON }, 0));
+    REQUIRE_NOTHROW(randomOctaveTestObject.list({ NoteC4, NOTE_OFF }, 0));
+
+    REQUIRE(!note_output.empty());
+    REQUIRE(!velocity_output.empty());
+
+    REQUIRE(note_output.size() == 6);
+    REQUIRE(velocity_output.size() == 6);
+
+    //REQUIRE(MIDI::getPitchClass(note_output[0][1]) == MIDI::getPitchClass(NoteC4));
+    //REQUIRE(note_output[2][1] == NoteC4);
+    //REQUIRE(MIDI::getPitchClass(note_output[4][1]) == MIDI::getPitchClass(NoteC4));
+
+    //REQUIRE(velocity_output[0][1] == NOTE_ON);
+    //REQUIRE(velocity_output[1][1] == NOTE_ON);
+    //REQUIRE(velocity_output[2][1] == NOTE_ON);
+};

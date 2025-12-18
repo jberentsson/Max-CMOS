@@ -14,6 +14,7 @@ using namespace c74;
 
 class RandomOctaveMax : public min::object<RandomOctaveMax> {
 private:
+    bool isEnabled = true;
     RandomOctave randomOctave_;
 
 public:
@@ -29,7 +30,7 @@ public:
 
     explicit RandomOctaveMax(const min::atoms &args = {});
 
-    auto processNoteMessage(int note, int velocity) -> void;
+    auto processNoteMessage(MIDI::Note note) -> void;
     auto clearAllNotesMessage() -> void;
     auto clearNoteMessage(int note) -> void;
 
@@ -81,6 +82,22 @@ public:
             return {};
         }
     };
+    
+    min::message<min::threadsafe::yes> enable {
+        this, "enable", "Enable the object",
+        MIN_FUNCTION {
+            this->isEnabled = true;
+            return {};
+        }
+    };
+    
+    min::message<min::threadsafe::yes> disable {
+        this, "disable", "Disable the object",
+        MIN_FUNCTION {
+            this->isEnabled = false;
+            return {};
+        }
+    };
 
     min::message<min::threadsafe::yes> list {
         this, "list", "Process note messages",
@@ -88,8 +105,9 @@ public:
             if (Inlets(inlet) == Inlets::NOTE && args.size() >= 2) {
                 int note = static_cast<int>(args[0]);
                 int velocity = static_cast<int>(args[1]);
-                this->processNoteMessage(note, velocity);
+                this->processNoteMessage(MIDI::Note(note, velocity));
             }
+
             return {};
         }
     };
@@ -111,6 +129,7 @@ public:
                     }
                 }
             }
+
             return {};
         }
     };
@@ -123,6 +142,7 @@ public:
                 int high = static_cast<int>(args[1]);
                 this->randomOctave_.setRange(low, high);
             }
+
             return {};
         }
     };
