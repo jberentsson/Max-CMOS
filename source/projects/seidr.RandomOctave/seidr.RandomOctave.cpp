@@ -24,8 +24,9 @@ RandomOctaveMax::RandomOctaveMax(const min::atoms &args) {
 
 auto RandomOctaveMax::clearNoteMessage(int note) -> void {
     // Clear a single note.
-    randomOctave_.note(note, 0);
-    output_note.send({note, 0});
+    randomOctave_.note(MIDI::Note(note, 0));
+    output_velocity.send(0);
+    output_note.send(note);
     randomOctave_.clearQueue();
 }
 
@@ -34,21 +35,29 @@ auto RandomOctaveMax::clearAllNotesMessage() -> void {
     this->randomOctave_.removeAll();
 
     for (int note = 0; note < MIDI::KEYBOARD_SIZE; note++) {
-        output_note.send({note, 0});
+        output_velocity.send(0);
+        output_note.send(note);
     }
 
     randomOctave_.clearQueue();
 }
 
-auto RandomOctaveMax::processNoteMessage(int note, int velocity) -> void { // NOLINT
+auto RandomOctaveMax::processNoteMessage(MIDI::Note note) -> void { // NOLINT
     // The input needs to be an array with two integes.
-    if (this->randomOctave_.note(note, velocity) == NoteReturnCodes::OK) { 
-        for (const auto &currentNote : randomOctave_.getNoteQueue()) {
-            // Send to outputs.
-            output_note.send({ currentNote->pitch(), currentNote->velocity() });
-        }
+    if (this->isEnabled) {
+        if (this->randomOctave_.note(note) == NoteReturnCodes::OK) { 
+            for (const auto &currentNote : randomOctave_.getNoteQueue()) {
+                // Send to outputs.
+                output_velocity.send(currentNote->velocity());
+                output_note.send(currentNote->pitch());
+            }
 
-        randomOctave_.clearQueue();
+            randomOctave_.clearQueue();
+        }
+    } else {
+        // Send to outputs.
+        output_velocity.send(note.velocity());
+        output_note.send(note.pitch());
     }
 }
 
